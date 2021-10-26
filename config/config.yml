@@ -1,0 +1,22 @@
+token: ODQxOTU2MTU1MTkwNDExMjg0.YJuSxg._ziWK80P0SVQv0MMAAmP5Kub9T8 # Bot token
+
+embedColor: '#19AFFF'   # Colors for embed messages
+commandPrefix: '!'      # Prefix for commands
+owner: 'Ghexter'        # Who owns this bot
+
+adminOnlyCommands:    # Restrict commands for admin only
+  - 'stop'
+  - 'server'
+  - 'reload'
+
+moderatorOnlyCommands: [] # Command for moderator with kick and ban perms
+
+blacklistChannels:            # Ignored channels based on IDs
+  enabled: true               # Enable blacklisted channels
+  channels: ['902034272108548137']                # List of blacklisted channels
+  convertToWhitelist: true   # Convert channels to whitelisted channels
+
+inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot   # Invite format for bot
+language: 'config/language.yml'                                                              # Langage file 
+
+version: 1.0.0    # Version (don't modify this value)

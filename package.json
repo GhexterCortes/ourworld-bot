@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js --testmode -D TOKEN"
+  },
+  "engines": {
+    "node": ">=16.6.0"
+  },
+  "engineStrict": true,
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.2.0",
+    "discord.js": "^13.2.0",
+    "fallout-utility": "^1.0.36",
+    "node-fetch": "^2.6.1",
+    "prompt-sync": "^4.1.6",
+    "smartestchatbot": "^2.0.1",
+    "yaml": "^1.10.2"
+  }
+}
