@@ -1,20 +1,23 @@
 {
   "scripts": {
     "start": "node index.js",
-    "test": "node index.js --testmode -D TOKEN"
+    "test": "node index.js --testmode"
   },
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=16.6.0",
+    "npm": ">=7.24.2"
   },
   "engineStrict": true,
   "license": "MIT",
   "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
     "commander": "^8.2.0",
+    "discord-api-types": "^0.24.0",
     "discord.js": "^13.2.0",
-    "fallout-utility": "^1.0.36",
-    "node-fetch": "^2.6.1",
+    "discordjs-button-embed-pagination": "^4.0.1",
+    "discordjs-button-pagination": "^2.0.1",
+    "fallout-utility": "^1.0.37",
     "prompt-sync": "^4.1.6",
-    "smartestchatbot": "^2.0.1",
     "yaml": "^1.10.2"
   }
 }

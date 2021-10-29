@@ -1,5 +1,5 @@
 /**    ###      ##     ##   ######     ######  
-      ## ##      ##   ##      ##     ##    ## 
+      ## ##      ##   ##      ##     ##     ## 
      ##   ##      ## ##       ##     ##       
     ##     ##      ###        ##      ######  
     #########     ## ##       ##           ## 
@@ -16,9 +16,11 @@ const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
 const Discord = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
-const log = Util.logger;
-    log.defaultPrefix = 'Bot';
+const deployFile = './deploy.txt';
+const log = new Util.Logger('Bot');
 const parseConfig = new Config();
     parseConfig.location = './config/config.yml';
     parseConfig.parse();
@@ -41,124 +43,181 @@ const Client = new Discord.Client({
     ]
 });
 
-Client.login(config.token);
-const Actions = new actions();
-
 var modulesList = {};
-var commands = {};
+var scripts = {};
 
-Client.on('ready', function() {
+var commands = [];
+Client.commands = new Discord.Collection();
+
+class UtilActions {
+    // scripts
+    async loadScripts() {
+        // Clear scripts
+        modulesList = Fs.readdirSync(Path.join(__dirname, "modules")).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
+
+        // Require scripts
+        for (const file of modulesList) {
+            const path = Path.join(__dirname, 'modules' , file);
+            const importModule = require(path);
+
+            try {
+                // Name of the script
+                const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
+                if(!name) continue;
+
+                // Check supported version
+                if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} (${name}) does not support bot version ${config.version}`, file); continue; }
+
+                // Import script
+                scripts[name] = importModule;
+                if (await scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
+
+                // Slash commands
+                if (typeof scripts[name]['slash'] === 'undefined') continue;
+
+                const command = scripts[name]['slash']['command']['name'];
+                commands.push(scripts[name]['slash']['command'].toJSON());
+                Client.commands.set(scripts[name]['slash']['command']['name'], command);
+            } catch (err) {
+                log.error(`Coudln't load ${file}: ${err.message}`, file);
+                log.error(err, file);
+            }
+        }
+    }
+
+    // Commands
+    async messageCommand(command, message) {
+        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
+        log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
+
+        // Check permissions
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(typeof scripts[command].execute === 'undefined') { log.warn(`${command} is not a command`); return; } 
+
+        // Execute
+        await scripts[command].execute(args, message, Client, Actions).catch(async err => {
+            log.error(err, `${config.commandPrefix}${command}`);
+            await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+        });
+    }
+    async registerInteractionCommmands(client, force = false, guild = null) {
+        if(!config.slashCommands.enabled) return;
+        if(Fs.existsSync(deployFile) && !force && !guild) {
+            const deploy = Fs.readFileSync(deployFile).toString().trim();
+
+            if(deploy == 'false') {
+                return;
+            }
+
+            Fs.writeFileSync(deployFile, 'false');
+        } else {
+            Fs.writeFileSync(deployFile, 'false'); 
+        }
+
+        const rest = new REST({ version: '9' }).setToken(config.token);
+        (async () => {
+            try {
+                if(!guild){
+                    await rest.put(
+                        Routes.applicationCommands(client.user.id),
+                        { body: commands },
+                    );
+                } else {
+                    await rest.put(
+                        Routes.applicationGuildCommands(client.user.id, guild),
+                        { body: commands },
+                    );
+                }
+                log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+            } catch (err) {
+                log.error(err, 'Register Commands');
+            }
+        })();
+    }
+
+    // Other utility functions
+    get(object) {
+        return language.get(object);
+    }
+    createInvite(bot) {
+        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+    
+    // Permissions
+    admin(member) {
+        if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
+        return false;
+    }
+    moderator(member) {
+        if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
+        return false;
+    }
+    isIgnoredChannel(channelId) {
+        if(
+            config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(channelId.toString())
+            || 
+            config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(channelId.toString())
+        ) { return true; }
+        return false;
+    }
+}
+
+Client.login(config.token);
+const Actions = new UtilActions();
+
+// Client ready
+Client.once('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
+    
+    // Register commands
+    await Actions.loadScripts();
+    await Actions.registerInteractionCommmands(Client, false, config.guildId);
+});
 
-    Actions.loadCommands();
+Client.on('ready', function() {
+    // On Interaction commands
+    Client.on('interactionCreate', async (interaction) => {
+        if(!interaction.isCommand() || !interaction.member) return;
 
-    Client.on('messageCreate', async function (message) {
-        if(message.author.id === Client.user.id || message.author.bot) return;
+        let command = scripts[Client.commands.get(interaction.commandName)];
+        if (!command) return;
+        
+        // Check configurations
+        if(!config.slashCommands.enabled || Actions.isIgnoredChannel(interaction.channelId)) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
+        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
 
-        log.log(message.author.username + ': ' + message.content, 'Message');
+        try {
+            await command['slash'].execute(interaction, Client, Actions);
+        } catch (err) {
+            log.error(err, 'Interaction');
+        }
+    });
+
+    // On Message
+    Client.on('messageCreate', async (message) => {
+        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
+        log.log(`${message.author.username}: ${message.content}`, 'Message');
+
+        // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
             const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
             const command = commandConstructor.command.toLowerCase();
 
             // Ignored channels
-            if(
-                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
-                || 
-                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
-            ) return;
+            if(Actions.isIgnoredChannel(message.channelId)) return;
 
             // Execute command
-            if(commands.hasOwnProperty(command)){
-                Actions.command(command, message);
+            if(scripts.hasOwnProperty(command)){
+                Actions.messageCommand(command, message);
             }
         }
     });
 });
 
-function actions() {
-    this.reload = (message) => {
-        parseConfig.parse();
-        config = parseConfig.config;
-    
-        language.parse();
-        lang = language.language;
-    
-        Client.login(config.token).then(function () {
-            Actions.reply(message, language.get(lang.reload.success));
-        }).catch(err => {
-            log.error(err, 'Reload');
-            Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-        });
-        
-        this.loadCommands();
+// Client error
+Client.on('shardError', (error) => { log.error(error); });
 
-        return {
-            language: lang,
-            config: config
-        };
-    }
-    this.loadCommands = () => {
-        modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
-
-        for (const file of modulesList) {
-            let name = Path.parse(file).name;
-    
-            let importModule = require(__dirname + '/modules/' + file);
-            
-            try {
-                name = Util.replaceAll(name, ' ', '_').toLowerCase();
-                commands[name] = importModule;
-    
-                if(commands[name].start(config, lang, Client)) log.log('Ready! command: ' + name, file);
-            } catch (e) {
-                log.error(`Coudln't load ${file}: ${e.message}`, file);
-            }
-        }
-    }
-    this.createInvite = (bot) => {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
-    }
-    this.get = (object) => {
-        return language.get(object);
-    }
-    this.command = (command, message) => {
-        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
-
-        log.warn(message.author.username + ' executed ' + command);
-
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
-            this.reply(message, language.get(lang.noPerms)); return; 
-        }
-        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message.member)) { 
-            this.reply(message, language.get(lang.noPerms)); return; 
-        }
-
-        commands[command].execute(args, message, Actions, Client).catch(async err => {
-            log.error(err, command + '.js');
-            await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-        });
-    }
-    this.admin = (member) => {
-        if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
-        return false;
-    }
-    this.moderator = (member) => {
-        if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
-        return false;
-    }
-    this.send = async (channel, message) => {
-        try {
-            await channel.send(message).catch(err => { log.error(err) }).catch(err => { log.error(err)});
-        } catch (err) {
-            log.error(err, 'Send error');
-        }
-    }
-    this.reply = async (message, reply) => {
-        try {
-            await message.reply(reply).catch(err => { log.error(err) }).catch(err => { log.error(err)});
-        } catch (err) {
-            log.error(err, 'Reply error');
-        }
-    }
-}
+// Process warning
+process.on('warning', (warn) => log.warn(warn));

@@ -3,13 +3,12 @@ const Yml = require('yaml');
 const Fs = require('fs');
 const Commander = require('commander');
 const Version = require('./version');
-const util = require('fallout-utility');
+const { ask } = require('fallout-utility');
 
 const commands = new Commander.Command;
     
     commands
             .option('-t, --testmode')
-            .option('-D, --discord-token <token>');
     commands.parse();
 
 // Export
@@ -30,11 +29,11 @@ module.exports = function() {
         return config;
     }
     this.prefill = function() {
-        if(!this.config.token || this.config.token == null) this.config.token = util.ask('Bot Token >>> ');
+        if(!this.config.token || this.config.token == null) this.config.token = ask('Bot Token >>> ');
     }
     this.testmode = function() {
         if(!commands.opts().testmode) return true;
 
-        if(commands.opts().discordToken && commands.opts().discordToken != null) this.config.token = commands.opts().discordToken;
+        this.config.token = process.env['discordtoken'];
     }
 }
