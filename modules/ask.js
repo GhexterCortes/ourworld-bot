@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
 const { makeSentence, replaceAll } = require('fallout-utility');
-const AI = require("./ask");
+const AI = require("./ask/");
 
 module.exports = new create();
 
