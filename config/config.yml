@@ -7,13 +7,15 @@ owner: 'Ghexter'  # Who owns this bot
 
 guildId: # Only register slash commands for the given guild.
 
-# Restrict commands for admin only (This is the script name)
-adminOnlyCommands:
-  - 'stop'
+# Command permissions
+permissions:
+  # Restrict commands for admin only (This is the script name)
+  adminOnlyCommands:
+    - 'stop'
 
-# Command for moderator with kick and ban perms (This is the script name)
-moderatorOnlyCommands: 
-  - 'version'
+  # Command for moderator with kick and ban perms (This is the script name)
+  moderatorOnlyCommands: 
+    - 'version'
 
 # Slash commands
 slashCommands:
@@ -35,6 +37,7 @@ presence:
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'                                                              # Langage file 
+language: 'config/language.yml'
+modulesFolder: 'modules'
 
 version: 1.1.0    # Version (don't modify this value)
