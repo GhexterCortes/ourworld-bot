@@ -31,7 +31,7 @@ function Create() {
 
             setTimeout(async () => {
                 whitelistOn = false;
-                cooldown(client);
+                await cooldown(client);
             }, 60000);
         });
 
@@ -44,14 +44,14 @@ function Create() {
         whitelistOn = false;
         await message.reply('Resetting...').catch(err => { log.error(err); });
 
-        cooldown(client);
+        await cooldown(client);
     }
-}
 
-async function cooldown(client) {
-    await client.channels.cache.get(scriptConfig.ingameChannelId).send(scriptConfig.messages.attackCooldownMessage).catch(err => { log.error(err); });
-    for (const command of scriptConfig.messages.attackCooldownCommands) {
-        await client.channels.cache.get(scriptConfig.consoleChannelId).send(command).catch( err => { log.error(err); });
+    async function cooldown(client) {
+        await client.channels.cache.get(scriptConfig.ingameChannelId).send(scriptConfig.messages.attackCooldownMessage).catch(err => { log.error(err); });
+        for (const command of scriptConfig.messages.attackCooldownCommands) {
+            await client.channels.cache.get(scriptConfig.consoleChannelId).send(command).catch( err => { log.error(err); });
+        }
     }
 }
 
