@@ -18,7 +18,6 @@ function Create() {
             if(message.author.id != scriptConfig.serverBotId || message.channelId.toString() != scriptConfig.consoleChannelId) return;
 
             const check = checkMessage(message.content, scriptConfig.botNameKeywords);
-            console.log(`Message check rate: ${check}`);
 
             if(check == 0 || whitelistOn) return;
             whitelistOn = true;
@@ -29,6 +28,11 @@ function Create() {
             }
         
             await client.channels.cache.get(scriptConfig.ingameChannelId).send(scriptConfig.messages.underAttack).catch( err => { log.error(err); });
+
+            setTimeout(async () => {
+                whitelistOn = false;
+                cooldown(client);
+            }, 60000);
         });
 
         return true;
@@ -38,12 +42,16 @@ function Create() {
         if(args[0].toString().toLowerCase() != 'reset') return;
 
         whitelistOn = false;
-        await message.reply('Resetting...');
+        await message.reply('Resetting...').catch(err => { log.error(err); });
 
-        await client.channels.cache.get(scriptConfig.ingameChannelId).send(scriptConfig.messages.attackCooldownMessage).catch(err => { log.error(err); });
-        for (const command of scriptConfig.messages.attackCooldownCommands) {
-            await client.channels.cache.get(scriptConfig.consoleChannelId).send(command).catch( err => { log.error(err); });
-        }
+        cooldown(client);
+    }
+}
+
+async function cooldown(client) {
+    await client.channels.cache.get(scriptConfig.ingameChannelId).send(scriptConfig.messages.attackCooldownMessage).catch(err => { log.error(err); });
+    for (const command of scriptConfig.messages.attackCooldownCommands) {
+        await client.channels.cache.get(scriptConfig.consoleChannelId).send(command).catch( err => { log.error(err); });
     }
 }
 

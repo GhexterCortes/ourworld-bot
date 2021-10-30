@@ -16,6 +16,7 @@ permissions:
   # Command for moderator with kick and ban perms (This is the script name)
   moderatorOnlyCommands: 
     - 'version'
+    - 'botattack'
 
 # Slash commands
 slashCommands:
