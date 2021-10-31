@@ -6,6 +6,7 @@ const AI = require("./ask/");
 module.exports = new create();
 
 let chatbot = null;
+let askConfig = require('./ask/config.js');
 
 function create(){
     let config = {};
@@ -25,6 +26,25 @@ function create(){
 
         chatbot = new AI({name: client.user.username, gender: "Male"});
 
+        client.on('messageCreate', async (message) => {
+            if(typeof askConfig.chatbotChannels.find(ch => ch.toString() === message.channelId) === "undefined") return;
+            if(!message.content || message.content == '') return;
+            if(message.author.id === client.user.id || message.author.bot || message.author.system) return;
+
+            message.channel.sendTyping();
+            try {
+                await chatbot.chat(message.content, removeChars(message.author.username)).then(async (response) => {
+                    response = replaceAll(response, 'Udit', config.owner);
+
+                    await safeMessage.reply(message, response);
+                }).catch(async (err) => {
+                    await safeMessage.reply(message, err.message);
+                });
+            } catch(err) {
+                await safeMessage.reply(message, err.message);
+            }
+        });
+
         return true;
     }
     this.execute = async (args, message, client, action) => {
@@ -32,9 +52,17 @@ function create(){
         if(sentence.length == 0) { await message.reply(action.get(language.empty)); return; }
 
         message.channel.sendTyping();
-        let reply = await ask(sentence, message.author.username, config.owner);
+        try {
+            await chatbot.chat(sentence, removeChars(message.author.username)).then(async (response) => {
+                response = replaceAll(response, 'Udit', config.owner);
 
-        if(reply) safeMessage.reply(message, reply);
+                await safeMessage.reply(message, response);
+            }).catch(async (err) => {
+                await safeMessage.reply(message, err.message);
+            });
+        } catch(err) {
+            await safeMessage.reply(message, err.message);
+        }
     }
 
     this.slash = {
@@ -47,29 +75,23 @@ function create(){
             ),
         async execute(interaction, client, action) {
             await interaction.deferReply();
-            const response = await ask(interaction.options.getString('question'), interaction.member.username, config.owner);
 
-            await interaction.editReply(response);
+            try {
+                await chatbot.chat(interaction.options.getString('question'), removeChars(interaction.member.username)).then(async (response) => {
+                    response = replaceAll(response, 'Udit', config.owner);
+        
+                    await interaction.editReply(response);
+                }).catch(async (err) => {
+                    await interaction.editReply({ content: err.message, ephemeral: true});
+                });
+            } catch (err) {
+                await interaction.editReply({ content: err.message, ephemeral: true});
+            }
+
         }
     }
 }
 
-async function ask(message, username, owner){
-    // Get udit api response
-    try {
-        let answer = false;
-        await chatbot.chat(message, username).then((response) => {
-            response = replaceAll(response, 'Udit', owner);
-
-            answer = response;
-        }).catch((err) => {
-            console.error(err);
-        });
-
-        return answer;
-    } catch (err) {
-        console.error(err);
-    }
-
-    return false;
+function removeChars(string) {
+    return string.replace(/[^\w\s]/gi, '');
 }
