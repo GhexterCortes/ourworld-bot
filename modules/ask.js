@@ -48,7 +48,7 @@ function create(){
 
         message.channel.sendTyping();
 
-        const reply = await ask(message.content, message.author.username, config.owner);
+        const reply = await ask(sentence, message.author.username, config.owner);
 
         if(!reply) { await safeMessage.reply(message, action.get(language.error)); return; }
 
@@ -66,7 +66,7 @@ function create(){
         async execute(interaction, client, action) {
             await interaction.deferReply();
 
-            const reply = await ask(interaction.options.getString('question'), interaction.member.tag, config.owner);
+            const reply = await ask(interaction.options.getString('question'), interaction.member.user.username, config.owner);
 
             if(!reply) { await interaction.editReply({ content: action.get(language.error), ephemeral: true }); return; }
 
