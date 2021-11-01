@@ -11,7 +11,7 @@ let askConfig = require('./ask/config.js');
 function create(){
     let config = {};
     let language = {};
-    this.versions = ['1.1.0'];
+    this.versions = ['1.1.0','1.1.1'];
     this.arguments = {
         question: {
             required: true,
@@ -32,17 +32,12 @@ function create(){
             if(message.author.id === client.user.id || message.author.bot || message.author.system) return;
 
             message.channel.sendTyping();
-            try {
-                await chatbot.chat(message.content, removeChars(message.author.username)).then(async (response) => {
-                    response = replaceAll(response, 'Udit', config.owner);
 
-                    await safeMessage.reply(message, response);
-                }).catch(async (err) => {
-                    await safeMessage.reply(message, err.message);
-                });
-            } catch(err) {
-                await safeMessage.reply(message, err.message);
-            }
+            const reply = await ask(message.content, message.author.username, config.owner);
+
+            if(!reply) { await safeMessage.reply(message, action.get(language.error)); return; }
+
+            await safeMessage.reply(message, reply);
         });
 
         return true;
@@ -52,17 +47,12 @@ function create(){
         if(sentence.length == 0) { await message.reply(action.get(language.empty)); return; }
 
         message.channel.sendTyping();
-        try {
-            await chatbot.chat(sentence, removeChars(message.author.username)).then(async (response) => {
-                response = replaceAll(response, 'Udit', config.owner);
 
-                await safeMessage.reply(message, response);
-            }).catch(async (err) => {
-                await safeMessage.reply(message, err.message);
-            });
-        } catch(err) {
-            await safeMessage.reply(message, err.message);
-        }
+        const reply = await ask(message.content, message.author.username, config.owner);
+
+        if(!reply) { await safeMessage.reply(message, action.get(language.error)); return; }
+
+        await safeMessage.reply(message, reply);
     }
 
     this.slash = {
@@ -76,22 +66,32 @@ function create(){
         async execute(interaction, client, action) {
             await interaction.deferReply();
 
-            try {
-                await chatbot.chat(interaction.options.getString('question'), removeChars(interaction.member.username)).then(async (response) => {
-                    response = replaceAll(response, 'Udit', config.owner);
-        
-                    await interaction.editReply(response);
-                }).catch(async (err) => {
-                    await interaction.editReply({ content: err.message, ephemeral: true});
-                });
-            } catch (err) {
-                await interaction.editReply({ content: err.message, ephemeral: true});
-            }
+            const reply = await ask(interaction.options.getString('question'), interaction.member.tag, config.owner);
 
+            if(!reply) { await interaction.editReply({ content: action.get(language.error), ephemeral: true }); return; }
+
+            await interaction.editReply(reply);
         }
     }
-}
 
-function removeChars(string) {
-    return string.replace(/[^\w\s]/gi, '');
+    async function ask(message, username, owner) {
+        let reply = false;
+
+        try {
+            await chatbot.chat(message, removeChars(username)).then(async (response) => {
+                response = replaceAll(response, 'Udit', owner);
+
+                reply = response;
+            }).catch(async (err) => {
+                console.error(err);
+            });
+        } catch(err) {
+            console.error(err);
+        }
+
+        return reply;
+    }
+    function removeChars(string) {
+        return string.toString().replace(/[^\w\s]/gi, '');
+    }
 }
