@@ -10,26 +10,26 @@ function Create() {
     this.start = (client, action, conf, lang) => { config = conf; return true; }
 
     this.execute = async (args, message) => {
-        await SafeMessage.reply(message, { embeds: [await getCat()]});
+        await SafeMessage.reply(message, { embeds: [await getDog()]});
     }
 
     this.slash = {
         command: new SlashCommandBuilder()
-            .setName('cat')
-            .setDescription('Get random cat'),
+            .setName('dog')
+            .setDescription('Get random dog'),
         async execute(interaction) {
-            await interaction.reply({ embeds: [await getCat()] });
+            await interaction.reply({ embeds: [await getDog()] });
         }
     }
 
-    async function getCat(){
-        const cat = await RandomAnimals.cat();
-        if(!cat) return new messageEmbed().setTitle('Couldn\'t find cat');
+    async function getDog(){
+        const dog = await RandomAnimals.dog();
+        if(!dog) return new messageEmbed().setTitle('Couldn\'t find dog');
 
         return new MessageEmbed()
-            .setTitle('Meow!')
+            .setTitle('Alpha arf arf!')
             .setColor(config.embedColor)
-            .setImage(cat);
+            .setImage(dog);
     }
 }
 
