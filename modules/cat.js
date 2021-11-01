@@ -5,7 +5,7 @@ const RandomAnimals = require('random-animals-api');
 
 function Create() {
     let config = {};
-    this.versions = ['1.1.0', '1.1.0'];
+    this.versions = ['1.1.0', '1.1.1', '1.1.2'];
 
     this.start = (client, action, conf, lang) => { config = conf; return true; }
 

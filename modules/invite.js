@@ -2,7 +2,7 @@ const SafeMessage = require('../scripts/safeMessage');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 function Create() {
-    this.versions = ['1.1.0','1.1.1'];
+    this.versions = ['1.1.0', '1.1.1', '1.1.2'];
 
     this.start = () => true;
 

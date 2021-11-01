@@ -11,7 +11,7 @@ let askConfig = require('./ask/config.js');
 function create(){
     let config = {};
     let language = {};
-    this.versions = ['1.1.0','1.1.1'];
+    this.versions = ['1.1.0', '1.1.1', '1.1.2'];
     this.arguments = {
         question: {
             required: true,

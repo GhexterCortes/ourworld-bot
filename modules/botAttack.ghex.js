@@ -7,7 +7,7 @@ const log = new Logger('BotAttack');
 module.exports = new Create();
 
 function Create() {
-    this.versions = ['1.1.0'];
+    this.versions = ['1.1.2'];
     let whitelistOn = false;
     let scriptConfig = {};
 
