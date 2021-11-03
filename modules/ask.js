@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
 const { makeSentence, replaceAll } = require('fallout-utility');
-const Fetch = require('node-fetch');
 const AI = require("./ask/");
 
 module.exports = new create();
@@ -79,9 +78,7 @@ function create(){
         let reply = false;
 
         try {
-            const id = message.length > 7 ? await getCode(message) : 'en';
             await chatbot.chat(message, removeChars(username)).then(async (response) => {
-                response = id == 'en' ? response : await getTranslation(response, id);
                 response = replaceAll(response, 'Udit', owner);
 
                 reply = response;
@@ -97,18 +94,4 @@ function create(){
     function removeChars(string) {
         return string.toString().replace(/[^\w\s]/gi, '');
     }
-}
-
-async function getCode(text) {
-    const response = await Fetch('https://translate-api.ml/detect/?text='+encodeURIComponent(text)).catch(err => console.error(err));
-    if(!response || response.status != 200) return 'en';
-    const json = await response.json();
-    return json.lang;
-}
-
-async function getTranslation(text, lang) {
-    const response = await Fetch('https://translate-api.ml/translate/?text='+encodeURIComponent(text)+'&lang='+lang).catch(err => console.error(err));
-    if(!response || response.status != 200) return text;
-    const json = await response.json();
-    return json.translated.text;
 }
