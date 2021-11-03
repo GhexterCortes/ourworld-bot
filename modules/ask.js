@@ -6,7 +6,8 @@ const AI = require("./ask/");
 module.exports = new create();
 
 let chatbot = null;
-let askConfig = require('./ask/config.js');
+const askConfig = require('./ask/config.js');
+const translate = require('./ask/translate.js');
 
 function create(){
     let config = {};
@@ -80,6 +81,7 @@ function create(){
         try {
             await chatbot.chat(message, removeChars(username)).then(async (response) => {
                 response = replaceAll(response, 'Udit', owner);
+                response = message.length > 10 ? await translate(message, response) : response;
 
                 reply = response;
             }).catch(async (err) => {
