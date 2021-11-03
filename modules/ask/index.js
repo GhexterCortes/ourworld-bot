@@ -28,6 +28,9 @@ class Chatbot{
      */
     async chat(message, username){
         if(!message) throw new Error("Error. No message provided")
+        // regex for matching chatbot name from string
+        let regex = new RegExp(`${chatbot_name}`, 'g');
+        message = message.replace(regex, 'CleverChat');
         const res = await fetch(`https://api.udit.gq/api/chatbot?message=${encodeURIComponent(message)}&gender=${encodeURIComponent(chatbot_gender)}&name=${encodeURIComponent(chatbot_name)}&user=${encodeURIComponent(username)}`).catch(e => {
             throw new Error(`Ran into an Error. ${e}`);
         });
