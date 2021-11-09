@@ -83,9 +83,10 @@ function GetConfig(location) {
 }
 function getName(input) {
     const regex = /[a-zA-Z]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
-    const match = input.match(regex)[0].split('[');
+    const match = input.match(regex);
 
-    return match[0];
+    console.log(match[0].split('[/').shift() + ' ee');
+    return match.shift().split('[/').shift();
 }
 
 
