@@ -17,6 +17,7 @@ permissions:
   moderatorOnlyCommands: 
     - 'version'
     - 'botattack'
+    - 'antivpn'
 
 # Slash commands
 slashCommands:
