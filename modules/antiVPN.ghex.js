@@ -23,22 +23,27 @@ class Create {
             if(message.content.indexOf('logged in with entity id') <= -1) return;
             let fetched = getStringInBrackets(message.content);
             let ip = fetched.replace('/', '').split(':')[0];
-            let name = getName(message.content) ? getName(message.content) : false;
+            let name = getName(message.content) ? getName(message.content) : null;
 
             if(!validateIPaddress(ip)) { console.log(ip); return; }
-            console.log(ip + ' joined!');
+            console.log(`${ip} - ${name} (${fetched}) joined!`);
 
             // a function to check if the ip is vpn or not
             if(!config.enabled) return;
             const check = await register.check(ip, { vpn: true });
 
-            if(check.status == 'ok' && check[ip]?.proxy === 'yes' && name) {
+            if(check.status == 'ok' && check[ip]?.proxy === 'yes') {
                 console.log(`IP ${ip} is detected using vpn/proxy`);
+                console.log(check);
+                
                 setTimeout(async () => {
                     for(const msg of config.proxyMessage) {
                         await message.channel.send(replaceAll(replaceAll(msg, '%name%', name), '%ip%', ip));
                     }
                 }, 1000)
+            } else {
+                console.log(ip + ' is not detected using vpn/proxy');
+                console.log(check);
             }
         })
         return true;
@@ -73,7 +78,7 @@ function GetConfig(location) {
         "enabled": true,
         "botId": "",
         "consoleChannelId": "",
-        "proxyMessage": ['kick %ip% This ip is detect using VPN or proxy.'],
+        "proxyMessage": ['kick %name% This ip is detect using VPN or proxy.'],
         "key": ""
     }
 
@@ -82,10 +87,12 @@ function GetConfig(location) {
     return Yml.parse(Fs.readFileSync(location, 'utf-8'));
 }
 function getName(input) {
-    const regex = /[a-zA-Z_-]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
+    input = replaceAll(input, '\\_', '_');
+    const regex = /[a-zA-Z_]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
     const match = input.match(regex);
 
-    return match.shift().split('[/').shift();
+    if(typeof match === 'object') return typeof match[0] === 'string' ? match[0].split('[/').shift() : false;
+    return typeof match === 'string' ? match.split('[/').shift() : false;
 }
 
 
