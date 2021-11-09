@@ -82,7 +82,7 @@ function GetConfig(location) {
     return Yml.parse(Fs.readFileSync(location, 'utf-8'));
 }
 function getName(input) {
-    const regex = /[a-zA-Z]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
+    const regex = /[a-zA-Z_-]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
     const match = input.match(regex);
 
     return match.shift().split('[/').shift();
