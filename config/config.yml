@@ -36,7 +36,7 @@ presence:
   enabled: true  # Enable presence
   status: ['dnd']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
   type: ['watching']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
-  activityName: ['bots making babies']  # Name your activity [this can be a string or an object for random value]
+  activityName: ['VPN users & McDown']  # Name your activity [this can be a string or an object for random value]
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'
