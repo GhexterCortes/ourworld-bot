@@ -33,7 +33,7 @@ class Create {
 
             if(check.status == 'ok' && check[ip]?.proxy === 'yes') {
                 console.log(`IP ${ip} is considered proxy`);
-                setTimeout(() => {
+                setTimeout(async () => {
                     for(const msg of config.proxyMessage) {
                         await message.channel.send(replaceAll(msg, '%ip%', ip));
                     }
