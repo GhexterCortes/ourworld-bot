@@ -23,9 +23,11 @@ class Create {
             if(message.content.indexOf('logged in with entity id') <= -1) return;
             let fetched = getStringInBrackets(message.content);
             let ip = fetched.replace('/', '').split(':')[0];
-            let name = getName(message.content) ? getName(message.content) : null;
 
             if(!validateIPaddress(ip)) { console.log(ip); return; }
+
+            const GetName = getName(message.content);
+            let name = GetName ? GetName : null;
             console.log(`${ip} - ${name} (${fetched}) joined!`);
 
             // a function to check if the ip is vpn or not
@@ -88,10 +90,11 @@ function GetConfig(location) {
 }
 function getName(input) {
     input = input.replace(/\\(\*|_|`|~|\\)/g, '$1');
-    const regex = /[a-zA-Z_]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
+    const regex = /[a-zA-Z0-9_]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
     let match = input.match(regex);
 
-    if(typeof match === 'object' && match.length) { console.log(match, ' [Object]'); match = match.shift();}
+    console.log(match, ' [Object Data]');
+    if(typeof match === 'object' && match?.length) { match = match.shift(); }
     return typeof match === 'string' ? match.split('[/').shift() : false;
 }
 
