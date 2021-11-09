@@ -21,8 +21,9 @@ class Create {
         Client.on("messageCreate", async (message) => {
             if(message.author.id != config.botId || message.channelId != config.consoleChannelId) return;
             if(message.content.indexOf('logged in with entity id') <= -1) return;
-            let ip = getStringInBrackets(message.content).replace('/', '');
-                ip = ip.split(':')[0];
+            let fetched = getStringInBrackets(message.content);
+            let ip = fetched.replace('/', '').split(':')[0];
+            let name = getName(message.content);
 
             if(!validateIPaddress(ip)) { console.log(ip); return; }
             console.log(ip + ' joined!');
@@ -32,10 +33,10 @@ class Create {
             const check = await register.check(ip, { vpn: true });
 
             if(check.status == 'ok' && check[ip]?.proxy === 'yes') {
-                console.log(`IP ${ip} is considered proxy`);
+                console.log(`IP ${ip} is detected using vpn/proxy`);
                 setTimeout(async () => {
                     for(const msg of config.proxyMessage) {
-                        await message.channel.send(replaceAll(msg, '%ip%', ip));
+                        await message.channel.send(replaceAll(replaceAll(msg, '%name%', name), '%ip%', ip));
                     }
                 }, 1000)
             }
@@ -80,5 +81,12 @@ function GetConfig(location) {
 
     return Yml.parse(Fs.readFileSync(location, 'utf-8'));
 }
+function getName(input) {
+    const regex = /[a-zA-Z]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
+    const match = input.match(regex)[0].split('[');
+
+    return match[0];
+}
+
 
 module.exports = new Create();

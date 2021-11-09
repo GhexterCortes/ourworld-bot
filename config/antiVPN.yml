@@ -2,5 +2,6 @@ enabled: true
 botId: "841956155190411284"
 consoleChannelId: "884753588105117726"
 proxyMessage:
-  - banip %ip% This ip is detect using VPN or proxy.
+  - banip %ip% This ip is detected using VPN or proxy.
+  - ban %name% You're detected using VPN or proxy.
 key: "48877j-3k1812-50za56-056o9c"
