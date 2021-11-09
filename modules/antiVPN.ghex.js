@@ -23,7 +23,7 @@ class Create {
             if(message.content.indexOf('logged in with entity id') <= -1) return;
             let fetched = getStringInBrackets(message.content);
             let ip = fetched.replace('/', '').split(':')[0];
-            let name = getName(message.content);
+            let name = getName(message.content) ? getName(message.content) : false;
 
             if(!validateIPaddress(ip)) { console.log(ip); return; }
             console.log(ip + ' joined!');
@@ -32,7 +32,7 @@ class Create {
             if(!config.enabled) return;
             const check = await register.check(ip, { vpn: true });
 
-            if(check.status == 'ok' && check[ip]?.proxy === 'yes') {
+            if(check.status == 'ok' && check[ip]?.proxy === 'yes' && name) {
                 console.log(`IP ${ip} is detected using vpn/proxy`);
                 setTimeout(async () => {
                     for(const msg of config.proxyMessage) {
@@ -85,7 +85,6 @@ function getName(input) {
     const regex = /[a-zA-Z]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
     const match = input.match(regex);
 
-    console.log(match[0].split('[/').shift() + ' ee');
     return match.shift().split('[/').shift();
 }
 
