@@ -18,7 +18,7 @@ class EditCache {
     }
 
     clearCache(name) {
-        if(name) { delete cache[name]; }
+        if(name && cache[name]) { delete cache[name]; }
         cache = {};
         return cache;
     }
@@ -30,18 +30,20 @@ class EditCache {
     }
 }
 
+const data = new EditCache();
+
 class Create {
     constructor() {
         this.versions = ['1.1.2'];
         this.arguments = {
-            'toggle': {
+            'action': {
                 required: true,
+                values: ['toggle', 'clear']
             }
         }
     }
 
-    start(Client, conf, lang) {
-        const data = new EditCache();
+    async start(Client, conf, lang) {
         Client.on('messageCreate', (message) => {
             if(!config.enabled || message.channelId !== config.chatsChannelIf || message.author.id !== config.botId) return;
             const msg = message.content.toLowerCase();
@@ -78,15 +80,28 @@ class Create {
         return true;
     }
 
-    execute(args, message, Client) {
-        if(!args.length || args.length && args[0].toLowerCase() !== 'toggle') return;
-
-        if(config.enabled) {
-            config.enabled = false;
-            SafeMessage.send(message.channel ,`Anti-Swear has been disabled.`);
+    async execute(args, message, Client) {
+        if(!args.length) return;
+        if(args.length && args[0].toLowerCase() == 'toggle') {
+            if(config.enabled) {
+                config.enabled = false;
+                SafeMessage.send(message.channel ,`Anti-Swear has been disabled.`);
+            } else {
+                config.enabled = true;
+                SafeMessage.send(message.channel ,`Anti-Swear has been enabled.`);
+            }
         } else {
-            config.enabled = true;
-            SafeMessage.send(message.channel ,`Anti-Swear has been enabled.`);
+            if(config.enabled) {
+                if(args[1]) {
+                    data.clearCache(args[1]);
+                    SafeMessage.send(message.channel ,`Cleared checks for ${args[1]}`);
+                } else {
+                    data.clearCache();
+                    SafeMessage.send(message.channel ,`Anti-Swear checks has been cleared.`);
+                }
+            } else {
+                SafeMessage.send(message.channel ,`Anti-Swear disabled! Turn it on to run this action`);
+            }
         }
     }
 }
