@@ -87,11 +87,11 @@ function GetConfig(location) {
     return Yml.parse(Fs.readFileSync(location, 'utf-8'));
 }
 function getName(input) {
-    input = replaceAll(input, '\\_', '_');
+    input = input.replace(/\\(\*|_|`|~|\\)/g, '$1');
     const regex = /[a-zA-Z_]+\[\/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b:[0-9]+\]/gmi;
-    const match = input.match(regex);
+    let match = input.match(regex);
 
-    if(typeof match === 'object') return typeof match[0] === 'string' ? match[0].split('[/').shift() : false;
+    if(typeof match === 'object' && match.length) { console.log(match, ' [Object]'); match = match.shift();}
     return typeof match === 'string' ? match.split('[/').shift() : false;
 }
 
