@@ -7,31 +7,6 @@ let enabled = true;
 let cache = {};
 let config = GetConfig('./config/antiSwear.yml');
 
-class EditCache {
-    setCache(name, value) {
-        cache[name] = value;
-        return cache[name];
-    }
-
-    getCache(name) {
-        return cache[name];
-    }
-
-    clearCache(name) {
-        if(name && cache[name]) { delete cache[name]; }
-        cache = {};
-        return cache;
-    }
-
-    addCache(name, value) {
-        if(cache[name]) cache[name] = this.getCache(name) + value;
-        else cache[name] = value;
-        return cache[name];
-    }
-}
-
-const data = new EditCache();
-
 class Create {
     constructor() {
         this.versions = ['1.1.2'];
@@ -53,7 +28,8 @@ class Create {
             if(!name || config.blacklistNames.find(Name => name === Name)) return;
 
             // count matched words
-            let count = data.addCache(name, 0);
+            if(!cache[name]) cache[name] = { count: 0, punishedLevel: 0 };
+            let count = cache[name] ? cache[name].count : 0;
             swearWords.forEach(word => {
                 if(!config.matchWordOnly){
                     if(msg.includes(word)) count++;
@@ -61,10 +37,10 @@ class Create {
                     if(msg.includes(` ${word} `) || msg.includes(` ${word}`) || msg.includes(`${word} `)) count++;
                 }
             });
-            data.setCache(name, count);
 
-            count = count.toString();
-            if(!config.levels[count]) return;
+            cache[name].count = count;
+            console.log(`${name} has ${count} swear words`);
+            if(!config.levels[count.toString()] || count > 0 && count == cache[name]?.punishedLevel) { return; }
 
             if(typeof config.levels[count].chatMessage === 'string') SafeMessage.send(message.channel, Util.replaceAll(config.levels[count].chatMessage, '%name%', name));
             if(typeof config.levels[count].chatMessage === 'object') for(let key of config.levels[count].chatMessage) { SafeMessage.send(message.channel, Util.replaceAll(key, '%name%', name)); }
@@ -76,6 +52,7 @@ class Create {
                 return SafeMessage.send(Client.channels.cache.get(id), sendMessage);
             }
             
+            cache[name] = { count: count, punishedLevel: count };
         });
         return true;
     }
@@ -90,18 +67,20 @@ class Create {
                 config.enabled = true;
                 SafeMessage.send(message.channel ,`Anti-Swear has been enabled.`);
             }
-        } else {
+        } else if(args.length && args[0].toLowerCase() == 'clear') {
             if(config.enabled) {
                 if(args[1]) {
-                    data.clearCache(args[1]);
+                    if(cache[args[1]]) delete cache[args[1]];
                     SafeMessage.send(message.channel ,`Cleared checks for ${args[1]}`);
                 } else {
-                    data.clearCache();
+                    cache = {};
                     SafeMessage.send(message.channel ,`Anti-Swear checks has been cleared.`);
                 }
             } else {
                 SafeMessage.send(message.channel ,`Anti-Swear disabled! Turn it on to run this action`);
             }
+        } else {
+            SafeMessage.send(message.channel ,`Invalid action! ${JSON.stringify(cache)}`);
         }
     }
 }
