@@ -79,12 +79,11 @@ class Create {
             } else {
                 SafeMessage.send(message.channel ,`Anti-Swear disabled! Turn it on to run this action`);
             }
-        } else {
-            SafeMessage.send(message.channel ,`Invalid action! ${JSON.stringify(cache)}`);
+        } else if(args.length && args[0].toLowerCase() == 'list') {
+            SafeMessage.send(message.channel , '```json\n'+ JSON.stringify(cache, null, 2) + '\n```');
         }
     }
 }
-
 function getName(chat) {
     return chat?.replace(/\\(\*|_|`|~|\\)/g, '$1')?.split('>')?.shift()?.trim()?.split(' ')?.pop();
 }
