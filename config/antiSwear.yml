@@ -1,17 +1,13 @@
 enabled: true
-botId: "841956155190411284"
-consoleChannelId: "884753588105117726"
-chatsChannelIf: "883269578791206942"
+botId: ""
+consoleChannelId: ""
+chatsChannelIf: ""
 bannedWords:
   - fuck
   - dick
   - pussy
   - nigga
   - nigger
-  - niger
-  - niga
-  - whore
-  - slut
 levels:
   "1":
     chatMessage: "%name%, Watch your words. It may be inappropriate for someone."
