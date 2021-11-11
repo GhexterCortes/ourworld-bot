@@ -1,0 +1,7 @@
+enableAnimals:
+  cat: true
+  dog: true
+  fox: true
+  horse: true
+  pig: true
+  rabbit: true

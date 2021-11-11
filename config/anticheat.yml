@@ -1,0 +1,32 @@
+serverBotId: ""
+consoleChannelId: ""
+messagesChannelId: ""
+messages:
+  underBotAttack: |-
+    Bot username keyword detected.
+    **Server Under Bot Attack enabled!**
+    ```yml
+    Turning on whitelist
+    ```
+  underBotAttackConsoleCommands:
+    - whitelist on
+    - whitelist reload
+  botAttackCooldownMessage: |-
+    Resetting bot name detection.
+    **Server bot name detection reset!**
+    ```yml
+    Turning off whitelist
+    ```
+  botAttackCooldownCommands:
+    - whitelist off
+    - whitelist reload
+  proxyDetectedMessage:
+    - kick %name% This ip is detect using VPN or proxy.
+antiVPN:
+  enabled: true
+  APIKey: ""
+antiBot:
+  enabled: true
+  botNameKeywords:
+    - McDown
+    - McDown_pw
