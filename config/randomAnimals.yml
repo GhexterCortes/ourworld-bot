@@ -1,7 +1,8 @@
-enableAnimals:
-  cat: true
-  dog: true
-  fox: true
-  horse: true
-  pig: true
-  rabbit: true
+animals:
+  cat:
+    enabled: true
+    textTitle: A cat
+  dog:
+    enabled: true
+    textTitle: A dog
+noResultsMessage: Nothing found.
