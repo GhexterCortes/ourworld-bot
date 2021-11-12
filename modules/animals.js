@@ -7,13 +7,10 @@ const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder'
 const defaultConfig = {
     enableAnimals: {
         cat: true,
-        dog: true,
-        fox: true,
-        horse: true,
-        pig: true,
-        rabbit: true
+        dog: true
     }
 }
+
 let config = Yml.parse(MakeConfig('./config/randomAnimals.yml', defaultConfig));
 
 class Create {
