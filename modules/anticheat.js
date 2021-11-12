@@ -1,7 +1,8 @@
 const Yml = require('yaml');
 const MakeConfig = require('../scripts/makeConfig');
-const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
+
+const AntiVPN = require('./anticheat/antivpn');
+const AntiBot = require('./anticheat/antibot');
 
 const defaultConfig = {
     // Server and Bot ingormations
@@ -38,11 +39,25 @@ let config = Yml.parse(MakeConfig('./config/anticheat.yml', defaultConfig));
 class Create {
     constructor() {
         this.versions = ['1.4.1'];
+        this.commands = createCommands();
     }
 
     async start(Client) {
+
+
         return true;
     }
+}
+
+function createCommands() {
+    let commands = [];
+
+    if(config.antiVPN.enabled) 
+        commands = commands.concat(AntiVPN.commands);
+    if(config.antiBot.enabled)
+        commands = commands.concat(AntiBot.commands);
+    
+    return commands;
 }
 
 module.exports = new Create();
