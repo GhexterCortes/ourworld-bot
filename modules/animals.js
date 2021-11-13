@@ -31,9 +31,12 @@ class Create {
     }
 
     async start(Client) {
-        console.log(config);
         const setDog = dogCommand(Client);
         const setCat = catCommand(Client);
+        
+        this.commands = setDog ? this.commands.concat(setDog) : this.commands;
+        this.commands = setCat ? this.commands.concat(setCat) : this.commands;
+
         return true;
     }
 }
@@ -45,13 +48,13 @@ function dogCommand(Client) {
         new MessageCommandBuilder()
             .setName('dog')
             .setDescription('Get random dog')
-            .setExecute(async (message) => SafeMessage.reply(message, await getDog())),
+            .setExecute(async (args, message) => SafeMessage.reply(message, await getDog())),
         new InteractionCommandBuilder()
             .setCommand(SlashCommandBuilder => SlashCommandBuilder
                 .setName('dog')
                 .setDescription('Get random dog')    
             )
-            .setExecute(async (interaction) => SafeInt.reply(interaction, await getDog()))
+            .setExecute(async (interaction) => SafeInteract.reply(interaction, await getDog()))
     ]
 
     async function getDog() {
@@ -75,13 +78,13 @@ function catCommand(Client) {
         new MessageCommandBuilder()
             .setName('cat')
             .setDescription('Get random cat')
-            .setExecute(async (message) => SafeMessage.reply(message, await getCat())),
+            .setExecute(async (args, message) => SafeMessage.reply(message, await getCat())),
         new InteractionCommandBuilder()
             .setCommand(SlashCommandBuilder => SlashCommandBuilder
                 .setName('cat')
                 .setDescription('Get random cat')    
             )
-            .setExecute(async (interaction) => SafeInt.reply(interaction, await getCat()))
+            .setExecute(async (interaction) => SafeInteract.reply(interaction, await getCat()))
     ]
 
     async function getCat() {
