@@ -13,9 +13,9 @@ const defaultConfig = {
     // Messages
     messages: {
         // Anti Bot
-        underBotAttack: "Bot username keyword detected.\n**Server Under Bot Attack enabled!**\n```yml\nTurning on whitelist\n```",
+        underBotAttackMessage: ["Bot username keyword detected.\n**Server Under Bot Attack enabled!**\n```yml\nTurning on whitelist\n```"],
         underBotAttackConsoleCommands: ['whitelist on', 'whitelist reload'],
-        botAttackCooldownMessage: "Resetting bot name detection.\n**Server bot name detection reset!**\n```yml\nTurning off whitelist\n```",
+        botAttackCooldownMessage: ["Resetting bot name detection.\n**Server bot name detection reset!**\n```yml\nTurning off whitelist\n```"],
         botAttackCooldownCommands: ['whitelist off', 'whitelist reload'],
 
         // Anti VPN

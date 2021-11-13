@@ -1,4 +1,5 @@
 const MessageCommandBuilder = require('../../scripts/messageCommandBuilder');
+const SafeMessage = require('../../scripts/safeMessage');
 
 let whitelistOn = false;
 
@@ -17,29 +18,29 @@ module.exports.commands = [
 ];
 
 module.exports.start = (Client, config) => {
-    Client.on('messageCreate', (message) => {
+    Client.on('messageCreate', async (message) => {
         if(message.author.id != config.serverBotId || message.channelId.toString() != config.consoleChannelId) return;
 
         const check = checkMessage(message.content, config.antiBot.botNameKeywords);
-        if(check == 0 || whitelistOn) return;
+        if(!check || whitelistOn) return;
 
         console.log(`Bot name detected`);
         await underBotAttack();
 
-        setTimeout(() => {
-            cooldownAttack();
+        setTimeout(async () => {
+            await cooldownAttack();
         }, config.antiBot.cooldown);
     });
 
     async function cooldownAttack() {
-        for (const message of config.messages.botAttackCooldownMessage) {
-            const channelMessages = await Client.channels.cache.get(config.messagesChannelId).catch(err => { console.log(err); return false; });
+        for (const message of (typeof config.messages.botAttackCooldownMessage === 'object' ? config.messages.botAttackCooldownMessage : [config.messages.botAttackCooldownMessage])) {
+            const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
             if(!channelMessages) break;
 
             await SafeMessage.send(channelMessages, message);
         }
-        for (const command of config.messages.botAttackCooldownCommands) {
-            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId).catch(err => { console.log(err); return false; });
+        for (const command of (typeof config.messages.botAttackCooldownCommands === 'object' ? config.messages.botAttackCooldownCommands : [config.messages.botAttackCooldownCommands])) {
+            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
             if(!consoleChannel) break;
 
             await SafeMessage.send(consoleChannel, command);
@@ -49,14 +50,14 @@ module.exports.start = (Client, config) => {
     }
 
     async function underBotAttack() {
-        for (const message of config.messages.underBotAttackMessage) {
-            const channelMessages = await Client.channels.cache.get(config.messagesChannelId).catch(err => { console.log(err); return false; });
+        for (const message of (typeof config.messages.underBotAttackMessage === 'object' ? config.messages.underBotAttackMessage : [config.messages.underBotAttackMessage])) {
+            const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
             if(!channelMessages) break;
 
             await SafeMessage.send(channelMessages, message);
         }
-        for (const command of config.messages.underBotAttackConsoleCommands) {
-            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId).catch(err => { console.log(err); return false; });
+        for (const command of (typeof config.messages.underBotAttackConsoleCommands === 'object' ? config.messages.underBotAttackConsoleCommands : [config.messages.underBotAttackConsoleCommands])) {
+            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
             if(!consoleChannel) break;
 
             await SafeMessage.send(consoleChannel, command);
