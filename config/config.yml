@@ -18,7 +18,7 @@ permissions:
     adminOnlyCommands: ['stop']
 
     # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: ['botattack', 'antivpn']
+    moderatorOnlyCommands: ['antibot', 'antivpn']
   
   # Slash commands permissions
   interactionCommands:
