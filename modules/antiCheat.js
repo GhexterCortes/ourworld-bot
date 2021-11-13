@@ -31,6 +31,7 @@ const defaultConfig = {
     // Anti Bot
     antiBot: {
         enabled: true,
+        cooldown: 60000,
         botNameKeywords: ['McDown', 'McDown_pw'],
     }
 }
@@ -43,7 +44,8 @@ class Create {
     }
 
     async start(Client) {
-
+        AntiVPN.start(Client, config);
+        AntiBot.start(Client, config);
 
         return true;
     }

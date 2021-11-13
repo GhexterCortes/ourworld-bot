@@ -2,7 +2,7 @@ serverBotId: ""
 consoleChannelId: ""
 messagesChannelId: ""
 messages:
-  underBotAttack: |-
+  underBotAttackMessage: |-
     Bot username keyword detected.
     **Server Under Bot Attack enabled!**
     ```yml
@@ -27,6 +27,7 @@ antiVPN:
   APIKey: ""
 antiBot:
   enabled: true
+  cooldown: 60000
   botNameKeywords:
     - McDown
     - McDown_pw
