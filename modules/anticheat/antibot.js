@@ -18,6 +18,8 @@ module.exports.commands = [
 ];
 
 module.exports.start = (Client, config) => {
+    if(!config.antiBot.enabled) return;
+
     Client.on('messageCreate', async (message) => {
         if(message.author.id != config.serverBotId || message.channelId.toString() != config.consoleChannelId) return;
 
@@ -25,46 +27,50 @@ module.exports.start = (Client, config) => {
         if(!check || whitelistOn) return;
 
         console.log(`Bot name detected`);
-        await underBotAttack();
+        await underBotAttack(Client);
 
         setTimeout(async () => {
-            await cooldownAttack();
+            await cooldownAttack(Client);
         }, config.antiBot.cooldown);
     });
+}
 
-    async function cooldownAttack() {
-        for (const message of (typeof config.messages.botAttackCooldownMessage === 'object' ? config.messages.botAttackCooldownMessage : [config.messages.botAttackCooldownMessage])) {
-            const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
-            if(!channelMessages) break;
+async function cooldownAttack(Client) {
+    for (const message of returnMessage(config.messages.botAttackCooldownMessage)) {
+        const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
+        if(!channelMessages) break;
 
-            await SafeMessage.send(channelMessages, message);
-        }
-        for (const command of (typeof config.messages.botAttackCooldownCommands === 'object' ? config.messages.botAttackCooldownCommands : [config.messages.botAttackCooldownCommands])) {
-            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
-            if(!consoleChannel) break;
+        await SafeMessage.send(channelMessages, message);
+    }
+    for (const command of returnMessage(config.messages.botAttackCooldownCommands)) {
+        const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
+        if(!consoleChannel) break;
 
-            await SafeMessage.send(consoleChannel, command);
-        }
-
-        whitelistOn = false;
+        await SafeMessage.send(consoleChannel, command);
     }
 
-    async function underBotAttack() {
-        for (const message of (typeof config.messages.underBotAttackMessage === 'object' ? config.messages.underBotAttackMessage : [config.messages.underBotAttackMessage])) {
-            const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
-            if(!channelMessages) break;
+    whitelistOn = false;
+}
 
-            await SafeMessage.send(channelMessages, message);
-        }
-        for (const command of (typeof config.messages.underBotAttackConsoleCommands === 'object' ? config.messages.underBotAttackConsoleCommands : [config.messages.underBotAttackConsoleCommands])) {
-            const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
-            if(!consoleChannel) break;
+async function underBotAttack(Client) {
+    for (const message of returnMessage(config.messages.underBotAttackMessage)) {
+        const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
+        if(!channelMessages) break;
 
-            await SafeMessage.send(consoleChannel, command);
-        }
-
-        whitelistOn = true;
+        await SafeMessage.send(channelMessages, message);
     }
+    for (const command of returnMessage(config.messages.underBotAttackConsoleCommands)) {
+        const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
+        if(!consoleChannel) break;
+
+        await SafeMessage.send(consoleChannel, command);
+    }
+
+    whitelistOn = true;
+}
+
+function returnMessage(message) {
+    return typeof message === 'object' ? message : [message];
 }
 
 function checkMessage(content, keywords) {
