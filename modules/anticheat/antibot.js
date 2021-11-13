@@ -2,6 +2,7 @@ const MessageCommandBuilder = require('../../scripts/messageCommandBuilder');
 const SafeMessage = require('../../scripts/safeMessage');
 
 let whitelistOn = false;
+let config = {};
 
 module.exports.commands = [
     new MessageCommandBuilder()
@@ -11,13 +12,21 @@ module.exports.commands = [
             if(args.length < 1) return;
 
             if(args[0] == 'toggle') {
-                await Client.channels.cache.get(config.consoleChannelId).send(`Anti Bot is set to: ${whitelistOn}`);
+                await SafeMessage.send(message.channel, `Under bot attack status was set to: ${(whitelistOn ? 'Sleep' : 'Active')}`);
                 whitelistOn = whitelistOn ? false : true;
+
+                if(whitelistOn) {
+                    await underBotAttack(Client);
+                } else {
+                    await cooldownAttack(Client);
+                }
             }
         })
 ];
 
-module.exports.start = (Client, config) => {
+module.exports.start = (Client, rawConfig) => {
+    config = rawConfig;
+
     if(!config.antiBot.enabled) return;
 
     Client.on('messageCreate', async (message) => {
@@ -28,10 +37,6 @@ module.exports.start = (Client, config) => {
 
         console.log(`Bot name detected`);
         await underBotAttack(Client);
-
-        setTimeout(async () => {
-            await cooldownAttack(Client);
-        }, config.antiBot.cooldown);
     });
 }
 
@@ -67,6 +72,9 @@ async function underBotAttack(Client) {
     }
 
     whitelistOn = true;
+    setTimeout(async () => {
+        await cooldownAttack(Client);
+    }, config.antiBot.cooldown);
 }
 
 function returnMessage(message) {
