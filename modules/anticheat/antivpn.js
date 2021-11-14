@@ -3,6 +3,8 @@ const Proxy = require('proxycheck-node.js');
 const MessageCommandBuilder = require('../../scripts/messageCommandBuilder');
 const InteractionCommandBuilder = require('../../scripts/interactionCommandBuilder');
 
+const log = new Util.Logger('AntiVPN');
+
 let cache = {};
 let antivpn = null;
 
@@ -22,13 +24,12 @@ module.exports.start = (Client, config) => {
         const players = getDetails(message.content);
         if(!players || !Object.keys(players).length || message.author.id !== config.serverBotId || message.channelId !== config.consoleChannelId) return;
 
-        console.log(players);
         for(const player in players) {
             if(await usingVPN(player)) {
-                console.log(`${player} (${players[player]}) is using VPN`);
+                log.log(`${player} (${players[player]}) is using VPN`);
                 await punish(player, players[player]);
             } else {
-                console.log(`${player} (${players[player]}) is not using VPN`);
+                log.log(`${player} (${players[player]}) is not using VPN`);
             }
         }
     });
@@ -53,11 +54,11 @@ function getDetails(input) {
 
 async function usingVPN(ip) {
     if(typeof cache[ip] !== 'undefined') {
-        console.log(`VPN cache for ${ip} is available`);
+        log.log(`VPN cache for ${ip} is available`);
         return cache[ip].vpn ? true : false;
     }
 
-    console.log(`VPN cache for ${ip} is not available`);
+    log.log(`VPN cache for ${ip} is not available`);
     const check = await antivpn.check(ip, { vpn: true });
     let result = check.status === 'ok' && check[ip]?.proxy === 'yes' ? true : false;
         result = check.status !== 'ok' ? result : false;

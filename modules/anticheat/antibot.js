@@ -1,5 +1,8 @@
 const MessageCommandBuilder = require('../../scripts/messageCommandBuilder');
 const SafeMessage = require('../../scripts/safeMessage');
+const { Logger } = require('fallout-utility');
+
+const log = new Logger('AntiBot');
 
 let whitelistOn = false;
 let config = {};
@@ -35,7 +38,7 @@ module.exports.start = (Client, rawConfig) => {
         const check = checkMessage(message.content, config.antiBot.botNameKeywords);
         if(!check || whitelistOn) return;
 
-        console.log(`Bot name detected`);
+        log.log(`Bot name detected`);
         await underBotAttack(Client);
     });
 }
