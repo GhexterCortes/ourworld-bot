@@ -41,14 +41,15 @@ module.exports.start = (Client, rawConfig) => {
 }
 
 async function cooldownAttack(Client) {
+    const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
+    const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
+
     for (const message of returnMessage(config.messages.botAttackCooldownMessage)) {
-        const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
         if(!channelMessages) break;
 
         await SafeMessage.send(channelMessages, message);
     }
     for (const command of returnMessage(config.messages.botAttackCooldownCommands)) {
-        const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
         if(!consoleChannel) break;
 
         await SafeMessage.send(consoleChannel, command);
@@ -58,14 +59,15 @@ async function cooldownAttack(Client) {
 }
 
 async function underBotAttack(Client) {
+    const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
+    const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
+    
     for (const message of returnMessage(config.messages.underBotAttackMessage)) {
-        const channelMessages = await Client.channels.cache.get(config.messagesChannelId);
         if(!channelMessages) break;
 
         await SafeMessage.send(channelMessages, message);
     }
     for (const command of returnMessage(config.messages.underBotAttackConsoleCommands)) {
-        const consoleChannel = await Client.channels.cache.get(config.consoleChannelId);
         if(!consoleChannel) break;
 
         await SafeMessage.send(consoleChannel, command);
