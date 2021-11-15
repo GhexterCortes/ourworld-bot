@@ -11,6 +11,7 @@ module.exports.commands = [
     new MessageCommandBuilder()
         .setName('antibot')
         .setDescription('Anti Bot')
+        .addArgument('toggle', true, 'Toggle the anti bot')
         .setExecute(async (args, message, Client) => {
             if(args.length < 1) return;
 

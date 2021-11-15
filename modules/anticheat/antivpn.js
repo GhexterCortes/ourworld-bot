@@ -1,26 +1,39 @@
 const Util = require('fallout-utility');
 const Proxy = require('proxycheck-node.js'); 
+const SafeMessage = require('../../scripts/safeMessage');
 const MessageCommandBuilder = require('../../scripts/messageCommandBuilder');
-const InteractionCommandBuilder = require('../../scripts/interactionCommandBuilder');
 
 const log = new Util.Logger('AntiVPN');
 
 let cache = {};
 let antivpn = null;
+let enabled = null;
 
 module.exports.commands = [
     new MessageCommandBuilder()
         .setName('antivpn')
         .setDescription('Anti VPN')
+        .addArgument('action', true, 'Action to perform', ['toggle', 'clearcache'])
         .setExecute(async (args, message, Client) => {
-            // Deployment
+            if(args.length < 1) return;
+
+            if(args[0] == 'toggle') {
+                await SafeMessage.send(message.channel, `AntiVPN status was set to: ${(enabled ? 'Sleep' : 'Active')}`);
+
+                enabled = !enabled;
+            } else if(args[0] == 'clearcache') {
+                await SafeMessage.send(message.channel, 'AntiVPN cache was cleared');
+
+                cache = {};
+            }
         })
 ];
 module.exports.start = (Client, config) => {
-    if(!config.antiVPN.enabled) return;
+    enabled = config.antiVPN.enabled;
     antivpn = new Proxy({ api_key: config.antiVPN.APIKey });
 
     Client.on('messageCreate', async (message) => {
+        if(!enabled) return;
         const players = getDetails(message.content);
         if(!players || !Object.keys(players).length || message.author.id !== config.serverBotId || message.channelId !== config.consoleChannelId) return;
 

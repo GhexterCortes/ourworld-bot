@@ -14,6 +14,7 @@ class Create {
             new MessageCommandBuilder()
                 .setName('lyrics')
                 .setDescription('Get the lyrics of a song')
+                .addArgument('query', true, 'Search query')
                 .setExecute(async (args, message, Client) => {
                     if(!args.length) return;
                     

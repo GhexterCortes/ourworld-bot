@@ -8,6 +8,7 @@ reply:
   footer: Anti-scam module by Ghex#7338
   addTimestamp: true
 blacklistedDomains:
+  - disccord-apps.com
   - discord.glfte.com
   - discordsgift.com
   - steam-sourcecommunity1.xyz
