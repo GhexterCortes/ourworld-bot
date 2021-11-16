@@ -1,1 +1,15 @@
-chatbotChannels: ['904211298177388595']
+# configure bot in your server
+serverConfigurations:
+    # Channel ID for bot to reply on messages without using command
+    botChannelsId: ['904211298177388595']
+
+    # Ignore bot messages in bot channels
+    ignoreBots: true
+
+# Some bot identity
+botIdentity:
+    # Bot name (Will use bot username if empty)
+    name:
+
+    # Bot gender
+    gender: Male

@@ -23,7 +23,8 @@ messages:
     - whitelist off
     - whitelist reload
   proxyDetectedMessage:
-    - kick %name% This ip is detect using VPN or proxy.
+    - banip %ip% This ip is detected using VPN or proxy.
+    - 'tempban %name% 50s For security reasons pls disable VPN'
 antiVPN:
   enabled: true
   APIKey: "48877j-3k1812-50za56-056o9c"
