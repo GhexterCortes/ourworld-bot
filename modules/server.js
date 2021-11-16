@@ -34,10 +34,10 @@ class Create {
 }
 
 function getServer(string) {
-    let match = string.match(/[a-zA-Z0-9]+.aternos.me/m) ? string.match(/[a-zA-Z0-9]+.aternos.me/m)[0] : false;
+    let match = string.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? string.match(/[a-zA-Z0-9]+.aternos.me/m)[0] : false;
     if(match) return match; 
 
-    match = string.match(/server: [a-zA-Z.]+/m);
+    match = string.match(/server: [a-zA-Z0-9._-]+/m);
     if(match) return match[0].split(':')[1].trim();
 
     return false;
