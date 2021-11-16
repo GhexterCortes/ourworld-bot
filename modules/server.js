@@ -49,7 +49,7 @@ async function pingServer(IP, Client, message) {
 
     await updateServer();
     async function updateServer() {
-        if(message.deleted) return SafeMessage.delete(reply);
+        if(message.deleted || reply?.deleted) return SafeMessage.delete(reply);
         const server = await ping({ host: IP, closeTimeout: 5000 }).catch(err => { log.error(err); });
 
         if(!server || server.description === '§4Server not found.' || server.version.name === "§4● Offline") return SafeMessage.delete(reply);
