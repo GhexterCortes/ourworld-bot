@@ -106,7 +106,3 @@ dist
 # Development config
 *.dev.yml
 deploy.txt
-
-# Development folders
-Axis/
-old-modules/
