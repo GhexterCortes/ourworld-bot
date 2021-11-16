@@ -9,61 +9,22 @@
 
 Axis bot is named after the Our World's server clan named `Axis` *The reincarnation of Fallout clan*
 
+## About
+
+**Axis** is just a Discord bot which simply loads custom scripts and it can be configured via YAML type configurations, similar to just how Minecraft servers were configured.
+
 ## Installation
 
 To run or self-host, the following prerequisites must be installed.
 
-+ Node js `version >=16.6.0`
+* Node js `version >=16.6.0`
 
 Run `npm install` to install all dependencies then `node index.js` to run the bot.
 
-## Custom script
+## Bugs
 
-This is an example command script file.
+To report bugs, Create an issue with a full stack trace so that we can easily identify its inconsistency.
 
-```js
-// Export the module
-module.exports = new create();
+## Improvements
 
-// Create the command
-function create(){
-    // Command and language
-    this.config = {};
-    this.language = {};
-
-    // This is required to specify the supported version of bot
-    this.versions = ['1.1.0'];
-
-    // If this is a command, you can optionally add description
-    this.command = {
-        arg1: {
-            required: false, // Is this required
-            values: [] // Values of this argument 
-        },
-        arg2: {
-            required: true, // Is this required
-            values: ["value1", "value2"] // Values of this argument
-        }
-    };
-
-    // This is required for both script and command. This will be called when bot is ready or reloaded
-    this.start = (client, action, config, language) => {
-        this.config = config;       // Set config
-        this.language = language;   // Set language
-
-        // Script is ready
-
-        return true; // Return true when it's ready
-    }
-
-    // This is required for command module. You can delete this to make your script a non executable command
-    this.execute = async (args, message, action, client) => {
-        // Command executed
-
-        // args: list of separate words
-        // message: raw discord.js message
-        // action: actions from main file
-        // client: discord client
-    }
-}
-```
+If you want to help with the development, you can submit a pull request as well as create your own version of this project.

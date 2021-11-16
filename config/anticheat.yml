@@ -1,0 +1,36 @@
+serverBotId: "841956155190411284"
+consoleChannelId: "884753588105117726"
+messagesChannelId: "883269578791206942"
+messages:
+  underBotAttackMessage:
+    - |-
+      Bot username keyword detected.
+      **Server Under Bot Attack enabled!**
+      ```yml
+      Turning on whitelist
+      ```
+  underBotAttackConsoleCommands:
+    - whitelist on
+    - whitelist reload
+  botAttackCooldownMessage: 
+    - |-
+      Resetting bot name detection.
+      **Server bot name detection reset!**
+      ```yml
+      Turning off whitelist
+      ```
+  botAttackCooldownCommands:
+    - whitelist off
+    - whitelist reload
+  proxyDetectedMessage:
+    - banip %ip% This ip is detected using VPN or proxy.
+    - 'tempban %name% 50s For security reasons pls disable VPN'
+antiVPN:
+  enabled: true
+  APIKey: "48877j-3k1812-50za56-056o9c"
+antiBot:
+  enabled: true
+  cooldown: 60000
+  botNameKeywords:
+    - McDown
+    - McDown_pw

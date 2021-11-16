@@ -16,28 +16,21 @@ const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
 const Discord = require('discord.js');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
+const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
+const SafeInteraction = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
-// Public vars
-const deployFile = './deploy.txt';
+// Configurations
 const log = new Util.Logger('Bot');
-const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
-    parseConfig.parse();
-    parseConfig.testmode();
-    parseConfig.prefill();
-let config = parseConfig.config;
-const language = new Language();
-    language.location = config.language;
-    language.parse();
-let lang = language.language;
+const parseConfig = new Config('./config/config.yml');
+let config = parseConfig.parse().testmode().prefill().getConfig();
+const language = new Language(config.language);
+let lang = language.parse();
 
 // Client
 const Client = new Discord.Client({
@@ -53,139 +46,149 @@ const Client = new Discord.Client({
 
 // Commands
 var scripts = {};
-var commands = [];
+var commands = { MessageCommands: [], InteractionCommands: [] };
 
-// UtilActions
-class UtilActions {
-    // scripts
-    async loadScripts() {
-        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), Actions, config, lang, Client);
-
-        scripts = scriptsLoader.scripts;
-        commands = scriptsLoader.commands;
-    }
-
-    // Commands
+// AxisUtility
+class AxisUtility {
+    /**
+     * 
+     * @param {string} command - command name
+     * @param {Object} message - message object
+     * @returns {Promise<void>}
+     */
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
-        // Check permissions
-        if(typeof scripts[command].execute === 'undefined') return;
-
         // No permission
-        if(!CommandPermission(command, message.member, config, Actions)) {
-            SafeMessage.reply(message, language.get(lang.noPerms));
+        if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
+            SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
             return;
         }
 
-        log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
-
         // Execute
-        await scripts[command].execute(args, message, Client, Actions).catch(async err => {
-            log.error(err, `${config.commandPrefix}${command}`);
-            await SafeMessage.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-        });
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${config.commandPrefix}${command}`));
     }
-    async registerInteractionCommmands(client, force = false, guild = null) {
-        // Deployment
-        if(!config.slashCommands.enabled) return;
-        if(Fs.existsSync(deployFile) && !force && !guild) {
-            const deploy = Fs.readFileSync(deployFile).toString().trim();
 
-            if(deploy == 'false') {
-                return;
-            }
-
-            Fs.writeFileSync(deployFile, 'false');
-        } else {
-            Fs.writeFileSync(deployFile, 'false'); 
+    /**
+     * 
+     * @param {Object} interaction - Interaction object
+     * @returns {Promise<void>}
+     */
+    async interactionCommand(interaction) {
+        // Execute commands
+        if(!interaction.isCommand() || !interaction.member) return;
+        
+        // Check configurations
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
+            await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
+            return; 
+        }
+        if(!CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
+            SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
+            return;
         }
 
-        // Send
-        const rest = new REST({ version: '9' }).setToken(config.token);
-        (async () => {
-            try {
-                if(!guild){
-                    await rest.put(
-                        Routes.applicationCommands(client.user.id),
-                        { body: commands },
-                    );
-                    log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
-                } else {
-                    await rest.put(
-                        Routes.applicationGuildCommands(client.user.id, guild),
-                        { body: commands },
-                    );
-                    log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`, 'Register Commands');
-                }
-            } catch (err) {
-                log.error(err, 'Register Commands');
-            }
-        })();
+        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err));
     }
 
-    // Other utility functions
-    get(object) {
-        return language.get(object);
+    /**
+     * 
+     * @param {string} name - command name to execute
+     * @param {Object} message - message object
+     * @param {Object} args - command arguments
+     * @returns {Promise<void>}
+     */
+    async executeMessageCommand(name, message, args) {
+        const command = commands.MessageCommands.find(property => property.name === name);
+        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+
+        log.warn(`${message.author.username} executed ${config.commandPrefix}${command.name}`, 'MessageCommand');
+        await command.execute(args, message, Client);
     }
+
+    /**
+     * 
+     * @param {string} name - command name to execute
+     * @param {Object} interaction - interaction object
+     * @returns {Promise<void>}
+     */
+    async executeInteractionCommand(name, interaction) {
+        const command = commands.InteractionCommands.find(property => property.name === name);
+        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+
+        log.warn(`${interaction.member.user.username} executed /${interaction.commandName}`, 'InteractionCommand');
+        await command.execute(interaction, Client);
+    }
+
+    /**
+     * 
+     * @param {Object} bot - Client object
+     * @returns {string}
+     */
     createInvite(bot) {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+
+    /**
+     * 
+     * @returns {Object} Returns the language.yml in json
+     */
+    getLanguage() {
+        return lang;
+    }
+
+    /**
+     * 
+     * @returns {Object} Returns the config.yml in json
+     */
+    getConfig() {
+        return config;
+    }
+
+    /**
+     * 
+     * @returns {Object} Returns the loaded scripts files
+     */
+    getScripts() {
+        return scripts;
+    }
+
+    /**
+     * 
+     * @returns {Object} Returns all the available commands
+     */
+    getCommands() {
+        return commands;
     }
 }
 
 Client.login(config.token);
-const Actions = new UtilActions();
+Client.AxisUtility = new AxisUtility();
 
 // Client ready
-Client.once('ready', async () => {
+Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
-    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-    
+    log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
+
     // Register commands
-    await Actions.loadScripts();
-    await Actions.registerInteractionCommmands(Client, false, config.guildId);
-});
+    const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
 
-Client.on('ready', function() {
+    scripts = scriptsLoader.scripts;
+    commands = scriptsLoader.commands;
+    await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
+
+    // Execute .loaded method of every scripts
+    for(const script in scripts) {
+        if(!scripts[script]?.loaded) continue;
+        await scripts[script].loaded(Client);
+    }
+
     // On Interaction commands
-    Client.on('interactionCreate', async (interaction) => {
-        // Execute commands
-        if(!interaction.isCommand() || !interaction.member) return;
-
-        let command = scripts[interaction.commandName]?.slash;
-        if (!command) return;
-        
-        // Check configurations
-        if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config)) { 
-            await interaction.reply({ 
-                content: language.get(lang.notAvailable),
-                ephemeral: true
-            }).catch(err => log.error(err));
-            return; 
-        }
-        if(!CommandPermission(command['command']['name'], interaction.member, config, Actions)) { 
-            interaction.reply({ 
-                content: language.get(lang.noPerms),
-                ephemeral: true
-            }).catch(err => log.error(err, 'Slash command'));
-            return;
-        }
-
-        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
-
-        try {
-            await command.execute(interaction, Client, Actions);
-        } catch (err) {
-            log.error(err, 'Interaction');
-        }
-    });
+    Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
 
     // On Message
-    Client.on('messageCreate', async (message) => {
-        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-
-        // Ignored channels
-        if(MemberPermission.isIgnoredChannel(message.channelId, config)) return;
+    Client.on('messageCreate', async message => {
+        if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
 
         log.log(`${message.author.username}: ${message.content}`, 'Message');
 
@@ -195,13 +198,11 @@ Client.on('ready', function() {
             const command = commandConstructor.command.toLowerCase();
 
             // Execute command
-            if(scripts.hasOwnProperty(command)){
-                Actions.messageCommand(command, message);
-            }
+            Client.AxisUtility.messageCommand(command, message);
         }
     });
 });
 
 // Errors
-Client.on('shardError', (error) => { log.error(error); });
-process.on('warning', (warn) => log.warn(warn));
+Client.on('shardError', error => log.error(error));
+process.on('warning', warn => log.warn(warn));

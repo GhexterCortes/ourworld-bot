@@ -106,4 +106,3 @@ dist
 # Development config
 *.dev.yml
 deploy.txt
-old-modules/

@@ -1,27 +1,38 @@
-# token: ODQxOTU2MTU1MTkwNDExMjg0.YJuSxg._ziWK80P0SVQv0MMAAmP5Kub9T8 # Bot token
-token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw
+token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token
+# token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
-owner: 'Ghexter'  # Who owns this bot
+owner: 'Ghex'  # Who owns this bot
 
-guildId: # Only register slash commands for the given guild.
+guildId: '830456204735807529' # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:
-  # Restrict commands for admin only (This is the script name)
-  adminOnlyCommands:
-    - 'stop'
+  # Message commands permissions
+  messageCommands:
+    # Enable message command permissions
+    enable: true
 
-  # Command for moderator with kick and ban perms (This is the script name)
-  moderatorOnlyCommands: 
-    - 'version'
-    - 'botattack'
-    - 'antivpn'
+    # Restrict commands for admin only (This is the command name)
+    adminOnlyCommands: ['stop']
 
-# Slash commands
-slashCommands:
-  enabled: true
+    # Command for moderator with kick and ban perms (This is the command name)
+    moderatorOnlyCommands: ['antibot', 'antivpn']
+  
+  # Slash commands permissions
+  interactionCommands:
+    # Enable slash commands permissions
+    enable: true
+
+    # Register slash commands
+    registerSlashCommands: true
+
+    # Restrict commands for admin only (This is the command name)
+    adminOnlyCommands: ['stop']
+
+    # Command for moderator with kick and ban perms (This is the command name)
+    moderatorOnlyCommands: []
 
 # Ignored channels based on IDs
 blacklistChannels:            
@@ -35,11 +46,11 @@ blacklistChannels:
 presence:
   enabled: true  # Enable presence
   status: ['dnd']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
-  type: ['watching']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
-  activityName: ['VPN users & McDown', 'VPN users', 'McDown', '#🤖・chat-for-boring-ppl', 'you']  # Name your activity [this can be a string or an object for random value]
+  type: ['listening']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
+  activityName: ['Ama namin remix']  # Name your activity [this can be a string or an object for random value]
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'
-modulesFolder: 'modules'
+language: 'config/language.yml'   # Langage file 
+modulesFolder: 'modules'  # Define where's your modules
 
-version: 1.1.2    # Version (don't modify this value)
+version: 1.4.1    # Version (don't modify this value)

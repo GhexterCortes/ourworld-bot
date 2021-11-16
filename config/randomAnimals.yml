@@ -1,0 +1,22 @@
+animals:
+  cat:
+    enabled: true
+    textTitle:
+      - Meow!
+      - Kitty
+      - A cat
+      - sus cat
+      - cat fr
+  dog:
+    enabled: true
+    textTitle:
+      - Alpha dog
+      - Alpha arf arf
+      - This is alpha dog
+      - Dog!
+      - Arf! Arf!
+      - woof! woof!
+      - sus dog
+      - A dog!
+      - dogge
+noResultsMessage: Nothing found.

@@ -1,0 +1,15 @@
+messageCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: true
+  help:
+    enabled: true
+interactionCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: true
+  help:
+    enabled: true
+setPresence: true
