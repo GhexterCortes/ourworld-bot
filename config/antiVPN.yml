@@ -1,8 +1,0 @@
-enabled: true
-botId: "841956155190411284"
-consoleChannelId: "884753588105117726"
-proxyMessage:
-  - banip %ip% This ip is detected using VPN or proxy.
-  - 'tempban %name% 50s For security reasons pls disable VPN'
-  - '%name% - %ip% detected using vpn'
-key: "48877j-3k1812-50za56-056o9c"

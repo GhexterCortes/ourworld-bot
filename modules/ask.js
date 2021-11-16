@@ -1,4 +1,3 @@
-const Fetcher = require('node-fetch');
 const Util = require('fallout-utility');
 const Yml = require('yaml');
 const AI = require('./ask/');
@@ -15,7 +14,43 @@ let chatbot = null;
 class Create {
     constructor() {
         this.versions = ['1.4.1'];
-        this.commands = [];
+        this.commands = [
+            new MessageCommandBuilder()
+                .setName('ask')
+                .setDescription('Ask a question to the bot.')
+                .addArgument('question', true, 'The question to ask.')
+                .setExecute(async (args, message, Client) => {
+                    const config = Client.AxisUtility.getConfig();
+                    const language = Client.AxisUtility.getLanguage();
+                    
+                    if(args.length < 1) { await SafeMessage.reply(message, Util.getRandomKey(language.empty)); return; }
+                    const question = args.join(' ');
+
+                    await message.channel.sendTyping().catch(err => log.error(err));
+
+                    const reply = await ask(question, message.author.username, config.owner);
+                    if(!reply) { await SafeMessage.reply(message, Util.getRandomKey(language.error)); return; }
+
+                    await SafeMessage.reply(message, reply);
+                }),
+            new InteractionCommandBuilder()
+                .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                    .setName('ask')
+                    .setDescription('Ask a question to the bot.')
+                    .addStringOption(question => question.setName('question').setDescription('The question to ask.').setRequired(true))    
+                )
+                .setExecute(async (interaction, Client) => {
+                    const config = Client.AxisUtility.getConfig();
+                    const language = Client.AxisUtility.getLanguage();
+
+                    await SafeInteract.deferReply(interaction);
+
+                    const reply = await ask(interaction.options.getString('question'), interaction.member.user.username, config.owner);
+                    if(!reply) { await SafeInteract.editReply(interaction, { content: Util.getRandomKey(language.error), ephemeral: true }); return; }
+
+                    await SafeInteract.editReply(interaction, reply);
+                })
+        ];
     }
 
     async start(Client) {
