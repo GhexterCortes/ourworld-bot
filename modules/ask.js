@@ -1,6 +1,6 @@
 const Util = require('fallout-utility');
 const Yml = require('yaml');
-const AI = require('./ask/');
+const AI = require('./ask/index.js');
 const MakeConfig = require('../scripts/makeConfig');
 const SafeMessage = require('../scripts/safeMessage');
 const SafeInteract = require('../scripts/safeInteract');
