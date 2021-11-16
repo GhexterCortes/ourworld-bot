@@ -19,6 +19,7 @@
     "fallout-utility": "^1.0.37",
     "fs-extra": "^10.0.0",
     "genius-lyrics": "^4.3.4",
+    "minecraft-protocol": "^1.28.0",
     "node-fetch": "^2.6.6",
     "prompt-sync": "^4.1.6",
     "proxycheck-node.js": "^2.0.0-a",
