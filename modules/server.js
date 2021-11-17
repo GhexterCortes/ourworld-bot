@@ -53,8 +53,8 @@ async function pingServer(IP, Client, message) {
     const embed = new MessageEmbed().setAuthor(IP);
     const reply = await SafeMessage.send(message.channel, '`'+ IP +'`\nPinging server...');
 
-    if(activeUsers.includes(message.author.id)) {
-        await sendError('You can only have one active server.');
+    if(activeUsers.includes(message.author.id) && scriptConfig.disableMultipleEmbeds) {
+        await sendError('You cannot upload server for now.');
         await SafeMessage.delete(message);
 
         setTimeout(async () => {
@@ -87,7 +87,7 @@ async function pingServer(IP, Client, message) {
     }
 
     async function updateError(server) {
-        if(scriptConfig.errorTriesUntilRemove && errorTried > scriptConfig.errorTriesUntilRemove) return deleteReply();
+        if(scriptConfig.errorTriesUntilRemove && errorTried > scriptConfig.errorTriesUntilRemove) return deleteReply(true);
 
         errorTried++;
         await sendError(`Can't connect to server!`);
@@ -104,8 +104,8 @@ async function pingServer(IP, Client, message) {
         });
     }
 
-    async function deleteReply() {
-        activeUsers = activeUsers.filter(user => user !== message.author.id);
+    async function deleteReply(removeUser = false) {
+        if(removeUser) activeUsers = activeUsers.filter(user => user !== message.author.id);
         await SafeMessage.delete(reply);
     }
 }
@@ -119,6 +119,7 @@ function getConfig(location) {
         allowedChannels: [],
         bannedIps: [],
         errorTriesUntilRemove: 5,
+        disableMultipleEmbeds: true,
         disableBots: true
     };
 
