@@ -11,11 +11,11 @@ module.exports.commands = [
     new MessageCommandBuilder()
         .setName('antibot')
         .setDescription('Anti Bot')
-        .addArgument('toggle', true, 'Toggle the anti bot')
+        .addArgument('action', true, 'action for the anti bot', ['toggle', 'togglestatus'])
         .setExecute(async (args, message, Client) => {
             if(args.length < 1) return;
 
-            if(args[0] == 'toggle') {
+            if(args[0] == 'togglestatus') {
                 await SafeMessage.send(message.channel, `Under bot attack status was set to: ${(whitelistOn ? 'Sleep' : 'Active')}`);
                 whitelistOn = whitelistOn ? false : true;
 
@@ -24,6 +24,9 @@ module.exports.commands = [
                 } else {
                     await cooldownAttack(Client);
                 }
+            } else if(args[0] == 'toggle') {
+                config.antiBot.enabled = config.antiBot.enabled ? false : true;
+                await SafeMessage.send(message.channel, `Antibot was ${ config.antiBot.enabled ? 'enabled' : 'disabled'}`);
             }
         })
 ];
@@ -37,7 +40,7 @@ module.exports.start = (Client, rawConfig) => {
         if(message.author.id != config.serverBotId || message.channelId.toString() != config.consoleChannelId) return;
 
         const check = checkMessage(message.content, config.antiBot.botNameKeywords);
-        if(!check || whitelistOn) return;
+        if(!check || whitelistOn || !config.antiBot.enabled) return;
 
         log.log(`Bot name detected`);
         await underBotAttack(Client);
