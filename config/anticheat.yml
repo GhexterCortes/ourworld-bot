@@ -30,7 +30,7 @@ antiVPN:
   APIKey: "48877j-3k1812-50za56-056o9c"
 antiBot:
   enabled: true
-  cooldown: 60000
+  cooldown: 120000
   botNameKeywords:
     - McDown
     - McDown_pw
