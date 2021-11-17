@@ -9,10 +9,14 @@ const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
 
 const colors = {
-    "online": "#43b582"
+    "online": "#43b582",
+    "offline": "#939393",
+    "error": "#ff3838"
 }
 const log = new Util.Logger('ServerPing');
 const scriptConfig = getConfig('./config/serverPinger.yml');
+
+let activeUsers = [];
 
 class Create {
     constructor() {
@@ -34,6 +38,8 @@ class Create {
 }
 
 function getServer(string) {
+    string = string.trim().toLowerCase();
+
     let match = string.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? string.match(/[a-zA-Z0-9]+.aternos.me/m)[0] : false;
     if(match) return match; 
 
@@ -47,12 +53,26 @@ async function pingServer(IP, Client, message) {
     const embed = new MessageEmbed().setAuthor(IP);
     const reply = await SafeMessage.send(message.channel, '`'+ IP +'`\nPinging server...');
 
+    if(activeUsers.includes(message.author.id)) {
+        await sendError('You can only have one active server.');
+        await SafeMessage.delete(message);
+
+        setTimeout(async () => {
+            await deleteReply();
+        }, 5000);
+        return;
+    }
+
+    activeUsers.push(message.author.id);
+    let errorTried = 0;
+
     await updateServer();
     async function updateServer() {
-        if(message.deleted || reply?.deleted) return SafeMessage.delete(reply);
+
+        if(message.deleted || reply?.deleted) return deleteReply();
         const server = await ping({ host: IP, closeTimeout: 5000 }).catch(err => { log.error(err); });
 
-        if(!server || server.description === '§4Server not found.' || server.version.name === "§4● Offline") return SafeMessage.delete(reply);
+        if(!server || server.description === '§4Server not found.' || server.version.name === "§4● Offline") return updateError(server);
 
         let description = `This server is **online**.\n**${ server.players.online }/${ server.players.max }** players playing on **${ removeColorId(server.version.name) }**`;
 
@@ -60,7 +80,33 @@ async function pingServer(IP, Client, message) {
         embed.setDescription(description);
         embed.setFooter(`${message.author.tag} • ${ server.latency }ms`, message.author.displayAvatarURL());
         
-        if(await SafeMessage.edit(reply, { content: ' ', embeds: [embed] })) updateServer();
+        if(await SafeMessage.edit(reply, { content: ' ', embeds: [embed] })) {
+            errorTried = 0;
+            await updateServer();
+        }
+    }
+
+    async function updateError(server) {
+        if(scriptConfig.errorTriesUntilRemove && errorTried > scriptConfig.errorTriesUntilRemove) return deleteReply();
+
+        errorTried++;
+        await sendError(`Can't connect to server!`);
+        
+        await updateServer();
+    }
+
+    async function sendError(error) {
+        return SafeMessage.edit(reply, {
+            content: ' ',
+            embeds: [
+                new MessageEmbed().setAuthor(IP).setDescription(error).setColor(colors['error'])
+            ]
+        });
+    }
+
+    async function deleteReply() {
+        activeUsers = activeUsers.filter(user => user !== message.author.id);
+        await SafeMessage.delete(reply);
     }
 }
 
@@ -72,6 +118,7 @@ function getConfig(location) {
     const config = {
         allowedChannels: [],
         bannedIps: [],
+        errorTriesUntilRemove: 5,
         disableBots: true
     };
 

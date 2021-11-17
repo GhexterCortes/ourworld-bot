@@ -6,4 +6,5 @@ allowedChannels:
 
   - '874309811066519592'
   - '889473334079799316'
+errorTriesUntilRemove: 5
 bannedIps: []
