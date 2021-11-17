@@ -99,7 +99,7 @@ async function pingServer(IP, Client, message) {
         return SafeMessage.edit(reply, {
             content: ' ',
             embeds: [
-                new MessageEmbed().setAuthor(IP).setDescription(error).setColor(colors['error'])
+                new MessageEmbed().setAuthor(error).setColor(colors['error'])
             ]
         });
     }
