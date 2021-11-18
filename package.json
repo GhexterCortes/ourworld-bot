@@ -24,6 +24,7 @@
     "prompt-sync": "^4.1.6",
     "proxycheck-node.js": "^2.0.0-a",
     "random-animals-api": "^1.2.6",
+    "random-memes": "^3.1.0",
     "yaml": "^1.10.2"
   }
 }
