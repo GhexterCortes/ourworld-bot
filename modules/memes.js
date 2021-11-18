@@ -38,7 +38,7 @@ class Create {
 
 async function meme(message, Client) {
     const embed = new MessageEmbed().setColor(Client.AxisUtility.getConfig().embedColor);
-    const image = await memes.fromReddit();
+    const image = await memes.random();
     let author = { tag: 'A sus user', avatar: null };
 
     if(message.member) author = { tag: message.member.user.tag, avatar: message.member.user.displayAvatarURL() };
@@ -52,7 +52,7 @@ async function meme(message, Client) {
         };
     }
 
-    if(image?.caption) embed.setAuthor(image.caption, null, `https://reddit.com${image.permalink}`);
+    if(image?.caption) embed.setAuthor(image.caption, null);
     embed.setImage(image.image);
     embed.setFooter(`Requested by ${ author.tag }`, author.avatar);
     
