@@ -151,13 +151,15 @@ function getConfig(location) {
 // Presence
 async function setPresence(Client) {
     const config = Client.AxisUtility.getConfig();
-    return options?.setPresence ? Client.user.setPresence({
+    const presence = options?.setPresence ? await Client.user.setPresence({
         status: Util.getRandomKey(config.presence.status),
         activities: [{
             name: Util.getRandomKey(config.presence.activityName),
             type: Util.getRandomKey(config.presence.type).toUpperCase()
         }]
     }) : null;
+
+    setTimeout(() => setPresence(Client), 1000 * 60);
 }
 
 // Version command
