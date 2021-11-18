@@ -38,20 +38,20 @@ class Create {
 }
 
 function getServer(string) {
-    string = string.trim().toLowerCase();
+    string = string.trim().toLowerCase().replace(/\\(\*|_|`|~|\\)/g, '$1');
 
-    let match = string.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? string.match(/[a-zA-Z0-9]+.aternos.me/m)[0] : false;
+    let match = string.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? string.match(/[a-zA-Z0-9_-]+.aternos.me/m)[0] : false;
     if(match) return match; 
 
-    match = string.match(/server: [a-zA-Z0-9._-]+/m);
+    match = string.match(/server: [a-zA-Z0-9._-]+/m) ? string.match(/server: [a-zA-Z0-9._-]+/m) : false;
     if(match) return match[0].split(':')[1].trim();
 
     return false;
 }
 
 async function pingServer(IP, Client, message) {
-    const embed = new MessageEmbed().setAuthor(IP);
-    const reply = await SafeMessage.send(message.channel, '`'+ IP +'`\nPinging server...');
+    const embed = new MessageEmbed().setAuthor(IP).setColor(colors['offline']);
+    const reply = await SafeMessage.send(message.channel, { content: ' ', embeds: [ embed.setDescription('Pinging...') ]});
 
     if(activeUsers.includes(message.author.id) && scriptConfig.disableMultipleEmbeds) {
         await sendError('You cannot upload server for now.');
@@ -72,7 +72,7 @@ async function pingServer(IP, Client, message) {
         if(message.deleted || reply?.deleted) return deleteReply(true);
         const server = await ping({ host: IP, closeTimeout: 5000 }).catch(err => { log.error(err); });
 
-        if(!server || server.description === '§4Server not found.' || server.version.name === "§4● Offline") return updateError(server);
+        if(!server || server.description === '§4Server not found.' || server.version.name === "§4● Offline" || server?.players.max == 0) return updateError(server);
 
         let description = `This server is **online**.\n**${ server.players.online }/${ server.players.max }** players playing on **${ removeColorId(server.version.name) }**`;
 
