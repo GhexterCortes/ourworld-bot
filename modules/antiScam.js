@@ -3,6 +3,10 @@ const { getRandomKey, replaceAll } = require('fallout-utility');
 const SafeMessage = require('../scripts/safeMessage');
 const { MessageEmbed } = require('discord.js');
 
+const autoDetect = require('./anti-scam/autoDetect');
+const domainDetect = require('./anti-scam/domainDetect');
+const punishment = require('./anti-scam/punishment');
+
 class Create {
     constructor() {
         this.versions = ['1.4.1']
@@ -10,25 +14,15 @@ class Create {
 
     async start(Client) {
         Client.on('messageCreate', async (message) => {
-            if (!config.blacklistedDomains.some(word => message.content.toLowerCase().includes(word))) return;
-            SafeMessage.delete(message);
+            if(!config.punishment.ignoreBots && (message.author.bot || message.author.system) || message.author.id == Client.user.id) return;
 
-            if(config.reply.enabled) {
-                const description = replaceAll(replaceAll(getRandomKey(config.reply.description), '%username%', message.author.username), '%userid%', message.author.id);
-                const embed = new MessageEmbed()
-                    .setTitle(getRandomKey(config.reply.title))
-                    .setColor(Client.AxisUtility.getConfig().embedColor)
-                    .setDescription(description)
-                    .setFooter(getRandomKey(config.reply.footer));
-                
-                if(config.reply.addTimestamp) embed.setTimestamp();
+            const detection = {
+                autoDetect: autoDetect(message, config),
+                domainDetect: domainDetect(message, config)
+            };
 
-                SafeMessage.send(message.channel, { embeds: [embed] });
-            }
-
-            if(config.banOffenders.enabled) {
-                if(!message.member || !message.member.bannable) return;
-                message.member.ban({ reason: getRandomKey(config.banOffenders.reason) }).catch(err => console.error(err));
+            if(detection.autoDetect || detection.domainDetect) {
+                await punishment(message, config);
             }
         });
 
