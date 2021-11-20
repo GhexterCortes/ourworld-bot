@@ -22,8 +22,7 @@ autoDetect:
   mustContainLink: true
   messageLengthLimit: 40
   scamWords:
-    - get
-    - free
+    - nitro
 domainNameMatch:
   enabled: true
   blacklistedDomains:
