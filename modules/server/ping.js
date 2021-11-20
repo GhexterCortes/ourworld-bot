@@ -2,7 +2,7 @@ const { ping } = require('minecraft-protocol');
 
 module.exports = async (ip) => {
     try {
-        const status = await ping(ip);
+        const server = await ping({ host: ip, closeTimeout: 5000 }).catch(err => console.error(err.message));
         
         if(!server
             ||
@@ -16,7 +16,7 @@ module.exports = async (ip) => {
         return server;
 
     } catch (err) {
-        console.error(err);
+        console.error(err.message);
         return null;
     }
 }

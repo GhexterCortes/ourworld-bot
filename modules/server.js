@@ -14,6 +14,8 @@ class Create {
     async start(Client) {
         this.commands = Server.commands(Client, config); 
         Server.onMessage(Client, config);
+
+        return true;
     }
 }
 

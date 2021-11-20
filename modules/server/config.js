@@ -1,4 +1,5 @@
 const MakeConfig = require('../../scripts/makeConfig');
+const Yml = require('yaml');
 
 module.exports = (location) => {
     const config = {
@@ -22,7 +23,7 @@ module.exports = (location) => {
             noIpProvided: 'Please enter your server IP address',
             connectionError: 'Can\'t connect to server',
             alreadyUploaded: 'You have already provided your server address',
-            serverEmbedDescription: 'This server is **online**.\n**%players_online%/%players_max%** players playing on **%server_version%**`;',
+            serverEmbedDescription: 'This server is **online**.\n**%players_online%/%players_max%** players playing on **%server_version%**',
             embedColors: {
                 online: "#43b582",
                 error: "#ff3838",
@@ -31,5 +32,5 @@ module.exports = (location) => {
         }
     };
 
-    return MakeConfig(location, config);
+    return Yml.parse(MakeConfig(location, config));
 }
