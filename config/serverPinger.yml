@@ -1,11 +1,26 @@
-allowedChannels:
+autoEmbedIp:
+  enabled: true
+  ignoreBots: false
+  fetchErrorLimit: 3
+  requireServerIP: true
+  deleteAfterInactive: true
+  disableMultipleUpload: true
+  allowedChannelIds:
   - '856555701885992970'
-  - '895302724286046219'
-  - '847018774887661578'
-  - '897764328969732116'
-
-  - '874309811066519592'
-  - '889473334079799316'
-errorTriesUntilRemove: 5
-disableMultipleEmbeds: true
-bannedIps: []
+messages:
+  pending: Loading...
+  noIpProvided: |-
+    Please enter your server IP address
+    > If your server is not an aternos server. add the following to embed your server
+    > ```yml
+    > IP: yourserver.ip
+    > ```
+  connectionError: Can't connect to server
+  alreadyUploaded: You have already provided your server address
+  serverEmbedDescription: |-
+    This server is **online**.
+    **%players_online%/%players_max%** players playing on **%server_version%**
+  embedColors:
+    online: "#43b582"
+    error: "#ff3838"
+    buffer: "#939393"
