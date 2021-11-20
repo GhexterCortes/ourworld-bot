@@ -2,7 +2,7 @@ autoEmbedIp:
   enabled: true
   ignoreBots: true
   fetchErrorLimit: 5
-  requireServerIP: true
+  requireServerIP: false
   deleteAfterInactive: true
   disableMultipartUpload: true
   allowedChannelIds: ['876048637677961227', '876048902187540520']
