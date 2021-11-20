@@ -5,7 +5,7 @@ autoEmbedIp:
   requireServerIP: true
   deleteAfterInactive: true
   disableMultipartUpload: true
-  allowedChannelIds: ['876048637677961227']
+  allowedChannelIds: ['876048637677961227', '876048902187540520']
 serverCommands:
   enabled: true
   deleteAfterInactive: false

@@ -84,8 +84,8 @@ async function addServer(ip, message, config) {
 
 // User id cache
 function findCache(userid, channelid) {
-    if(!cache[userid]) return false;
-    if(!cache[userid][channelid]) return false;
+    if(!cache.hasOwnProperty(userid)) return false;
+    if(!cache[userid].includes(channelid)) return false;
 
     return true;
 }
