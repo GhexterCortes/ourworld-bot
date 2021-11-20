@@ -4,12 +4,12 @@ autoEmbedIp:
   fetchErrorLimit: 5
   requireServerIP: false
   deleteAfterInactive: true
-  disableMultipartUpload: true
+  disableMultipleUpload: true
   allowedChannelIds: ['876048637677961227', '876048902187540520']
 serverCommands:
   enabled: true
   deleteAfterInactive: false
-  disableMultipartUpload: true
+  disableMultipleUpload: true
   fetchTimooutMilliseconds: 10000
 messages:
   pending: Loading...

@@ -28,7 +28,7 @@ module.exports = function (Client, config) {
 
 // Main server updates
 async function addServer(ip, message, config) {
-    if(config.autoEmbedIp.disableMultipartUpload && findCache(message.author.id, message.channelId)) return sendError(getRandomKey(config.messages.alreadyUploaded), message, config.messages.embedColors['error'], true, true);
+    if(config.autoEmbedIp.disableMultipleUpload && findCache(message.author.id, message.channelId)) return sendError(getRandomKey(config.messages.alreadyUploaded), message, config.messages.embedColors['error'], true, true);
     insertCache(message.author.id, message.channelId);
 
     const embed = new MessageEmbed().setAuthor(ip).setColor(config.messages.embedColors['buffer']);

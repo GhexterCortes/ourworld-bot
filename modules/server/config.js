@@ -9,13 +9,13 @@ module.exports = (location) => {
             fetchErrorLimit: 5,
             requireServerIP: true,
             deleteAfterInactive: true,
-            disableMultipartUpload: true,
+            disableMultipleUpload: true,
             allowedChannelIds: []
         },
         serverCommands: {
             enabled: true,
             deleteAfterInactive: false,
-            disableMultipartUpload: true,
+            disableMultipleUpload: true,
             fetchTimooutMilliseconds: 5000 * 2
         },
         messages: {
