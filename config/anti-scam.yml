@@ -23,6 +23,7 @@ autoDetect:
   messageLengthLimit: 40
   scamWords:
     - nitro
+    - steam
 domainNameMatch:
   enabled: true
   blacklistedDomains:
