@@ -2,18 +2,18 @@ autoEmbedIp:
   enabled: true
   ignoreBots: true
   fetchErrorLimit: 5
-  requireServerIP: false
+  requireServerIP: true
   deleteAfterInactive: true
   disableMultipleUpload: true
   allowedChannelIds: ['876048637677961227', '876048902187540520']
-serverCommands:
-  enabled: true
-  deleteAfterInactive: false
-  disableMultipleUpload: true
-  fetchTimooutMilliseconds: 10000
 messages:
   pending: Loading...
-  noIpProvided: Please enter your server IP address
+  noIpProvided: |-
+    Please enter your server IP address
+    > If your server is not an aternos server. add the following to embed your server
+    > ```yml
+    > IP: yourserver.ip
+    > ```
   connectionError: Can't connect to server
   alreadyUploaded: You have already provided your server address
   serverEmbedDescription: |-

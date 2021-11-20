@@ -2,7 +2,6 @@ const Ping = require('./ping');
 const { replaceAll, getRandomKey } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const SafeMessage = require('../../scripts/safeMessage');
-const SafeInteract = require('../../scripts/safeInteract');
 
 const cache = {};
 
@@ -139,10 +138,11 @@ async function sendError(message, source, embedColor, autoDeleteReply, deleteOri
     message = replaceAll(message, '%username%', source.author.username);
     message = replaceAll(message, '%userid%', source.author.id);
     
-    const embed = new MessageEmbed()
-        .setColor(embedColor)
-        .setAuthor(message);
 
+    const embed = new MessageEmbed().setColor(embedColor);
+
+    if(/[\n]/m.test(message)) { embed.setDescription(message); } else { embed.setAuthor(message); }
+    
     const reply = await SafeMessage.send(source.channel, { content: ' ', embeds: [embed] });
     if(deleteOriginalMessage) await SafeMessage.delete(source);
     if(autoDeleteReply) setTimeout(() => SafeMessage.delete(reply), 5000);

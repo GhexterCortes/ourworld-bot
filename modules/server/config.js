@@ -12,12 +12,6 @@ module.exports = (location) => {
             disableMultipleUpload: true,
             allowedChannelIds: []
         },
-        serverCommands: {
-            enabled: true,
-            deleteAfterInactive: false,
-            disableMultipleUpload: true,
-            fetchTimooutMilliseconds: 5000 * 2
-        },
         messages: {
             pending: 'Loading...',
             noIpProvided: 'Please enter your server IP address',
