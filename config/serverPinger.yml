@@ -7,6 +7,8 @@ autoEmbedIp:
   disableMultipleUpload: true
   allowedChannelIds:
   - '911491519389786142'
+
+#  - '876048902187540520'
 messages:
   pending: Loading...
   noIpProvided: |-

@@ -1,5 +1,5 @@
 const Ping = require('./ping');
-const { replaceAll, getRandomKey } = require('fallout-utility');
+const { replaceAll, getRandomKey, isNumber } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const SafeMessage = require('../../scripts/safeMessage');
 
@@ -30,7 +30,7 @@ async function addServer(ip, message, config) {
     if(config.autoEmbedIp.disableMultipleUpload && findCache(message.author.id, message.channelId)) return sendError(getRandomKey(config.messages.alreadyUploaded), message, config.messages.embedColors['error'], true, true);
     insertCache(message.author.id, message.channelId);
 
-    const embed = new MessageEmbed().setAuthor(ip).setColor(config.messages.embedColors['buffer']);
+    const embed = new MessageEmbed().setAuthor(displayIp(ip)).setColor(config.messages.embedColors['buffer']);
     const reply = await sendError(getRandomKey(config.messages.pending), message, config.messages.embedColors['buffer']);
 
     let errors = 0;
@@ -39,23 +39,23 @@ async function addServer(ip, message, config) {
     // Update loop
     async function updateServer() {
         if(message.edit && !getIp(message.content)) { return deleteReply(true); } else { ip = getIp(message.content); }
-        if(message.deleted) return deleteReply(true);
+        if(message.deleted || reply.deleted) return deleteReply(true);
         const server = await Ping(ip);
 
         if(!server) return updateError();
 
         let description = placeholders(config.messages.serverEmbedDescription, server, ip);
 
-        embed.setAuthor(ip);
+        embed.setAuthor(displayIp(ip));
         embed.setColor(config.messages.embedColors['online']);
         embed.setDescription(description);
         embed.setFooter(`${message.author.tag} • ${ server.latency }ms`, message.author.displayAvatarURL());
 
         if(await SafeMessage.edit(reply, { content: ' ', embeds: [embed] })) {
             errors = 0;
-            await updateServer();
+            return updateServer();
         } else {
-            await deleteReply(true);
+            return deleteReply(true);
         }
     }
 
@@ -120,15 +120,37 @@ function placeholders(description, server, ip) {
 
 function getIp(content) {
     content = content.toString().trim().toLowerCase().replace(/\\(\*|_|`|~|\\)/g, '$1');
-    content = Util.replaceAll(content, '\\$1', '');
+    content = replaceAll(content, '\\', '');
+    content = replaceAll(content, '\n', ' ').split(' ');
 
-    let match = content.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? content.match(/[a-zA-Z0-9_-]+.aternos.me/m)[0] : false;
-    if(match) return match; 
+    const matches = [];
+    for (const w of content) {
+        const parse = parseIp(w);
+        if(parse) matches.push(parse);
+    }
 
-    match = content.match(/(ip|server): ([a-zA-Z0-9._-]+)/m) ? content.match(/(ip|server): ([a-zA-Z0-9._-]+)/m) : false;
-    if(match) return match[0].split(':')[1].trim();
 
-    return false;
+    function parseIp(word) {
+        word = word.split(':');
+        if(!word.length) return false;
+
+        let match = word[0].match(/^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$/m);
+        if(match) return addPort(match[0], word[1]);
+
+        let ipv4 = word[0].match(/\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b/m);
+        if(ipv4) return addPort(ipv4[0], word[1]);
+
+        return false;
+
+        function addPort(host, port) {
+            let n = host;
+            if(isNumber(port) && parseInt(port) >= 0 && parseInt(port) <= 65535) n += ':' + port;
+
+            return n;
+        }
+    }
+
+    return matches.length ? matches[0] : false;
 }
 
 function checkChannel(channelId, allowedChannelIds) {
@@ -153,4 +175,9 @@ async function sendError(message, source, embedColor, autoDeleteReply, deleteOri
 
 function removeColorId(text) {
     return text.replace(/§./g, "");
+}
+
+function displayIp(ip) {
+    ip = ip.split(':');
+    return ip[0] ? ip[0] : 'Unknown';
 }
