@@ -21,6 +21,7 @@ autoDetect:
     convertToWhitelist: false
   mustContainLink: true
   messageLengthLimit: 40
+  shouldMatchAllWords: false
   scamWords:
     - nitro
     - steam

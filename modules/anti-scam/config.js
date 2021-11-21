@@ -30,6 +30,7 @@ const config = {
         },
         mustContainLink: true,
         messageLengthLimit: 20,
+        shouldMatchAllWords: true,
         scamWords: ['get', 'free']
     },
     domainNameMatch: {

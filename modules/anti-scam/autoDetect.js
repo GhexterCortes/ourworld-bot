@@ -11,7 +11,11 @@ module.exports = (message, config) => {
     if(autoDetect.mustContainLink && !containsLink(message.content) || !checkLength(message.content, autoDetect.messageLengthLimit)) return false;
 
     // Check words
-    if(!checkWords(message.content, autoDetect.scamWords)) return false;
+    if(
+        !autoDetect.shouldMatchAllWords && !checkWords(message.content, autoDetect.scamWords)
+        ||
+        autoDetect.shouldMatchAllWords && !checkAllWords(message.content, autoDetect.scamWords)
+    ) return false;
 
     return true;
 }
@@ -37,13 +41,28 @@ function containsLink(content) {
     return regex.test(content);
 }
 
+function checkAllWords(content, words) {
+    let list = content.toLowerCase().split(' ');
+    words = words.map(word => word.toLowerCase());
+
+    if(!list.length) return false;
+    let found = true;
+
+    for (const val of words) {
+        if(list.find(word => word === val)) continue;
+
+        found = false;
+        break;
+    }
+
+    return found;
+}
+
 function checkWords(content, words) {
     let list = content.toLowerCase().split(' ');
     words = words.map(word => word.toLowerCase());
 
     if(!list.length) return false;
-
-
     list = list.filter(word => words.includes(word));
 
     return list.length > 0;
