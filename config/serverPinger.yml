@@ -13,10 +13,7 @@ messages:
   pending: Loading...
   noIpProvided: |-
     Please enter your server IP address
-    > If your server is not an aternos server. add the following to embed your server
-    > ```yml
-    > IP: yourserver.ip
-    > ```
+    > Make sure your server ip does not conflict with other IP addresses or is above any other non minecraft server IP address.
   connectionError: Can't connect to server
   alreadyUploaded: You have already provided your server address
   serverEmbedDescription: |-
