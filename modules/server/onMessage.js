@@ -120,6 +120,7 @@ function placeholders(description, server, ip) {
 
 function getIp(content) {
     content = content.toString().trim().toLowerCase().replace(/\\(\*|_|`|~|\\)/g, '$1');
+    content = Util.replaceAll(content, '\\$1', '');
 
     let match = content.match(/[a-zA-Z0-9_-]+.aternos.me/m) ? content.match(/[a-zA-Z0-9_-]+.aternos.me/m)[0] : false;
     if(match) return match; 
