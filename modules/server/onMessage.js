@@ -68,10 +68,13 @@ async function addServer(ip, message, config) {
     }
 
     async function sendUpdateError(error) {
+        const errorEmbed = new MessageEmbed().setColor(config.messages.embedColors['error']);
+        if(/[\n]/m.test(error)) { errorEmbed.setDescription(error); } else { errorEmbed.setAuthor(error); }
+
         return SafeMessage.edit(reply, {
             content: ' ',
             embeds: [
-                new MessageEmbed().setAuthor(error).setColor(config.messages.embedColors['error'])
+                errorEmbed
             ]
         });
     }
