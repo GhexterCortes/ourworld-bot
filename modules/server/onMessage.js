@@ -153,7 +153,7 @@ function getIp(content) {
         }
     }
 
-    return matches.length ? matches[0] : false;
+    return matches.length ? matches.pop() : false;
 }
 
 function checkChannel(channelId, allowedChannelIds) {
