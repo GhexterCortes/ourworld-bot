@@ -205,4 +205,6 @@ Client.on('ready', async () => {
 
 // Errors
 Client.on('shardError', error => log.error(error));
+process.on("unhandledRejection", reason => log.error(reason));
+process.on("uncaughtException", (err, origin) => log.error(err) && log.error(origin));
 process.on('warning', warn => log.warn(warn));

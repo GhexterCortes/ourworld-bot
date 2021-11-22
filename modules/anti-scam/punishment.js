@@ -3,20 +3,21 @@ const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const { getRandomKey } = require('fallout-utility');
 
-module.exports = async (message, config) => {
+module.exports = async (message, config, Client) => {
     const punishment = config.punishment;
     const reply = config.reply;
+    const member = await getMember(message, Client);
 
     if(!punishment.enabled) return;
 
-    // Ban member
-    if(punishment.banMember) await ban(message.member, punishment.reason);
-
     // Send reply
-    if(reply.enabled) sendReply(reply, message.channel, message.member);
+    if(reply.enabled) sendReply(reply, message.channel, member);
 
     // Send direct message
-    if(punishment.dmMember.enabled && message.member) await SafeMessage.send(message.member, getRandomKey(punishment.dmMessage.message));
+    if(punishment.dmMember.enabled && member) SafeMessage.send(member, getRandomKey(punishment.dmMember.message));
+
+    // Ban member
+    if(punishment.banMember) await ban(member, punishment.reason);
 
     // Delete message
     if(message.content) await SafeMessage.delete(message);
@@ -29,7 +30,7 @@ async function ban(member, reason) {
 
 async function sendReply(config, channel, member) {
     if(!channel || !member) return;
-    let description = config.description;
+    let description = getRandomKey(config.description);
         description = replaceAll(description, '%username%', member.user.tag);
         description = replaceAll(description, '%userid%', member.user.id);
         description = replaceAll(description, '%channel%', channel.name);
@@ -37,9 +38,9 @@ async function sendReply(config, channel, member) {
 
     const embed = new MessageEmbed()
         .setAuthor(getRandomKey(config.title))
-        .setDescription(getRandomKey(description))
+        .setDescription(description)
         .setFooter(getRandomKey(config.footer))
-        .setColor(config.embedColor);
+        .setColor(getRandomKey(config.embedColor));
 
     if(config.addTimestamp) embed.setTimestamp();
 
@@ -51,4 +52,14 @@ async function sendReply(config, channel, member) {
     setTimeout(() => {
         SafeMessage.delete(reply);
     }, config.autoDeleteMessage.timeMilliseconds);
+}
+
+async function getMember(message, Client) {
+    const guild = message?.guildId;
+    const member = message?.author.id;
+
+    if(!guild || !member) return false;
+    
+    const cache = Client.guilds.cache.get(guild).members.cache.get(member);
+    return cache ? cache : false;
 }

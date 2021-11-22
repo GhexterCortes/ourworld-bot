@@ -22,7 +22,7 @@ class Create {
             };
 
             if(detection.autoDetect || detection.domainDetect) {
-                await punishment(message, config);
+                await punishment(message, config, Client);
             }
         });
 
