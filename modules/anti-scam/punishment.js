@@ -9,14 +9,17 @@ module.exports = async (message, config) => {
 
     if(!punishment.enabled) return;
 
-    // Delete message
-    if(message.content) await SafeMessage.delete(message);
-
     // Ban member
     if(punishment.banMember) await ban(message.member, punishment.reason);
 
     // Send reply
     if(reply.enabled) sendReply(reply, message.channel, message.member);
+
+    // Send direct message
+    if(punishment.dmMember.enabled && message.member) await SafeMessage.send(message.member, getRandomKey(punishment.dmMessage.message));
+
+    // Delete message
+    if(message.content) await SafeMessage.delete(message);
 }
 
 async function ban(member, reason) {

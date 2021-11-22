@@ -8,6 +8,10 @@ const config = {
         deleteMessage: true,
         banMember: true,
         ignoreBots: false,
+        dmMember: {
+            enabled: true,
+            message: 'Your message was removed because of possible scam.'
+        },
         reason: 'Discord scam'
     },
     reply: {

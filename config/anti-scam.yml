@@ -3,6 +3,9 @@ punishment:
   deleteMessage: true
   banMember: true
   ignoreBots: true
+  dmMember:
+    enabled: true
+    message: 'Your message was removed because of possible sus scam.'
   reason: sus link!
 reply:
   enabled: true
@@ -10,9 +13,20 @@ reply:
   autoDeleteMessage:
     enabled: false
     timeMilliseconds: 5000
-  title: Scam detected!
-  description: "%username%, sus link deleted."
-  footer: Anti-sus links
+  title:
+    - Scam detected!
+    - sus link detected
+    - sus police
+  description:
+    - '%username%, sus link deleted.'
+    - '%username%, sus link'
+    - '%username%, being sus'
+    - '%username%, no links boi'
+  footer:
+    - Anti-sus links
+    - Anti-sus police
+    - FBI Anti-sus links
+    - Anti-sus ban hammer
   addTimestamp: false
 autoDetect:
   enabled: true
