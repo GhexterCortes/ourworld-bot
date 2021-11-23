@@ -9,7 +9,7 @@ const punishment = require('./anti-scam/punishment');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.1']
+        this.versions = ['1.4.1', '1.4.2']
     }
 
     async start(Client) {
