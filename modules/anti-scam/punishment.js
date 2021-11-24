@@ -11,10 +11,10 @@ module.exports = async (message, config, Client) => {
     if(!punishment.enabled) return;
 
     // Send reply
-    if(reply.enabled) sendReply(reply, message.channel, member);
+    if(reply.enabled) await sendReply(reply, message.channel, member);
 
     // Send direct message
-    if(punishment.dmMember.enabled && member) SafeMessage.send(member, getRandomKey(punishment.dmMember.message));
+    if(punishment.dmMember.enabled && member) await SafeMessage.send(member, getRandomKey(punishment.dmMember.message));
 
     // Ban member
     if(punishment.banMember) await ban(member, punishment.reason);
@@ -24,12 +24,12 @@ module.exports = async (message, config, Client) => {
 }
 
 async function ban(member, reason) {
-    if(!member || !member.bannable) return;
+    if(!member || !member.bannable) return false;
     return member.ban({ reason: getRandomKey(reason) }).catch(err => console.error(err));
 }
 
 async function sendReply(config, channel, member) {
-    if(!channel || !member) return;
+    if(!channel || !member) return false;
     let description = getRandomKey(config.description);
         description = replaceAll(description, '%username%', member.user.tag);
         description = replaceAll(description, '%userid%', member.user.id);
@@ -47,7 +47,7 @@ async function sendReply(config, channel, member) {
 
     const reply = await SafeMessage.send(channel, { embeds: [embed] });
 
-    if(!config.autoDeleteMessage.enabled) return;
+    if(!config.autoDeleteMessage.enabled) return false;
 
     setTimeout(() => {
         SafeMessage.delete(reply);
