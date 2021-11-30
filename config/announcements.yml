@@ -1,0 +1,17 @@
+announcementChannels: ['895302724286046219', '876040787488546846']
+minAnnouncementMessageLenght: 20
+ping:
+  requireRolePing:
+    enabled: true
+    roles: ['859250611475054593', '874287311251177482']
+  disableEveryone: true
+action:
+  deleteOriginalMessage: true
+  deleteMessageAfterMilliseconds: 5000
+  embedErrorColor: RED
+messages:
+  messageTooSmall: Announcement message is too short.
+  noPingedRole: You have to ping a valid role for this announcement message.
+  pingedEveryone:
+    message: You're not allowed to ping everyone.
+    subAnnouncement: The announcement that pinged everyone was deleted. Sorry for pinging everyone.
