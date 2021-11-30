@@ -37,9 +37,11 @@ class Create {
             if(!role) return this.addReply(message, getRandomKey(config.messages.noPingedRole));
             
             if(!config.ping.requireRolePing.roles.find(r => r.toString() === role.id)) {
-                await this.addReply(message, getRandomKey(config.messages.noPingedRole));
+                return this.addReply(message, getRandomKey(config.messages.noPingedRole));
             }
         }
+
+        this.makeThread(message);
     }
 
     async addReply(message, reply, onDeletedMessage) {
@@ -54,6 +56,17 @@ class Create {
             }, config.action.deleteMessageAfterMilliseconds);
         
         return response;
+    }
+
+    async makeThread(message) {
+        if(!config.threads.enabled) return;
+
+        const threadName = getRandomKey(config.threads.threadName);
+
+        await message.startThread({
+            name: threadName,
+            autoArchiveDuration: config.threads.autoArchiveMin,
+        }).catch(err => log.error(err));
     }
 }
 
@@ -74,6 +87,10 @@ function getConfig(location) {
             deleteOriginalMessage: true,
             deleteMessageAfterMilliseconds: 10000,
             embedErrorColor: 'DANGER'
+        },
+        threads: {
+            enabled: false,
+            threadName: 'About this announcement'
         },
         messages: {
             messageTooSmall: 'Announcement message is too short.',

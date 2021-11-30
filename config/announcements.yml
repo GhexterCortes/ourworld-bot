@@ -3,12 +3,16 @@ minAnnouncementMessageLenght: 20
 ping:
   requireRolePing:
     enabled: true
-    roles: ['859250611475054593', '874287311251177482']
+    roles: ['859250611475054593', '874287311251177482',  '876040920737398905']
   disableEveryone: true
 action:
   deleteOriginalMessage: true
   deleteMessageAfterMilliseconds: 5000
   embedErrorColor: RED
+threads:
+  enabled: true
+  autoArchiveMin: 1440
+  threadName: ['sus thread', 'Comments', 'What do you think?', 'Thread', 'sus thread', 'Threads sus', 'Thread! Thread!']
 messages:
   messageTooSmall: Announcement message is too short.
   noPingedRole: You have to ping a valid role for this announcement message.
