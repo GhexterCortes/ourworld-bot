@@ -36,8 +36,12 @@ class Create {
             const role = message.mentions.roles.first();
             if(!role) return this.addReply(message, getRandomKey(config.messages.noPingedRole));
             
-            if(!config.ping.requireRolePing.roles.find(r => r.toString() === role.id)) {
+            if(!config.ping.requireRolePing.roles.find(r => findRole(r.toString()))) {
                 return this.addReply(message, getRandomKey(config.messages.noPingedRole));
+            }
+
+            function findRole(_role) {
+                return message.mentions.roles.find(r => r.id === _role);
             }
         }
 
@@ -66,7 +70,7 @@ class Create {
         await message.startThread({
             name: threadName,
             autoArchiveDuration: config.threads.autoArchiveMin,
-        }).catch(err => log.error(err));
+        }).catch(err => console.error(err));
     }
 }
 
