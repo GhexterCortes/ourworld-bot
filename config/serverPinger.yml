@@ -14,6 +14,8 @@ messages:
   noIpProvided: |-
     Please enter your server IP address
     > Make sure your server ip does not conflict with other IP addresses or is above any other non minecraft server IP address.
+
+    *Only one sub domain is allowed*
   connectionError: |-
     Can't connect to server
     > Make sure your server is online and the IP is valid
