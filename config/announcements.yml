@@ -3,7 +3,7 @@ minAnnouncementMessageLenght: 20
 ping:
   requireRolePing:
     enabled: true
-    roles: ['859250611475054593', '874287311251177482',  '876040920737398905']
+    roles: ['859250611475054593', '874287311251177482','902094465739677777', '876040920737398905']
   disableEveryone: true
 action:
   deleteOriginalMessage: true
