@@ -2,14 +2,14 @@ messageCommands:
   version:
     enabled: true
   stop:
-    enabled: true
+    enabled: false
   help:
     enabled: true
 interactionCommands:
   version:
     enabled: true
   stop:
-    enabled: true
+    enabled: false
   help:
     enabled: true
 setPresence: true
