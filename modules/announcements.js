@@ -14,8 +14,8 @@ class Create {
         Client.on('messageCreate', async message => {
             if(!this.checkChannel(message.channelId, config.announcementChannels) || message.author.bot || message.author.system) return;
 
-            if(message.content.length < config.minAnnouncementMessageLenght) return this.addReply(message, getRandomKey(config.messages.messageTooSmall));
             await this.mentions(message);
+            if(message.content.length < config.minAnnouncementMessageLenght) return this.addReply(message, getRandomKey(config.messages.messageTooSmall));
         });
 
         return true;
