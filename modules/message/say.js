@@ -1,6 +1,7 @@
 const InteractionCommandBuilder = require('../../scripts/interactionCommandBuilder');
 const SafeMessage = require('../../scripts/safeMessage');
 const SafeInteract = require('../../scripts/safeInteract');
+const { replaceAll } = require('fallout-utility');
 
 module.exports = new InteractionCommandBuilder()
     .setCommand(SlashCommandBuilder => SlashCommandBuilder
@@ -13,7 +14,7 @@ module.exports = new InteractionCommandBuilder()
         )    
     )
     .setExecute(async (interaction, Client) => {
-        const text = interaction.options.getString('text');
+        const text = replaceAll(interaction.options.getString('text'), '[br]', '\n');
         
         await SafeInteract.deferReply(interaction, { ephemeral: true });
         const message = await SafeMessage.send(interaction.channel, text);
