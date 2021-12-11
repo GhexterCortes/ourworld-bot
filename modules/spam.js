@@ -7,13 +7,13 @@ class Spammer {
     }
 
     async start(Client) {
-        Client.on('message', async (message) => {
+        Client.on('messageCreate', async (message) => {
             if (message.author.bot) return;
             if (message && MemberPermission.admin(message.member)) return;
 
             // count message pings
             if((message.content.toLowerCase().includes('pls') || message.content.toLowerCase().includes('owo')) && message.mentions.users.size > 0) {
-                const reply = await SafeMessage.reply(message, 'Avoid pinging people when using bots!');
+                const reply = await SafeMessage.reply(message, ':no_entry_sign: Avoid pinging people when using bots!');
 
                 setTimeout(async () => SafeMessage.delete(reply), 5000);
             }
