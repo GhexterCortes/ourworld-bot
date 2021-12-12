@@ -13,7 +13,7 @@ class Spammer {
 
             // count message pings
             if((message.content.toLowerCase().includes('pls') || message.content.toLowerCase().includes('owo')) && message.mentions.users.size > 0) {
-                const reply = await SafeMessage.reply(message, ':no_entry_sign: Avoid pinging people when using bots this can lead to spam!\nYou can try using user id instead of @user\n```\nRight click the user profile then click Copy ID\n```\nThis method doen\'t always work');
+                const reply = await SafeMessage.reply(message, ':no_entry_sign: Avoid pinging people when using bots this can lead to spam!\nYou can try using user id instead of @user\n```\nRight click the user profile then click Copy ID\n```\nThis method doesn\'t always work');
 
                 //setTimeout(async () => SafeMessage.delete(reply), 5000);
             }
