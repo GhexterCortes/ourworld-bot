@@ -151,18 +151,18 @@ class Moderator {
             case 'Interaction':
                 const { interaction } = data;
 
-                user = interaction.options.get('user');
-                reason = interaction.options.get('reason') ? interaction.options.get('reason') : getRandomKey(config.kick.defaultReason);
+                user = interaction.options.getUser('user');
+                reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.kick.defaultReason);
 
-                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'User not found') ], ephemeral: true });
+                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
 
                 // kick user
-                kick = await interaction?.guild.members.cache.get(user.user.id).kick(reason).catch(async err => { 
+                kick = await interaction?.guild.members.cache.get(user.id).kick(reason).catch(async err => { 
                     console.error(err);
-                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'Unable to kick user') ], ephemeral: true});
+                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to kick user') ], ephemeral: true});
                     return false;
                 });
-                if(kick) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, true, reason) ] });
+                if(kick) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
 
                 break;
             case 'Message':
@@ -201,18 +201,18 @@ class Moderator {
             case 'Interaction':
                 const { interaction } = data;
 
-                user = interaction.options.get('user');
-                reason = interaction.options.get('reason') ? interaction.options.get('reason') : getRandomKey(config.ban.defaultReason);
+                user = interaction.options.getUser('user');
+                reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.ban.defaultReason);
 
-                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'User not found') ], ephemeral: true });
+                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
 
                 // ban user
-                ban = await interaction?.guild.members.cache.get(user.user.id).ban({ reason: reason }).catch(async err => { 
+                ban = await interaction?.guild.members.cache.get(user.id).ban({ reason: reason }).catch(async err => { 
                     console.error(err);
-                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'Unable to ban user') ], ephemeral: true });
+                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to ban user') ], ephemeral: true });
                     return false;
                 });
-                if(ban) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, true, reason) ] });
+                if(ban) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
 
                 break;
             case 'Message':
@@ -251,18 +251,19 @@ class Moderator {
             case 'Interaction':
                 const { interaction } = data;
                 
-                user = interaction.options.get('user');
-                reason = interaction.options.get('reason') ? interaction.options.get('reason') : getRandomKey(config.ban.defaultReason);
+                user = interaction.options.getUser('user');
+                reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.ban.defaultReason);
 
-                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'User not found') ], ephemeral: true });
+                console.log(user);
+                if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
 
                 // mute user
-                mute = await interaction?.guild.members.cache.get(user.user.id).roles.add(interaction.guild.roles.cache.find(role => role.name === config.mute.mutedRoleName)).catch(async err => {
+                mute = await interaction?.guild.members.cache.get(user.id).roles.add(interaction.guild.roles.cache.find(role => role.name === config.mute.mutedRoleName)).catch(async err => {
                     console.error(err);
-                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, false, 'Unable to mute user') ], ephemeral: true });
+                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ], ephemeral: true });
                     return false;
                 });
-                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user.user, true, reason) ] });
+                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
 
                 break;
             case 'Message':
