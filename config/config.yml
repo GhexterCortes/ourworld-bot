@@ -18,7 +18,7 @@ permissions:
     adminOnlyCommands: ['stop']
 
     # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: ['antibot', 'antivpn']
+    moderatorOnlyCommands: ['antibot', 'antivpn', 'kick', 'ban', 'mute']
   
   # Slash commands permissions
   interactionCommands:
@@ -32,7 +32,7 @@ permissions:
     adminOnlyCommands: ['stop', 'say', 'send']
 
     # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: []
+    moderatorOnlyCommands: ['kick', 'ban', 'mute']
 
 # Ignored channels based on IDs
 blacklistChannels:            
