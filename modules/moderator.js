@@ -162,7 +162,7 @@ class Moderator {
                     await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to kick user') ], ephemeral: true});
                     return false;
                 });
-                if(kick) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(kick) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Kicked: '+ reason) ] });
 
                 break;
             case 'Message':
@@ -186,7 +186,7 @@ class Moderator {
                     await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to kick user') ] });
                     return false;
                 });
-                if(kick) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(kick) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Kicked: '+ reason) ] });
 
                 break;
         }
@@ -212,7 +212,7 @@ class Moderator {
                     await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to ban user') ], ephemeral: true });
                     return false;
                 });
-                if(ban) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(ban) await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Banned: '+ reason) ] });
 
                 break;
             case 'Message':
@@ -236,7 +236,7 @@ class Moderator {
                     await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to ban user') ] });
                     return false;
                 });
-                if(ban) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(ban) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Banned: '+ reason) ] });
 
                 break;
         }
@@ -263,7 +263,7 @@ class Moderator {
                     await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ], ephemeral: true });
                     return false;
                 });
-                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Muted: '+ reason) ] });
 
                 break;
             case 'Message':
@@ -286,7 +286,7 @@ class Moderator {
                     await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ] });
                     return false;
                 });
-                if(mute) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, reason) ] });
+                if(mute) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Muted: '+ reason) ] });
 
                 break;
         }
