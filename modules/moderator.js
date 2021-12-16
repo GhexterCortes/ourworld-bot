@@ -252,7 +252,7 @@ class Moderator {
                 const { interaction } = data;
                 
                 user = interaction.options.getUser('user');
-                reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.ban.defaultReason);
+                reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.mute.defaultReason);
 
                 console.log(user);
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
