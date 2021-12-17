@@ -160,11 +160,17 @@ module.exports = new InteractionCommandBuilder()
             if(count > 100 || count < 1) return SafeInteract.reply({ content: 'The count must be between 1 and 100!', ephemeral: true });
 
             await SafeInteract.deferReply(interaction);
+            let success = true;
+
             for (let i = 0; i < count; i++) {
-                await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`);
+                if(!await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`)) {
+                    success = false;
+                    await SafeMessage.send(interaction.channel, `An error occurred while spamming!`);
+                    break;
+                }
             }
 
-            await SafeInteract.editReply(interaction, 'Done!');
+            await SafeInteract.editReply(interaction, success ? 'Spam success!' : 'Spam cancelled!');
         }
 
         const command = interaction.options.getSubcommand();
