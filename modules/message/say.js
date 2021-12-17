@@ -162,7 +162,7 @@ module.exports = new InteractionCommandBuilder()
             await SafeInteract.deferReply(interaction);
             let success = true;
 
-            for (let i = 0; i < (count >= 1 ? count - 1 : 1); i++) {
+            for (let i = 0; i < count; i++) {
                 if(!await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`)) {
                     success = false;
                     await SafeMessage.send(interaction.channel, `An error occurred while spamming!`);
