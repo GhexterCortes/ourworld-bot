@@ -157,7 +157,7 @@ module.exports = new InteractionCommandBuilder()
             const text = interaction.options.getString('text');
             const count = interaction.options.getInteger('count');
 
-            if(count > 100 || count < 1) return SafeInteract.reply({ content: 'The count must be between 1 and 100!', ephemeral: true });
+            if(count > 100 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 100!', ephemeral: true });
 
             await SafeInteract.deferReply(interaction);
             let success = true;
