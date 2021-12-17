@@ -1,6 +1,5 @@
 const scripts = {
     say: require('./say'),
-    //embed: require('embed'),
 }
 
 module.exports = {

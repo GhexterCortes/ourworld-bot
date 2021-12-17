@@ -91,6 +91,20 @@ module.exports = new InteractionCommandBuilder()
                 .setRequired(false)
             )
         )
+        .addSubcommand(spam => spam
+            .setName('spam')
+            .setDescription('Spam a message')
+            .addStringOption(text => text
+                .setName('text')
+                .setDescription('The text to spam')
+                .setRequired(true)    
+            )
+            .addIntegerOption(count => count
+                .setName('count')
+                .setDescription('The amount of times to spam (1-100)')
+                .setRequired(true)    
+            )
+        )
     )
     .setExecute(async (interaction, Client) => {
         this.say = async () => {
@@ -138,6 +152,19 @@ module.exports = new InteractionCommandBuilder()
             } else {
                 await SafeInteract.editReply(interaction, 'Embed sent!');
             }
+        }
+        this.spam = async () => {
+            const text = interaction.options.getString('text');
+            const count = interaction.options.getInteger('count');
+
+            if(count > 100 || count < 1) return SafeInteract.reply({ content: 'The count must be between 1 and 100!', ephemeral: true });
+
+            await SafeInteract.deferReply(interaction);
+            for (let i = 0; i < count; i++) {
+                await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`);
+            }
+
+            await SafeInteract.editReply(interaction, 'Done!');
         }
 
         const command = interaction.options.getSubcommand();
