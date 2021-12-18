@@ -29,17 +29,17 @@ permissions:
     registerSlashCommands: true
 
     # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop', 'say', 'send']
+    adminOnlyCommands: ['stop', 'send']
 
     # Command for moderator with kick and ban perms (This is the command name)
     moderatorOnlyCommands: ['kick', 'ban', 'mute']
 
 # Ignored channels based on IDs
 blacklistChannels:            
-  enabled: false  # Enable blacklisted channels
+  enabled: true  # Enable blacklisted channels
 
   # List of blacklisted channels
-  channels: []
+  channels: ['883269578791206942']
   convertToWhitelist: false  # Convert channels to whitelisted channels
 
 # Custom bot presence

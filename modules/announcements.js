@@ -15,7 +15,6 @@ class Create {
             if(!this.checkChannel(message.channelId, config.announcementChannels) || message.author.bot || message.author.system) return;
 
             await this.mentions(message);
-            if(message.content.length < config.minAnnouncementMessageLenght) return this.addReply(message, getRandomKey(config.messages.messageTooSmall));
         });
 
         return true;
@@ -28,24 +27,27 @@ class Create {
     }
 
     async mentions(message) {
-        if(!config?.ping) return;
-        if(config.ping.disableEveryone && (message.mentions.everyone || message.mentions.here)) return this.addReply(message, getRandomKey(config.messages.pingedEveryone.message), config.messages.pingedEveryone.subAnnouncement);
+        if(!config?.ping) return true;
+        if(config.ping.disableEveryone && (message.mentions.everyone || message.mentions.here)) { await this.addReply(message, getRandomKey(config.messages.pingedEveryone.message), config.messages.pingedEveryone.subAnnouncement); return false; }
 
         // check if the message mentions a role and get the role
         if(message.mentions.roles && config.ping.requireRolePing.enabled && config.ping.requireRolePing.roles?.length) {
             const role = message.mentions.roles.first();
-            if(!role) return this.addReply(message, getRandomKey(config.messages.noPingedRole));
+            if(!role) { await this.addReply(message, getRandomKey(config.messages.noPingedRole)); return false; }
             
-            if(!config.ping.requireRolePing.roles.find(r => findRole(r.toString()))) {
-                return this.addReply(message, getRandomKey(config.messages.noPingedRole));
-            }
+            if(!config.ping.requireRolePing.roles.find(r => findRole(r.toString()))) { await this.addReply(message, getRandomKey(config.messages.noPingedRole)); return false; }
+
+            if(message.content.length < config.minAnnouncementMessageLenght) { await this.addReply(message, getRandomKey(config.messages.messageTooSmall)); return false; }
+
+            await this.makeThread(message);
+            return true;
 
             function findRole(_role) {
                 return message.mentions.roles.find(r => r.id === _role);
             }
         }
 
-        this.makeThread(message);
+        return false;
     }
 
     async addReply(message, reply, onDeletedMessage) {
