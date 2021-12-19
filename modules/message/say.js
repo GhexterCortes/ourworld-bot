@@ -3,6 +3,18 @@ const SafeMessage = require('../../scripts/safeMessage');
 const SafeInteract = require('../../scripts/safeInteract');
 const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
+const MakeConfig = require('../../scripts/makeConfig');
+const Yml = require('yaml');
+
+const config = Yml.parse(MakeConfig('./config/say.yml', {
+    spam: {
+        whitelistChannels: {
+            enabled: true,
+            channelIds: [],
+            convertToBlacklist: true
+        }
+    }
+}));
 
 module.exports = new InteractionCommandBuilder()
     .setCommand(SlashCommandBuilder => SlashCommandBuilder
@@ -158,6 +170,11 @@ module.exports = new InteractionCommandBuilder()
             const count = interaction.options.getInteger('count');
 
             if(count > 100 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 100!', ephemeral: true });
+            if(config.spam.whitelistChannels.enabled && !(
+                !config.spam.whitelistChannels.channelIds.includes(interaction.channel.id) && config.spam.whitelistChannels.convertToBlacklist
+                ||
+                config.spam.whitelistChannels.channelIds.includes(interaction.channel.id) && !config.spam.whitelistChannels.convertToBlacklist
+            )) return SafeInteract.reply(interaction, { content: 'This command is disabled in this channel!', ephemeral: true });
 
             await SafeInteract.deferReply(interaction);
             let success = true;

@@ -36,7 +36,7 @@ permissions:
 
 # Ignored channels based on IDs
 blacklistChannels:            
-  enabled: true  # Enable blacklisted channels
+  enabled: false  # Enable blacklisted channels
 
   # List of blacklisted channels
   channels: ['883269578791206942']
@@ -47,7 +47,7 @@ presence:
   enabled: true  # Enable presence
   status: ['dnd']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
   type: ['listening']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
-  activityName: ['!help', 'you', '#🤖・chat-for-boring-ppl', '7.6B people', 'mom', '/help', '/cat', '/dog (Alpha)', 'Alputangina']  # Name your activity [this can be a string or an object for random value]
+  activityName: ['!help', '7.6B people', '/help', '/cat', '/dog', 'Alputangina']  # Name your activity [this can be a string or an object for random value]
 
 
 # Danger Zone!
