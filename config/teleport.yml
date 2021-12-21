@@ -1,0 +1,39 @@
+teleporting:
+  - - Starting teleport to **{user}**
+    - Getting ready **{author}**
+    - A **REAL** teleportation is about to happen **{author}**!
+    - Locating where tf is **{user}**
+    - Hold on tight bitch, **{author}**
+    - Building some command blocks because u **sus**
+    - Teleporting to **{user}**
+  - - Teleporting you to **{user}**
+    - Getting old waiting for this
+    - Preparing teleportation machine
+    - Asking Google how to user teleport machine
+    - Looking for **{user}**
+    - Attaching GPS to **{user}** and **{author}**
+    - Being sus again, teleporting...
+teleported:
+  - You have been teleported to **{user}**.
+  - "**{author}** has been teleported to **{user}**."
+  - "**{author}** has teleported to you **{user}**."
+  - "Successful teleport! Now do anything with **{user}**"
+  - "Teleported to **{user}**"
+  - "Success! Say to **{user}**"
+error:
+  noUserFound:
+   - User has not been found
+   - Cannot find user
+  mention:
+   - Mention a user breh
+   - Mention a user to teleport them bitch
+   - Mention a user to continue
+   - You cannot teleport to no one
+   - Add user to teleport to
+  self:
+   - You cannot teleport to yourself!
+   - Bruh!
+   - WTFFFF
+   - Teleporting you to yourself because you're krazy
+   - Krazy teleport
+   - Idk what's on your mind but it's not possible
