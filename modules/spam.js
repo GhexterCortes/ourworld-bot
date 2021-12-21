@@ -63,7 +63,7 @@ class Spammer {
                         .setColor('RED')
                     ]});
 
-                //setTimeout(async () => SafeMessage.delete(reply), 5000);
+                setTimeout(async () => SafeMessage.delete(reply), 5000);
             }
         });
         
