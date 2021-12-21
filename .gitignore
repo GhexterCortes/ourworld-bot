@@ -112,3 +112,4 @@ modules/test.js
 plugins/
 .github/workflows/codeql-analysis.yml
 .github/workflows/node.js.yml
+modules/invites.js
