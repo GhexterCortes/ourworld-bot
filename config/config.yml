@@ -3,7 +3,7 @@ token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
-owner: 'Ghex'  # Who owns this bot
+owner: 'Ghex <3'  # Who owns this bot
 
 guildId: # Only register slash commands for the given guild.
 

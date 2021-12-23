@@ -1,0 +1,10 @@
+chatbot:
+  enabled: true
+  command:
+    enabled: true
+    name: ask
+    description: Ask something!
+channels:
+  enableChannelWhitelist: true
+  channelWhitelist:
+    - '904211298177388595'
