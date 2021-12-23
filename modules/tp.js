@@ -8,7 +8,7 @@ let responses = [];
 class Teleport {
     constructor() {
         responses = this.getResponses('./config/teleport.yml');
-        this.versions = ['1.4.2'];
+        this.versions = ['1.4.4'];
     }
 
     start(Client) {

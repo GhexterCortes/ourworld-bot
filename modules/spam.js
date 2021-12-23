@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 class Spammer {
     constructor() {
-        this.versions = ['1.4.2'];
+        this.versions = ['1.4.4'];
     }
 
     async start(Client) {

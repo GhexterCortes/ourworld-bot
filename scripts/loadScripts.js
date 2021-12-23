@@ -2,13 +2,13 @@ const Path = require('path');
 const Util = require('fallout-utility');
 const Fs = require('fs');
 
-const log = new Util.Logger('loadScripts');
+const log = new Util.Logger('ScriptsLoader');
 
-   /**
-    * @param {string} location - The path to scripts
-    * @param {Object} Client - Discord client
-    * @returns {Object} - returns an object with the loaded scripts
-    */
+/**
+* @param {string} location - The path to scripts
+* @param {Object} Client - Discord client
+* @returns {Object} - returns an object with the loaded scripts
+*/
 module.exports = async (Client, location) => {
     const config = Client.AxisUtility.getConfig();
     const scripts = {};
@@ -16,7 +16,7 @@ module.exports = async (Client, location) => {
 
     if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
 
-    const modulesList = Fs.readdirSync(location).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
+    const modulesList = Fs.readdirSync(location).filter(file => file.endsWith('.js') && !file.startsWith('_'));
 
     for (const file of modulesList) {
         const path = Path.join(location , file);
@@ -28,12 +28,12 @@ module.exports = async (Client, location) => {
             if(!name || !validateString(name)) throw new Error('Invalid Script Name: Name must be all lowercase with a special characters');
 
             // Check supported version
-            if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
+            if (importModule?.versions && !importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
 
             // Import script
             scripts[name] = importModule;
             scripts[name]['_information'] = {file: file, name: name, path: path};
-            if (!await scripts[name].start(Client)) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
+            if (!await Promise.resolve(scripts[name].start(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
 
             // Register Commands
             loadCommands(scripts[name], commands);

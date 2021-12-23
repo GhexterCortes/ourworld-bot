@@ -8,7 +8,7 @@ const config = getConfig('./config/announcements.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.2'];
+        this.versions = ['1.4.4'];
     }
     async start(Client) {
         Client.on('messageCreate', async message => {

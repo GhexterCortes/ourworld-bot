@@ -12,7 +12,7 @@ let config = [];
 
 class Moderator {
     constructor() {
-        this.versions = ['1.4.2'];
+        this.versions = ['1.4.4'];
     }
 
     async start(Client) {

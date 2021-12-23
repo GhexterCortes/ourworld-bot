@@ -39,7 +39,7 @@ let config = Yml.parse(MakeConfig('./config/anticheat.yml', defaultConfig));
 
 class Create {
     constructor() {
-        this.versions = ['1.4.1', '1.4.2'];
+        this.versions = ['1.4.1', '1.4.4'];
         this.commands = createCommands();
     }
 
