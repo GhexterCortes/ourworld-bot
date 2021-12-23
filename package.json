@@ -21,6 +21,7 @@
     "genius-lyrics": "^4.3.5",
     "minecraft-protocol": "^1.29.1",
     "node-fetch": "^2.6.6",
+    "node-nlp": "^3.10.2",
     "prompt-sync": "^4.1.6",
     "proxycheck-node.js": "^2.0.0-a",
     "random-animals-api": "^1.2.6",

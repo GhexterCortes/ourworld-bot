@@ -1,0 +1,529 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "nlu": {
+      "useNoneFeature": false
+    }
+  },
+  "nluManager": {
+    "settings": {
+      "useNoneFeature": false
+    },
+    "languages": [
+      "en"
+    ],
+    "intentDomains": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "language": "en",
+          "useNoneFeature": false,
+          "config": {
+            "activation": "leaky-relu",
+            "hiddenLayers": [],
+            "iterations": 20000,
+            "learningRate": 0.7,
+            "errorThresh": 0.00005,
+            "momentum": 0.5,
+            "deltaErrorThresh": 0.000001,
+            "maxDecimals": 9,
+            "leakyReluAlpha": 0.08,
+            "timeout": 120000
+          }
+        },
+        "language": "en",
+        "nluClassName": "BrainNLU",
+        "useMasterDomain": true,
+        "trainByDomain": false,
+        "keepStopwords": true,
+        "stemDict": {
+          "is,server,the,version,what": {
+            "domain": "default",
+            "intent": "ask.version"
+          },
+          "address,ip,is,the,what": {
+            "domain": "default",
+            "intent": "ask.ip"
+          },
+          "avail,bedrock,for,is,server,this": {
+            "domain": "default",
+            "intent": "ask.bedrockEdition"
+          },
+          "bedrock,for,is,server,support,this": {
+            "domain": "default",
+            "intent": "ask.bedrockEdition"
+          },
+          "bedrock,edit,support": {
+            "domain": "default",
+            "intent": "ask.bedrockEdition"
+          },
+          "doe,geyser,have,server,this": {
+            "domain": "default",
+            "intent": "ask.bedrockEdition"
+          },
+          "ded,server": {
+            "domain": "default",
+            "intent": "miscellaneous.ded"
+          },
+          "sus,suspici": {
+            "domain": "default",
+            "intent": "miscellaneous.sus"
+          },
+          "hiddenplay": {
+            "domain": "default",
+            "intent": "miscellaneous.hidden"
+          }
+        },
+        "intentDict": {
+          "ask.version": "default",
+          "ask.ip": "default",
+          "ask.bedrockEdition": "default",
+          "miscellaneous.ded": "default",
+          "miscellaneous.sus": "default",
+          "miscellaneous.hidden": "default"
+        },
+        "useStemDict": true,
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "language": "en",
+              "useNoneFeature": false,
+              "config": {
+                "activation": "leaky-relu",
+                "hiddenLayers": [],
+                "iterations": 20000,
+                "learningRate": 0.7,
+                "errorThresh": 0.00005,
+                "momentum": 0.5,
+                "deltaErrorThresh": 0.000001,
+                "maxDecimals": 9,
+                "leakyReluAlpha": 0.08,
+                "timeout": 120000
+              }
+            },
+            "language": "en",
+            "keepStopwords": true,
+            "docs": [
+              {
+                "intent": "ask.version",
+                "tokens": [
+                  "what",
+                  "is",
+                  "the",
+                  "server",
+                  "version"
+                ]
+              },
+              {
+                "intent": "ask.ip",
+                "tokens": [
+                  "what",
+                  "is",
+                  "the",
+                  "ip",
+                  "address"
+                ]
+              },
+              {
+                "intent": "ask.bedrockEdition",
+                "tokens": [
+                  "is",
+                  "this",
+                  "server",
+                  "avail",
+                  "for",
+                  "bedrock"
+                ]
+              },
+              {
+                "intent": "ask.bedrockEdition",
+                "tokens": [
+                  "is",
+                  "this",
+                  "server",
+                  "support",
+                  "for",
+                  "bedrock"
+                ]
+              },
+              {
+                "intent": "ask.bedrockEdition",
+                "tokens": [
+                  "bedrock",
+                  "edit",
+                  "support"
+                ]
+              },
+              {
+                "intent": "ask.bedrockEdition",
+                "tokens": [
+                  "doe",
+                  "this",
+                  "server",
+                  "have",
+                  "geyser"
+                ]
+              },
+              {
+                "intent": "miscellaneous.ded",
+                "tokens": [
+                  "ded",
+                  "server"
+                ]
+              },
+              {
+                "intent": "miscellaneous.sus",
+                "tokens": [
+                  "sus",
+                  "suspici"
+                ]
+              },
+              {
+                "intent": "miscellaneous.hidden",
+                "tokens": [
+                  "hiddenplay"
+                ]
+              }
+            ],
+            "features": {
+              "what": 2,
+              "is": 4,
+              "the": 2,
+              "server": 5,
+              "version": 1,
+              "ip": 1,
+              "address": 1,
+              "this": 3,
+              "avail": 1,
+              "for": 2,
+              "bedrock": 3,
+              "support": 2,
+              "edit": 1,
+              "doe": 1,
+              "have": 1,
+              "geyser": 1,
+              "ded": 1,
+              "sus": 1,
+              "suspici": 1,
+              "hiddenplay": 1
+            },
+            "isEditing": false,
+            "className": "BrainNLU",
+            "classifier": {
+              "className": "BrainClassifier",
+              "settings": {
+                "language": "en",
+                "useNoneFeature": false,
+                "config": {
+                  "activation": "leaky-relu",
+                  "hiddenLayers": [],
+                  "iterations": 20000,
+                  "learningRate": 0.7,
+                  "errorThresh": 0.00005,
+                  "momentum": 0.5,
+                  "deltaErrorThresh": 0.000001,
+                  "maxDecimals": 9,
+                  "leakyReluAlpha": 0.08,
+                  "timeout": 120000
+                }
+              },
+              "labels": [],
+              "network": {
+                "sizes": [
+                  20,
+                  6
+                ],
+                "layers": [
+                  {
+                    "what": {},
+                    "is": {},
+                    "the": {},
+                    "server": {},
+                    "version": {},
+                    "ip": {},
+                    "address": {},
+                    "this": {},
+                    "avail": {},
+                    "for": {},
+                    "bedrock": {},
+                    "support": {},
+                    "edit": {},
+                    "doe": {},
+                    "have": {},
+                    "geyser": {},
+                    "ded": {},
+                    "sus": {},
+                    "suspici": {},
+                    "hiddenplay": {}
+                  },
+                  {
+                    "ask.version": {
+                      "bias": -0.346353958,
+                      "weights": {
+                        "what": 2.206271887,
+                        "is": 1.373574734,
+                        "the": 2.206271887,
+                        "server": 2.095450878,
+                        "version": 4.914014816,
+                        "ip": -2.707742929,
+                        "address": -2.707742929,
+                        "this": -1.121049166,
+                        "avail": -0.435465097,
+                        "for": -0.832696974,
+                        "bedrock": -0.832696974,
+                        "support": -0.397231936,
+                        "doe": -0.288352221,
+                        "have": -0.288352221,
+                        "geyser": -0.288352221,
+                        "ded": -1.697514653,
+                        "sus": -0.035915673,
+                        "suspici": -0.035915673,
+                        "hiddenplay": -0.040194876
+                      }
+                    },
+                    "ask.ip": {
+                      "bias": 0.345832867,
+                      "weights": {
+                        "what": 1.59159708,
+                        "is": 1.293063045,
+                        "the": 1.59159708,
+                        "server": -2.571256161,
+                        "version": -2.244776964,
+                        "ip": 3.836374283,
+                        "address": 3.836374283,
+                        "this": -0.299216121,
+                        "avail": -0.155656204,
+                        "for": -0.298533916,
+                        "bedrock": -0.336435258,
+                        "support": -0.18077907,
+                        "edit": -0.037901353,
+                        "doe": -0.000682218,
+                        "have": -0.000682218,
+                        "geyser": -0.000682218,
+                        "ded": -0.027262975,
+                        "sus": -0.194463372,
+                        "suspici": -0.194463372,
+                        "hiddenplay": -0.340853661
+                      }
+                    },
+                    "ask.bedrockEdition": {
+                      "bias": 1.247223461,
+                      "weights": {
+                        "what": -1.014413953,
+                        "is": -0.278144419,
+                        "the": -1.014413953,
+                        "server": 0.573517621,
+                        "version": -0.813423932,
+                        "ip": -0.200989991,
+                        "address": -0.200989991,
+                        "this": 3.216173172,
+                        "avail": 2.115714073,
+                        "for": 0.73627007,
+                        "bedrock": 4.660108566,
+                        "support": 2.544392109,
+                        "edit": 3.923837185,
+                        "doe": 2.479904175,
+                        "have": 2.479904175,
+                        "geyser": 2.479904175,
+                        "ded": -1.829232335,
+                        "sus": -0.622269511,
+                        "suspici": -0.622269511,
+                        "hiddenplay": -1.175663114
+                      }
+                    },
+                    "miscellaneous.ded": {
+                      "bias": 1.170420881,
+                      "weights": {
+                        "what": -1.171534061,
+                        "is": -1.800077319,
+                        "the": -1.171534061,
+                        "server": 4.143815994,
+                        "version": -1.152927876,
+                        "ip": -0.018606329,
+                        "address": -0.018606329,
+                        "this": -1.794495344,
+                        "avail": -0.364941925,
+                        "for": -0.628543258,
+                        "bedrock": -0.725256205,
+                        "support": -0.360314518,
+                        "edit": -0.096713051,
+                        "doe": -1.165951729,
+                        "have": -1.165951729,
+                        "geyser": -1.165951729,
+                        "ded": 7.091238499,
+                        "sus": -0.58955133,
+                        "suspici": -0.58955133,
+                        "hiddenplay": -1.096153378
+                      }
+                    },
+                    "miscellaneous.sus": {
+                      "bias": 1.371455835,
+                      "weights": {
+                        "what": -0.306638688,
+                        "is": -0.393149644,
+                        "the": -0.306638688,
+                        "server": -0.862730682,
+                        "version": -0.100729406,
+                        "ip": -0.205909237,
+                        "address": -0.205909237,
+                        "this": -0.243104964,
+                        "avail": -0.056493342,
+                        "for": -0.086510949,
+                        "bedrock": -0.514989614,
+                        "support": -0.458496302,
+                        "edit": -0.428478688,
+                        "doe": -0.156593993,
+                        "have": -0.156593993,
+                        "geyser": -0.156593993,
+                        "ded": -0.518896163,
+                        "sus": 5.548123837,
+                        "suspici": 5.548123837,
+                        "hiddenplay": -1.303624272
+                      }
+                    },
+                    "miscellaneous.hidden": {
+                      "bias": 2.683354063,
+                      "weights": {
+                        "what": -0.565141499,
+                        "is": -0.663893282,
+                        "the": -0.565141499,
+                        "server": -1.545135617,
+                        "version": -0.128771126,
+                        "ip": -0.436370283,
+                        "address": -0.436370283,
+                        "this": -0.36485064,
+                        "avail": -0.066159375,
+                        "for": -0.098751731,
+                        "bedrock": -0.936948061,
+                        "support": -0.870788753,
+                        "edit": -0.838196456,
+                        "doe": -0.266098946,
+                        "have": -0.266098946,
+                        "geyser": -0.266098946,
+                        "ded": -1.051513553,
+                        "sus": -1.290397167,
+                        "suspici": -1.290397167,
+                        "hiddenplay": 9.458614349
+                      }
+                    }
+                  }
+                ],
+                "trainOpts": {
+                  "iterations": 20000,
+                  "errorThresh": 0.00005,
+                  "fixedError": false,
+                  "deltaErrorThresh": 0.000001,
+                  "learningRate": 0.7,
+                  "momentum": 0.5,
+                  "leakyReluAlpha": 0.08,
+                  "maxDecimals": 9,
+                  "log": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "extraSentences": [
+      [
+        "en",
+        "what's the server version?"
+      ],
+      [
+        "en",
+        "what's the IP address?"
+      ],
+      [
+        "en",
+        "Is this server available for bedrock?"
+      ],
+      [
+        "en",
+        "Is this server supports for bedrock?"
+      ],
+      [
+        "en",
+        "Bedrock Edition support?"
+      ],
+      [
+        "en",
+        "Does this server have geyser?"
+      ],
+      [
+        "en",
+        "ded server"
+      ],
+      [
+        "en",
+        "sus suspicious"
+      ],
+      [
+        "en",
+        "HiddenPlayer"
+      ]
+    ]
+  },
+  "nerManager": {
+    "settings": {},
+    "threshold": 0.8,
+    "builtins": [
+      "Number",
+      "Ordinal",
+      "Percentage",
+      "Age",
+      "Currency",
+      "Dimension",
+      "Temperature",
+      "DateTime",
+      "PhoneNumber",
+      "IpAddress",
+      "Boolean",
+      "Email",
+      "Hashtag",
+      "URL"
+    ],
+    "namedEntities": {}
+  },
+  "slotManager": {},
+  "responses": {
+    "en": {
+      "ask.version": [
+        {
+          "response": "The server currently supports:\n```\nMinecraft 1.18.1 to Minecraft 1.9.4\n``` \n*it's not recommended to use `1.15` and below.*"
+        }
+      ],
+      "ask.ip": [
+        {
+          "response": "**Our Word Server IP**\n```yml\nplay.ourmcworld.ml\n```\n```yml\nOurMcWorldArchive.aternos.me\n```\n*These IPs are same server.*"
+        }
+      ],
+      "ask.bedrockEdition": [
+        {
+          "response": "This server is only available for Java Edition and there's no plan to support Bedrock Edition at the moment."
+        }
+      ],
+      "miscellaneous.ded": [
+        {
+          "response": "rips"
+        }
+      ],
+      "miscellaneous.sus": [
+        {
+          "response": "sus"
+        }
+      ],
+      "miscellaneous.hidden": [
+        {
+          "response": "fr"
+        }
+      ]
+    }
+  },
+  "actions": {},
+  "utteranceDict": {
+    "?": "help"
+  }
+}
