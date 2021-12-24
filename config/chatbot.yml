@@ -1,5 +1,6 @@
 chatbot:
   enabled: true
+  gender: male
   command:
     enabled: true
     name: ask

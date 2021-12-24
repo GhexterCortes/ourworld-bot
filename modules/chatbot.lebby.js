@@ -3,6 +3,7 @@ const Fetch = require('node-fetch');
 const MakeConfig = require('../scripts/makeConfig');
 const SafeMessage = require('../scripts/safeMessage');
 const SafeInteract = require('../scripts/safeInteract');
+const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
 
@@ -29,7 +30,7 @@ class ChatBot {
 
                         try{
                             await SafeInteract.deferReply(interaction);
-                            const response = await this.getResponse(query, Client.user.username, Client.user.username, interaction.user.username);
+                            const response = await this.getResponse(query, Client.user.username, Client.user.username, interaction.user.username, scriptConfig.chatbot.gender);
 
                             await SafeInteract.editReply(interaction, response);
                         } catch(err) {
@@ -46,7 +47,7 @@ class ChatBot {
 
             try {
                 await message.channel.sendTyping();
-                const reply = await this.getResponse(message.content, Client.user.username, Client.AxisUtility.getConfig().owner, message.author.username);
+                const reply = await this.getResponse(message.content, Client.user.username, Client.AxisUtility.getConfig().owner, message.author.username, scriptConfig.chatbot.gender);
 
                 // set reply without pinging the author
                 await SafeMessage.reply(message, {
@@ -64,12 +65,17 @@ class ChatBot {
         return true;
     }
 
-    async getResponse(message, botName = 'Bot', ownerName = 'Person', authorName = 'bitch') {
+    async getResponse(message, botName = 'Bot', ownerName = 'Person', authorName = 'bitch', botGender = 'male') {
         if(!message) throw new Error('No message provided!');
+        if(botGender.toLowerCase() != 'male' && botGender.toLowerCase() != 'female') throw new Error('Invalid gender specified');
 
         const url = `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(message)}&botname=${encodeURIComponent(botName)}&ownername=${encodeURIComponent(ownerName)}&user=${encodeURIComponent(authorName)}`;
 
-        const response = await Fetch(url).then(res => res.json());
+        let response = await Fetch(url).then(res => res.json());
+
+        response = replaceAll(response, ' female ', botGender);
+        response = replaceAll(response, ' male ', botGender);
+
         if(!response['message']) throw new Error('No response from the API!');
         
         return response['message'];
@@ -81,6 +87,7 @@ class ChatBot {
                 enabled: true,
                 command: {
                     enabled: true,
+                    gender: 'male',
                     name: 'ask',
                     description: 'Ask something!'
                 }
