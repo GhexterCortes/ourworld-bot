@@ -72,12 +72,11 @@ class ChatBot {
         const url = `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(message)}&botname=${encodeURIComponent(botName)}&ownername=${encodeURIComponent(ownerName)}&user=${encodeURIComponent(authorName)}`;
 
         let response = await Fetch(url).then(res => res.json());
-
-        response = replaceAll(response, ' female ', botGender);
-        response = replaceAll(response, ' male ', botGender);
-
         if(!response['message']) throw new Error('No response from the API!');
         
+        response['message'] = replaceAll(response['message'], ' female ', botGender);
+        response['message'] = replaceAll(response['message'], ' male ', botGender);
+
         return response['message'];
     }
 
