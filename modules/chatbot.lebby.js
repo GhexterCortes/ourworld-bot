@@ -74,8 +74,8 @@ class ChatBot {
         let response = await Fetch(url).then(res => res.json());
         if(!response['message']) throw new Error('No response from the API!');
         
-        response['message'] = replaceAll(response['message'], ' female ', botGender);
-        response['message'] = replaceAll(response['message'], ' male ', botGender);
+        response['message'] = replaceAll(response['message'], ' female ', ` ${botGender} `);
+        response['message'] = replaceAll(response['message'], ' male ', ` ${botGender} `);
 
         return response['message'];
     }
