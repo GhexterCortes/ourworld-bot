@@ -25,7 +25,7 @@ class TranslatorCommand {
                     try{
                         await SafeInteract.deferReply(interaction);
                         
-                        const embed = this.translate(query, Client);
+                        const embed = await this.translate(query, Client);
                         
                         await SafeInteract.editReply(interaction, { content: ' ', embeds: [ embed ] });
                     } catch (err) {
