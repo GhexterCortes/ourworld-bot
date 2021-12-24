@@ -34,7 +34,7 @@ class TranslatorCommand {
                             .setColor(Client.AxisUtility.getConfig().embedColor);
 
                         if(response.pronunciation) embed.addField('Pronunciation', response.pronunciation, false);
-                        if(response.from.text.didYouMean) embed.addField('Did you mean?', response.from.text.didYouMean, false);
+                        if(response.from.text.didYouMean || response.from.text.autoCorrected) embed.addField('Did you mean?', response.from.text.didYouMean, false);
                         
                         await SafeInteract.editReply(interaction, { content: ' ', embeds: [ embed ] });
                     } catch (err) {
