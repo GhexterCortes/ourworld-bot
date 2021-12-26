@@ -1,4 +1,5 @@
 const SafeMessage = require('../scripts/safeMessage');
+const { getRandomKey } = require('fallout-utility');
 
 class BannedWords {
     constructor() {
@@ -10,6 +11,9 @@ class BannedWords {
             const content = message.content.toLowerCase().trim().split(' ').map(word => word.trim());
 
             if ((message.author.bot || message.author.system) || !content.length) return;
+
+            const susser = ['<:susrok:915464899499552788>', '<:tologobooo:881023181354319893>', '<:wehdikashore:883333514081239080>', '<:boi:898519549895389205>', '<:pepesus:916546480842612787>', '<:sugoma:886695211907047485>']
+            if(content.indexOf('sus') > -1 || content.indexOf('sas') > -1 || content.indexOf('sugoma') || content.indexOf('sugma')) await SafeMessage.react(message, getRandomKey(susser));
 
             const filter = content.filter(word => {
                 if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1' || word == 'gheli') return true;
