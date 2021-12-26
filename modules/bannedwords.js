@@ -12,7 +12,7 @@ class BannedWords {
             if ((message.author.bot || message.author.system) || !content.length) return;
 
             const filter = content.filter(word => {
-                if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1') return true;
+                if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1' || word == 'gheli') return true;
                 if(word == 'xae' || word == 'abby' || word == 'xaecortes' || word == 'xaecortes_yt') return true;
 
                 return false;
@@ -20,9 +20,9 @@ class BannedWords {
 
             if(filter.length) {
                 const reply = await SafeMessage.reply(message, 'sas words! **' + filter.join(', ') + '**');
+                await SafeMessage.delete(message);
                 setTimeout(async () => {
                     await SafeMessage.delete(reply);
-                    await SafeMessage.delete(message);
                 }, 5000);
             }
         });
