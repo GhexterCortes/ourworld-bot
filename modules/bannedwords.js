@@ -13,7 +13,7 @@ class BannedWords {
 
             const filter = content.filter(word => {
                 if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1') return true;
-                if(word == 'xae' || word == 'abby' || word == 'xaecortes') return true;
+                if(word == 'xae' || word == 'abby' || word == 'xaecortes' || word == 'xaecortes_yt') return true;
 
                 return false;
             });
