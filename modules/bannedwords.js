@@ -12,8 +12,8 @@ class BannedWords {
             if ((message.author.bot || message.author.system) || !content.length) return;
 
             const filter = content.filter(word => {
-                if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1' || word == 'gheli') return true;
-                if(word == 'xae' || word == 'abby' || word == 'xaecortes' || word == 'xaecortes_yt') return true;
+                if(word.indexOf('eli') > -1 || word.indexOf('elijah') > -1 || word.indexOf('elijahh') > -1 || word.indexOf('elijahh1') > -1 || word.indexOf('gheli') > -1) return true;
+                if(word.indexOf('xae') > -1 || word.indexOf('abby') > -1 || word.indexOf('xaecortes') > -1 || word.indexOf('xaecortes_yt') > -1) return true;
 
                 return false;
             });
