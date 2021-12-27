@@ -13,7 +13,7 @@ class BannedWords {
             if ((message.author.bot || message.author.system) || !content.length) return;
 
             const susser = ['<:susrok:915464899499552788>', '<:tologobooo:881023181354319893>', '<:wehdikashore:883333514081239080>', '<:boi:898519549895389205>', '<:pepesus:916546480842612787>', '<:sugoma:886695211907047485>']
-            if(content.indexOf('sus') > -1 || content.indexOf('sas') > -1 || content.indexOf('sugoma') || content.indexOf('sugma')) await SafeMessage.react(message, getRandomKey(susser));
+            if(content.indexOf('sus') > -1 || content.indexOf('sas') > -1 || content.indexOf('sugoma') > -1 || content.indexOf('sugma') > -1) await SafeMessage.react(message, getRandomKey(susser));
 
             const filter = content.filter(word => {
                 if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1' || word == 'gheli') return true;
