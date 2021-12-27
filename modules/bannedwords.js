@@ -23,7 +23,7 @@ class BannedWords {
             });
 
             if(filter.length) {
-                const reply = await SafeMessage.reply(message, 'sas words! **' + filter.join(', ') + '**');
+                const reply = await SafeMessage.reply(message, `sas ${(filter.length > 1 ? 'words' : 'word')}! **${filter.join(', ')}**`);
                 await SafeMessage.delete(message);
                 setTimeout(async () => {
                     await SafeMessage.delete(reply);

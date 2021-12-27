@@ -30,6 +30,7 @@ class Create {
         log.log('Configuring bot presence...');
 
         await setPresence(Client);
+        Client.setMaxListeners(0);
 
         return true;
     }
