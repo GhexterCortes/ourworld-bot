@@ -3,3 +3,6 @@ databaseServerId: "830456204735807529"
 databaseChannelId: "907897856478806016"
 databaseMessageId: "925319088933314560"
 fetchInterval: "1m"
+dmAfterRoleRemove:
+  enabled: true
+  message: 'You have been removed from the role **%role%** in server **%server%**'

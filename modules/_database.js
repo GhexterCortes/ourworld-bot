@@ -28,7 +28,7 @@ module.exports = class Database {
                 new MessageEmbed()
                     .setAuthor(`${this.databaseName} ${new Date().toDateString()}`)
                     .setDescription(JSON.stringify({}))
-                    .setFooter('Database script made by BlobHuman - Last Update ')
+                    .setFooter('Database script made by BlobHuman and GhexterCortes - Last Update ')
                     .setTimestamp()
                 ]
             });
@@ -61,7 +61,7 @@ module.exports = class Database {
                 new MessageEmbed()
                     .setAuthor(`${this.databaseName} ${new Date().toDateString()}`)
                     .setDescription(JSON.stringify(newData))
-                    .setFooter('Database script made by BlobHuman - Last Update ')
+                    .setFooter('Database script made by BlobHuman and GhexterCortes - Last Update ')
                     .setTimestamp()
                 ]
         });

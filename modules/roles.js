@@ -8,6 +8,7 @@ const dayjs = require('dayjs');
 
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
 const SafeInteract = require('../scripts/safeInteract');
+const SafeMessage = require('../scripts/safeMessage');
 let UserGuild = null;
 
 const log = new Logger('RoleManagement');
@@ -113,6 +114,8 @@ class Role {
                 
                 if(!action) { log.error(`Action failed`); continue; }
                 log.warn(`Removed role from user ${member.tag}`);
+
+                if(scriptConfig.dmAfterRoleRemove.enabled) await SafeMessage.send(member, scriptConfig.dmAfterRoleRemove.message.replace('%role%', role.name).replace('%server%', member.guild.name));
             }
 
             setTimeout(async () => {
@@ -128,7 +131,11 @@ class Role {
             databaseServerId: '',
             databaseChannelId: '',
             databaseMessageId: '',
-            fetchInterval: '1m'
+            fetchInterval: '1m',
+            dmAfterRoleRemove: {
+                enabled: true,
+                message: 'You have been removed from the role **%role%** in server **%server%**'
+            }
         }))
     }
 }
