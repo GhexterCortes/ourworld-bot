@@ -63,6 +63,7 @@ class Role {
                     const timer = ms(interaction.options.getString('timer'));
 
                     if(!timer) return SafeInteract.reply(interaction, { content: 'Invalid timer', ephemeral: true });
+                    if(timer < ms(scriptConfig.fetchInterval)) return SafeInteract.reply(interaction, { content: `Timer must be ${ms(ms(scriptConfig.fetchInterval), { long: true })} or longer`, ephemeral: true });
 
                     const member = await UserGuild.getMember(interaction.guild.id, user.id);
                     if(!member) return SafeInteract.reply(interaction, { content: 'User not found', ephemeral: true });
