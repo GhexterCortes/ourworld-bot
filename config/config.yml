@@ -5,7 +5,7 @@ embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
 owner: 'Ghex <3'  # Who owns this bot
 
-guildId: '' # Only register slash commands for the given guild.
+guildId: # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:
@@ -29,7 +29,7 @@ permissions:
     registerSlashCommands: true
 
     # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop', 'send']
+    adminOnlyCommands: ['stop', 'send', 'role-timer']
 
     # Command for moderator with kick and ban perms (This is the command name)
     moderatorOnlyCommands: ['kick', 'ban', 'mute']

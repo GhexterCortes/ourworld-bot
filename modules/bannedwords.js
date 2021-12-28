@@ -16,8 +16,8 @@ class BannedWords {
             if(content.indexOf('sus') > -1 || content.indexOf('sas') > -1 || content.indexOf('sugoma') > -1 || content.indexOf('sugma') > -1) await SafeMessage.react(message, getRandomKey(susser));
 
             const filter = content.filter(word => {
-                if(word == 'eli' || word == 'elijah' || word == 'elijahh' || word == 'elijahh1' || word == 'gheli') return true;
-                if(word == 'xae' || word == 'abby' || word == 'xaecortes' || word == 'xaecortes_yt') return true;
+                if(word.startsWith('eli') || word.startsWith('elijah') || word.startsWith('elijahh') || word.startsWith('elijahh1') || word.startsWith('gheli')) return true;
+                if(word.startsWith('xae') || word.startsWith('abby') || word.startsWith('xaecortes') || word.startsWith('xaecortes_yt')) return true;
 
                 return false;
             });
