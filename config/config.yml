@@ -1,11 +1,11 @@
-token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token
-#token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token
+token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token HiddenPlayer
+#token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token Axis
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
 owner: 'Ghex <3'  # Who owns this bot
 
-guildId: # Only register slash commands for the given guild.
+guildId: '' # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:
