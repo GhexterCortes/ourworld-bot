@@ -21,6 +21,7 @@
     "fs-extra": "^10.0.0",
     "genius-lyrics": "^4.3.5",
     "minecraft-protocol": "^1.29.1",
+    "ms": "^2.1.3",
     "node-fetch": "^2.6.6",
     "node-nlp": "^3.10.2",
     "prompt-sync": "^4.1.6",
