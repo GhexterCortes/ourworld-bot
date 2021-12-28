@@ -13,8 +13,8 @@ module.exports = class Database {
     }
 
     async start(Client) {
-        this.guild = this.guild ? await Client.guilds.cache.get(this.guild) : new TypeError('ServerId is not defined');
-        this.channel = this.channel && this.guild ? await this.guild.channels.cache.get(this.channel) : new TypeError('Channel not found');
+        this.guild = this.guild ? await Client.guilds.fetch(this.guild) : new TypeError('ServerId is not defined');
+        this.channel = this.channel && this.guild ? await this.guild.channels.fetch(this.channel) : new TypeError('Channel not found');
 
         if(this.guild instanceof Error) throw this.guild;
         if(this.channel instanceof Error) throw this.channel;
@@ -22,7 +22,7 @@ module.exports = class Database {
     }
 
     async fetchData(messageId, matchDatabaseName = false) {
-        let fetchedMessage = messageId ? await this.channel.messages.cache.get(messageId) : await SafeMessage.send(this.channel, { 
+        let fetchedMessage = messageId ? await this.channel.messages.fetch(messageId) : await SafeMessage.send(this.channel, { 
             content: ' ',
             embeds: [
                 new MessageEmbed()
