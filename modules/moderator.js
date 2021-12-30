@@ -272,7 +272,7 @@ class Moderator {
                 });
 
                 console.log(mute);
-                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Muted: '+ reason) ] });
+                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? 'Muted: '+ reason : 'Unmuted')) ] });
 
                 break;
             case 'Message':
