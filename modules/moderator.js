@@ -139,8 +139,8 @@ class Moderator {
                 .setName('mute')
                 .setDescription('Mute a user from the server.')
                 .addArgument('user', true, 'The user to mute.')
-                .addArgument('reason', false, 'The reason for the mute.')
                 .addArgument('duration', false, 'The duration of the mute, default '+ ms(ms(config.mute.defaultDuration), { long: true }) +'. (ex: 1m, 1h)')
+                .addArgument('reason', false, 'The reason for the mute.')
                 .setExecute(async (args, message, Client) => this.mute(Client, 'Message', { message: message, args: args }))
             );
         }
@@ -161,7 +161,7 @@ class Moderator {
                 reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.kick.defaultReason);
 
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
-
+                
                 // kick user
                 kick = await interaction?.guild.members.cache.get(user.id).kick(reason).catch(async err => { 
                     console.error(err);
@@ -185,6 +185,8 @@ class Moderator {
                         reason = args[1];
                         break;
                 }
+
+                if(!duration) return SafeInteract.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ]});
 
                 // kick user
                 kick = await message.guild.members.cache.get(user.id).kick(reason).catch(async err => {
@@ -263,6 +265,7 @@ class Moderator {
                 duration = interaction.options.getString('duration') ? ms(interaction.options.getString('duration')) : duration;
 
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
+                if (!duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ], ephemeral: true });
 
                 // mute user
                 mute = await interaction?.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
@@ -285,11 +288,11 @@ class Moderator {
                 switch (args.length) {
                     case 1: break;
                     case 2:
-                        reason = args[1];
+                        duration = args[1];
                         break;
                     case 3:
-                        reason = args[1];
-                        duration = ms(args[2]);
+                        duration = ms(args[1]);
+                        reason = args[2];
                         break;
                 }
 
