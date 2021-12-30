@@ -34,7 +34,7 @@ class ChatBot {
 
                             await SafeInteract.editReply(interaction, response);
                         } catch(err) {
-                            await SafeInteract.editReply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor('Chat Bot Error').setDescription(err.stack).setColor('RED') ] });
+                            await SafeInteract.editReply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED') ] });
                         }
                     })
             ]
@@ -58,7 +58,7 @@ class ChatBot {
                 });
             } catch(err) {
                 console.error(err);
-                await SafeMessage.reply(message, { content: ' ', embeds: [new MessageEmbed().setAuthor('Chat Bot Error').setDescription(err.stack).setColor('RED')] });
+                await SafeMessage.reply(message, { content: ' ', embeds: [new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED')] });
             }
         });
 

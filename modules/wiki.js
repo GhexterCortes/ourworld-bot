@@ -52,9 +52,9 @@ async function get(query, Client) {
     const embed = new MessageEmbed().setColor(Client.AxisUtility.getConfig().embedColor);
     if(!page) return { content: ' ', embeds: [embed.setTitle('No results found.').setColor( Client.AxisUtility.getConfig().embedColor )] };
 
-    embed.setAuthor(page.title, null, `https://minecraft.fandom.com/wiki/${ encodeURIComponent(page.title) }`);
+    embed.setAuthor({ name: page.title, url: `https://minecraft.fandom.com/wiki/${ encodeURIComponent(page.title) }`});
     embed.setDescription(trim(limitNewLines(page.extract), 4090));
-    embed.setFooter('Minecraft Wiki');
+    embed.setFooter({ text: 'Minecraft Wiki'});
 
     return { content: ' ', embeds: [embed] };
 }

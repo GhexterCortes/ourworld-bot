@@ -61,9 +61,9 @@ class TranslatorCommand {
 
         console.log(response);
         const embed = new MessageEmbed()
-            .setAuthor('Translate', Client.user.avatarURL({ format: 'png', dynamic: true }))
+            .setAuthor({ name: 'Translator', iconURL: Client.user.displayAvatarURL() })
             .addField('Translation', response.text, false)
-            .setFooter(`Translated from "${query}"`)
+            .setFooter({ text: `Translated from "${query}"`})
             .setColor(Client.AxisUtility.getConfig().embedColor);
 
         if(response.pronunciation) embed.addField('Pronunciation', response.pronunciation, false);

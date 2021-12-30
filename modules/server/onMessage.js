@@ -46,10 +46,10 @@ async function addServer(ip, message, config) {
 
         let description = placeholders(config.messages.serverEmbedDescription, server, ip);
 
-        embed.setAuthor(displayIp(ip));
+        embed.setAuthor({ name: displayIp(ip) });
         embed.setColor(config.messages.embedColors['online']);
         embed.setDescription(description);
-        embed.setFooter(`${message.author.tag} • ${ server.latency }ms`, message.author.displayAvatarURL());
+        embed.setFooter({ text: `${message.author.tag} • ${ server.latency }ms`, iconURL: message.author.displayAvatarURL() });
 
         if(await SafeMessage.edit(reply, { content: ' ', embeds: [embed] })) {
             errors = 0;

@@ -37,9 +37,9 @@ async function sendReply(config, channel, member) {
 
 
     const embed = new MessageEmbed()
-        .setAuthor(getRandomKey(config.title))
+        .setAuthor({ name: getRandomKey(config.title) })
         .setDescription(description)
-        .setFooter(getRandomKey(config.footer))
+        .setFooter({ text: getRandomKey(config.footer) })
         .setColor(getRandomKey(config.embedColor));
 
     if(config.addTimestamp) embed.setTimestamp();

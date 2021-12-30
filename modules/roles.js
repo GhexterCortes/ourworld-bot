@@ -4,7 +4,6 @@ const MakeConfig = require('../scripts/makeConfig');
 const { Logger } = require('fallout-utility');
 const UsrGuild = require('../scripts/userGuild');
 const ms = require('ms');
-const dayjs = require('dayjs');
 
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
 const SafeInteract = require('../scripts/safeInteract');
@@ -12,7 +11,6 @@ const SafeMessage = require('../scripts/safeMessage');
 let UserGuild = null;
 
 const log = new Logger('RoleManagement');
-let currentTime = new Date().getTime();
 let scriptConfig = null;
 let db = null;
 

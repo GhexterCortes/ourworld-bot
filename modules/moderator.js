@@ -2,6 +2,7 @@ const MakeConfig = require('../scripts/makeConfig');
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
 const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
 const Yml = require('yaml');
+const ms = require('ms');
 const { MessageEmbed } = require('discord.js');
 const SafeMessage = require('../scripts/safeMessage');
 const SafeInteract = require('../scripts/safeInteract');
@@ -35,7 +36,7 @@ class Moderator {
             },
             mute: {
                 enabled: true,
-                mutedRoleName: '',
+                defaultDuration: '1h',
                 defaultReason: 'You have been muted from the server.',
             },
         }
@@ -48,7 +49,7 @@ class Moderator {
 
         return new MessageEmbed()
             .setColor(color)
-            .setAuthor(`${positive ? '✅' : '❌'} ${user.username}#${user.discriminator} | ${reason}`)
+            .setAuthor({ name: `${positive ? '✅' : '❌'} ${user.username}#${user.discriminator} | ${reason}` })
             .setDescription(' ');
     }
 
@@ -126,6 +127,10 @@ class Moderator {
                         .setDescription('The reason for the mute.')
                         .setRequired(false)    
                     )
+                    .addStringOption(duration => duration
+                        .setName('duration')
+                        .setDescription('The duration of the mute, default '+ ms(ms(config.mute.defaultDuration), { long: true }) +'. (ex: 1m, 1h)')    
+                    )
                 )
                 .setExecute(async (interaction, Client) => this.mute(Client, 'Interaction', { interaction: interaction }))
             );
@@ -135,6 +140,7 @@ class Moderator {
                 .setDescription('Mute a user from the server.')
                 .addArgument('user', true, 'The user to mute.')
                 .addArgument('reason', false, 'The reason for the mute.')
+                .addArgument('duration', false, 'The duration of the mute, default '+ ms(ms(config.mute.defaultDuration), { long: true }) +'. (ex: 1m, 1h)')
                 .setExecute(async (args, message, Client) => this.mute(Client, 'Message', { message: message, args: args }))
             );
         }
@@ -245,6 +251,7 @@ class Moderator {
     async mute(Client, type, data) {
         let user = null;
         let reason = null;
+        let duration = ms(config.mute.defaultDuration);
         let mute = null;
 
         switch (type) {
@@ -253,16 +260,18 @@ class Moderator {
                 
                 user = interaction.options.getUser('user');
                 reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : getRandomKey(config.mute.defaultReason);
+                duration = interaction.options.getString('duration') ? ms(interaction.options.getString('duration')) : duration;
 
-                console.log(user);
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
 
                 // mute user
-                mute = await interaction?.guild.members.cache.get(user.id).roles.add(interaction.guild.roles.cache.find(role => role.name === config.mute.mutedRoleName)).catch(async err => {
+                mute = await interaction?.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
                     console.error(err);
                     await SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ], ephemeral: true });
                     return false;
                 });
+
+                console.log(mute);
                 if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Muted: '+ reason) ] });
 
                 break;

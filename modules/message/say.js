@@ -149,11 +149,11 @@ module.exports = new InteractionCommandBuilder()
             const embed = new MessageEmbed().setDescription(description);
 
             if(title) embed.setTitle(title);
-            if(author) embed.setAuthor(author, (authorIcon ? authorIcon : null), (authorUrl ? authorUrl : null));
+            if(author) embed.setAuthor({ name: author, iconURL: (authorIcon ? authorIcon : null), url: (authorUrl ? authorUrl : null) });
             if(thumbnail) embed.setThumbnail(thumbnail);
             if(image) embed.setImage(image);
             if(color) embed.setColor(color);
-            if(footer) embed.setFooter(footer, (footerIcon ? footerIcon : null), (footerUrl ? footerUrl : null));
+            if(footer) embed.setFooter({ text: footer, iconURL: (footerIcon ? footerIcon : null), url: (footerUrl ? footerUrl : null) });
             if(setTimestamp) embed.setTimestamp();
 
             const reply = interaction.options.getString('reply') ? await getMessage(interaction.options.getString('reply')) : false;

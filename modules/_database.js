@@ -26,9 +26,9 @@ module.exports = class Database {
             content: ' ',
             embeds: [
                 new MessageEmbed()
-                    .setAuthor(`${this.databaseName} ${new Date().toDateString()}`)
+                    .setAuthor({ name: `${this.databaseName} ${new Date().toDateString()}` })
                     .setDescription(JSON.stringify({}))
-                    .setFooter('Database script made by BlobHuman and GhexterCortes - Last Update ')
+                    .setFooter({ text: 'Database script made by BlobHuman and GhexterCortes - Last Update ' })
                     .setTimestamp()
                 ]
             });
@@ -59,9 +59,9 @@ module.exports = class Database {
             content: ' ',
             embeds: [
                 new MessageEmbed()
-                    .setAuthor(`${this.databaseName} ${new Date().toDateString()}`)
+                    .setAuthor({ name: `${this.databaseName} ${new Date().toDateString()}` })
                     .setDescription(JSON.stringify(newData))
-                    .setFooter('Database script made by BlobHuman and GhexterCortes - Last Update ')
+                    .setFooter({ text: 'Database script made by BlobHuman and GhexterCortes - Last Update ' })
                     .setTimestamp()
                 ]
         });

@@ -19,9 +19,9 @@ class Spammer {
                 const reply = await SafeMessage.reply(message, { content: ' ', embeds: [
                     new MessageEmbed()
                         .setColor(config.embedColor)
-                        .setAuthor('Mass mentions detected!', message.author.avatarURL({ format: 'png', dynamic: true, size: 1024 }))
+                        .setAuthor({ name: 'Mass mentions detected!', iconURL: message.author.displayAvatarURL() })
                         .setDescription(`To respect people's peace, avoid mass mention @everyone or @here.\n\`\`\`You may review the rules if you are a member of the staff.\`\`\`\n\n`)
-                        .setFooter(`The owner received the original copy of this message for review.`)
+                        .setFooter({ text: `The owner received the original copy of this message for review.` })
                         .setTimestamp()
                 ] });
 
@@ -56,9 +56,9 @@ class Spammer {
                     content: ' ',
                     embeds: [
                         new MessageEmbed()
-                        .setAuthor('🚫 Notice!')
+                        .setAuthor({ name: '🚫 Notice!' })
                         .setDescription('Avoid pinging people when using bots this can lead to spam!\nYou can try using user id instead of @user\n```\nRight click the user profile then click Copy ID\n```')
-                        .setFooter('This method doesn\'t always work')
+                        .setFooter({ text: 'This method doesn\'t always work' })
                         .setTimestamp()
                         .setColor('RED')
                     ]});

@@ -63,7 +63,7 @@ async function getReply(query, embedColor) {
         const embed = new MessageEmbed().setDescription(content);
 
         if(song[0].thumbnail && !setTitle) embed.setThumbnail(song[0].thumbnail);
-        if(!setTitle) { setTitle = true; embed.setAuthor(song[0].fullTitle, null, song[0].url); }
+        if(!setTitle) { setTitle = true; embed.setAuthor({ name: song[0].fullTitle, url: song[0].url }); }
         if(embedColor) embed.setColor(embedColor);
 
         embeds.push(embed);

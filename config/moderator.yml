@@ -22,7 +22,7 @@ ban:
    - The ban hammer has spoken
 mute:
   enabled: true
-  mutedRoleName: "Muted"
+  defaultDuration: "1h"
   defaultReason:
    - Muted!!!
    - Shut up
