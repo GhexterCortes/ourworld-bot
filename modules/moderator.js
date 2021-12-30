@@ -263,7 +263,7 @@ class Moderator {
                 duration = interaction.options.getString('duration') ? ms(interaction.options.getString('duration')) : duration;
 
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
-                if (duration !== 0 && !duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ], ephemeral: true });
+                if (duration !== 0 && !duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? `Muted: ${ms(duration, { long: true })} ${reason}` : 'Unmuted')) ] });
 
                 // mute user
                 mute = await interaction?.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
@@ -272,7 +272,7 @@ class Moderator {
                     return false;
                 });
 
-                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? 'Muted: '+ reason : 'Unmuted')) ] });
+                if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? `Muted: ${ms(duration, { long: true })} ${reason}` : 'Unmuted')) ] });
 
                 break;
             case 'Message':
