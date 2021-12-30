@@ -186,8 +186,6 @@ class Moderator {
                         break;
                 }
 
-                if(!duration) return SafeInteract.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ]});
-
                 // kick user
                 kick = await message.guild.members.cache.get(user.id).kick(reason).catch(async err => {
                     console.error(err);
@@ -265,7 +263,7 @@ class Moderator {
                 duration = interaction.options.getString('duration') ? ms(interaction.options.getString('duration')) : duration;
 
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
-                if (!duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ], ephemeral: true });
+                if (duration !== 0 && !duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ], ephemeral: true });
 
                 // mute user
                 mute = await interaction?.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
@@ -274,7 +272,6 @@ class Moderator {
                     return false;
                 });
 
-                console.log(mute);
                 if(mute) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? 'Muted: '+ reason : 'Unmuted')) ] });
 
                 break;
@@ -296,6 +293,8 @@ class Moderator {
                         break;
                 }
 
+
+                if(duration !== 0 && !duration) return SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ]});
                 // mute user
                 mute = await message.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
                     console.error(err);
