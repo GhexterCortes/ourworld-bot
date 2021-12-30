@@ -287,10 +287,14 @@ class Moderator {
                     case 2:
                         reason = args[1];
                         break;
+                    case 3:
+                        reason = args[1];
+                        duration = ms(args[2]);
+                        break;
                 }
 
                 // mute user
-                mute = await message.guild.members.cache.get(user.id).roles.add(message.guild.roles.cache.find(role => role.name === config.mute.mutedRoleName)).catch(async err => {
+                mute = await message.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
                     console.error(err);
                     await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ] });
                     return false;
