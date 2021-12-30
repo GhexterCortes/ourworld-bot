@@ -285,11 +285,11 @@ class Moderator {
                 switch (args.length) {
                     case 1: break;
                     case 2:
-                        duration = args[1];
+                        duration = ms(args[1]);
                         break;
                     case 3:
                         duration = ms(args[1]);
-                        reason = args[2];
+                        reason = args.slice(2).join(' ');
                         break;
                 }
 
