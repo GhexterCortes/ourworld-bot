@@ -1,0 +1,8 @@
+animals:
+  cat:
+    enabled: true
+    textTitle: A cat
+  dog:
+    enabled: true
+    textTitle: A dog
+noResultsMessage: Nothing found.
