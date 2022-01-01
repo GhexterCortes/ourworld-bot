@@ -89,9 +89,9 @@ class ChatBot {
         return Yml.parse(MakeConfig(location, {
             chatbot: {
                 enabled: true,
+                gender: 'male',
                 command: {
                     enabled: true,
-                    gender: 'male',
                     name: 'ask',
                     description: 'Ask something!'
                 }
