@@ -12,48 +12,52 @@
     FunctionNames: camelCase
 **/
 
-require('./scripts/startup')();
+const configPath = './config/Bot/config.yml';
+const languagePath = './config/Bot/language.yml';
+
 
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const Config = require('./scripts/config');
-const Language = require('./scripts/language');
 const Discord = require('discord.js');
 
-// Local actions
-const ScriptLoader = require('./scripts/loadScripts');
-const SafeMessage = require('./scripts/safeMessage');
-const SafeInteract = require('./scripts/safeInteract');
+// Local modules
+const { Config, Language } = require('./scripts/config');
+const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
+const ScriptLoader = require('./scripts/loadScripts');
 
-// Configurations
-const log = new Util.Logger('Bot');
+// Utils
+const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
-// Config
-let config = new Config('./config/config.yml').parse().testmode().prefill().getConfig();
-
-// Language
-let lang = new Language(config.language).parse().getLanguage();
+// Config & Language
+let config = new Config(configPath).parse().commands().prefill().getConfig();
+let lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
 
 
 // Client
-const Client = new Discord.Client({
-    intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES
-    ]
-});
+const Client = new Discord.Client(config.client);
 
-// Commands
+// Data
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
+var intents = config.client.intents;
+
+
+// Logging
+if(config.logging.enabled) {
+    log.logFile(config.logging.logFilePath);
+
+    SafeMessage.setLogger(log);
+    SafeInteract.setLogger(log);
+}
+
+
+// Startup
+require('./scripts/startup')(log);
+
 
 // AxisUtility
 class AxisUtility {
@@ -64,19 +68,19 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
-        const args = Util.getCommand(message.content.trim(), this.getConfig().commandPrefix).args;
+        const cmd = this.get().commands.MessageCommands.find(property => property.name === command);
+        const args = Util.getCommand(message.content.trim(), this.get().config.commandPrefix).args;
 
         // If the command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check permission
-        if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
-            return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
+        if(!CommandPermission(command, message.member, this.get().config.permissions.messageCommands)) {
+            return SafeMessage.reply(message, Util.getRandomKey(this.get().language.noPerms));
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.getConfig().commandPrefix}${command}`));
+        return this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
     }
 
     /**
@@ -89,19 +93,19 @@ class AxisUtility {
         const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
         // If command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.get().config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.notAvailable), ephemeral: true });
         }
 
         // Check permission
-        if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
+        if(!CommandPermission(interaction.commandName, interaction.member, this.get().config.permissions.interactionCommands)) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.noPerms), ephemeral: true });
         }
 
-        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
+        return this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
     }
 
     /**
@@ -115,8 +119,8 @@ class AxisUtility {
         const command = commands.MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${message.author.username} executed ${this.getConfig().commandPrefix}${command.name}`, 'MessageCommand');
-        await command.execute(args, message, Client);
+        log.warn(`${message.author.username} executed ${this.get().config.commandPrefix}${command.name}`, 'MessageCommand');
+        return command.execute(args, message, Client);
     }
 
     /**
@@ -130,7 +134,7 @@ class AxisUtility {
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
-        await command.execute(interaction, Client);
+        return command.execute(interaction, Client);
     }
 
     /**
@@ -139,7 +143,7 @@ class AxisUtility {
      * @returns {string}
      */
     createInvite(bot) {
-        return Util.replaceAll(this.getConfig().inviteFormat, '%id%', bot.user.id);
+        return Util.replaceAll(this.get().config.inviteFormat, '%id%', bot.user.id);
     }
 
     /**
@@ -147,7 +151,7 @@ class AxisUtility {
      * @param {string} directory - directory to search
      * @returns {Promise<Object>} returns the loaded scripts files
      */
-     async loadModules(directory) {
+    async loadModules(directory) {
         const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
@@ -157,8 +161,8 @@ class AxisUtility {
         
         // Execute .loaded method of every scripts
         for(const script in scripts) {
-            if(!scripts[script]?.loaded) continue;
-            await Promise.resolve(scripts[script].loaded(Client));
+            if(!scripts[script]?.onLoad) continue;
+            await Promise.resolve(scripts[script].onLoad(Client));
         }
 
         return scriptsLoader;
@@ -166,36 +170,42 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the language.yml in json
+     * @returns {Object[]} returns the loaded scripts and bot configurations
      */
-    getLanguage() {
-        return lang;
+    get() {
+        return {
+            logger: log,
+            intents: intents,
+            commands: commands,
+            scripts: scripts,
+            config: config,
+            language: lang
+        }
     }
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object} returns methods to parse configurations
      */
-    getConfig() {
-        return config;
-    }
+    parse() {
+        return {
+            /**
+             * @returns {void}
+             */
+            config() {
+                config = new Config(configPath).parse().testmode().getConfig();
+            },
 
-    /**
-     * 
-     * @returns {Object} Returns the loaded scripts files
-     */
-    getScripts() {
-        return scripts;
-    }
-
-    /**
-     * 
-     * @returns {Object} Returns all the available commands
-     */
-    getCommands() {
-        return commands;
+            /**
+             * @returns {void}
+             */
+            language() {
+                lang = new Language(config.language).parse().getLanguage();
+            }
+        }
     }
 }
+
 
 // Client start
 Client.login(config.token);
@@ -211,9 +221,8 @@ Client.on('ready', async () => {
     // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
     Client.on('messageCreate', async message => {
+        if(config.messageLogging.enabled && (!config.messageLogging.ignoreBotSystem || config.messageLogging.ignoreBotSystem && !(message.author.bot || message.author.system))) log.log(`${message.author.username}: ${message.content}`, 'Message');
         if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
-
-        log.log(`${message.author.username}: ${message.content}`, 'Message');
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
@@ -226,11 +235,34 @@ Client.on('ready', async () => {
     });
 });
 
+
 // Errors and warnings
 if(config.processErrors) {
     if(config.processErrors.clientShardError) Client.on('shardError', error => log.error(error, 'ShardError'));
 
-    if(config.processErrors.processUncaughtException) process.on("unhandledRejection", reason => log.error(reason, 'Process'));
-    if(config.processErrors.processUncaughtException) process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
-    if(config.processErrors.processWarning) process.on('warning', warn => log.warn(warn, 'Process'));
+    process.on("unhandledRejection", reason => {
+        log.error(reason, 'unhandledRejection');
+
+        if(!config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+    process.on("uncaughtException", (err, origin) => {
+        log.error(err, 'uncaughtException');
+        log.error(origin, 'uncaughtException');
+
+        if(config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('warning', warn => {
+        log.warn(warn, 'Warning');
+        if(config.processErrors.processWarning) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('exit', code => {
+        log.warn(`Process exited with code ${code}`, 'Status');
+    });
 }
+
+// Exit Events
+process.on('SIGINT', () => process.exit(0));
+process.on('SIGUSR1', () => process.exit(0));
+process.on('SIGUSR2', () => process.exit(0));

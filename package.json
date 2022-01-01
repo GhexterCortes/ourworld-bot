@@ -7,17 +7,11 @@
     "node": "16.6.0 || 16.13.0",
     "npm": ">=7.24.2"
   },
+  "version": "1.6.0",
   "engineStrict": true,
   "license": "MIT",
   "dependencies": {
-    "@discordjs/rest": "^0.2.0-canary.0",
     "@vitalets/google-translate-api": "^7.0.0",
-    "commander": "^8.3.0",
-    "discord-api-types": "^0.26.0",
-    "discord.js": "^13.5.0",
-    "discordjs-button-embed-pagination": "^4.0.1",
-    "discordjs-button-pagination": "^2.0.1",
-    "fallout-utility": "^1.0.37",
     "fs-extra": "^10.0.0",
     "genius-lyrics": "^4.3.5",
     "minecraft-protocol": "^1.30.0",
@@ -28,6 +22,13 @@
     "proxycheck-node.js": "^2.0.0-a",
     "random-animals-api": "^1.2.6",
     "random-memes": "^3.1.0",
+    "@discordjs/rest": "^0.2.0-canary.0",
+    "commander": "^8.3.0",
+    "discord-api-types": "^0.26.0",
+    "discord.js": "^13.5.0",
+    "discordjs-button-embed-pagination": "^4.0.1",
+    "discordjs-button-pagination": "^2.0.1",
+    "fallout-utility": "^1.2.5",
     "yaml": "^1.10.2"
   }
 }
