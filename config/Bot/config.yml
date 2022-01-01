@@ -1,4 +1,5 @@
-token: TOKEN # Bot token
+token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token HiddenPlayer
+#token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token Axis
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
@@ -17,6 +18,16 @@ permissions:
     commands:
       - command: 'stop'
         permissions: ['ADMINISTRATOR']
+      - command: 'antibot'
+        permissions: ['MODERATE_MEMBERS']
+      - command: 'antivpn'
+        permissions: ['MODERATE_MEMBERS']
+      - command: 'mute'
+        permissions: ['MODERATE_MEMBERS']
+      - command: 'kick'
+        permissions: ['KICK_MEMBERS']
+      - command: 'ban'
+        permissions: ['BAN_MEMBERS']
   
   # Slash commands permissions
   interactionCommands:
@@ -30,6 +41,10 @@ permissions:
     commands:
       - command: 'stop'
         permissions: ['ADMINISTRATOR']
+      - command: 'role-timer'
+        permissions: ['ADMINISTRATOR']
+      - command: 'send'
+        permissions: ['MANAGE_MESSAGES']
 
 # Ignored channels based on IDs
 blacklistChannels:            
@@ -51,15 +66,15 @@ logging:
 
 # Message logging (This is is against Discord TOS!!!) use for testing porpuses only
 messageLogging:
-  enabled: false # Enable logging
+  enabled: true # Enable logging
   ignoreBotSystem: true # Ignore bot chats
 
 # process errors logging. (Few options can stop some crashes)
 processErrors:
   clientShardError: true
   processWarning: true
-  processUnhandledRejection: false
-  processUncaughtException: false
+  processUnhandledRejection: true
+  processUncaughtException: true
 
 client:
   # Bot intents

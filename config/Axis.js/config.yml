@@ -1,0 +1,48 @@
+# Toggle message commands
+messageCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: false
+  help:
+    enabled: true
+
+# Toggle interaction commands
+interactionCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: true
+  help:
+    enabled: true
+
+# Set bot presence
+presence:
+  enabled: true  # Enable presence
+  status: ['dnd']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
+  type: ['listening']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
+  activityName: ['!help', '7.6B people', '/help', '/cat', '/dog', 'Alputangina']  # Name your activity [this can be a string or an object for random value]
+
+# Version command response
+version:
+  # The message to display when the version command is used
+  message: |-
+      **{username} v{version}**
+      Based on Axis bot v{version}.
+      https://github.com/FalloutStudios/Axis
+
+  # Buttons to display in the version command
+  linkButtons:
+    - name: View on Github
+      link: https://github.com/FalloutStudios/Axis
+    - name: Submit an issue
+      link: https://github.com/FalloutStudios/Axis/issues
+    - name: View wiki
+      link: https://github.com/FalloutStudios/Axis/wiki
+
+# Only change this value if you know what you're doing.
+#     not setting a value uses the default
+# 0 - means infinite event listeners can be used
+#     changing this to infinite or exceeding to the default value
+#     can cause memory leaks.
+maxClientEventListeners:
