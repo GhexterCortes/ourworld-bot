@@ -185,14 +185,18 @@ maxClientEventListeners:`));
 
     async setPresence(Client) {
         log.log('Configuring bot presence...');
-    
-        return options?.presence.enabled ? Client.user.setPresence({
+        
+        if(!options?.presence.enabled) return;
+
+        await Client.user.setPresence({
             status: Util.getRandomKey(options.presence.status),
             activities: [{
                 name: Util.getRandomKey(options.presence.activityName),
                 type: Util.getRandomKey(options.presence.type)
             }]
-        }) : null;
+        });
+
+        setTimeout(() => this.setPresence(Client), 1000 * 60);
     }
 
     getVersionMessageReply(Client) {
