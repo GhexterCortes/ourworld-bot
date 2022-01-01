@@ -1,54 +1,83 @@
-# Values can be either strings or objects. If the value type is object it will be randomly selected.
 error:
-  - 'Error!'
-  - 'An error!'
-  - 'Error occurred'
-  - 'POG error occured!'
+  - 'Error! <a:blelele:901325242927054929>'
+  - 'An error! <a:sadsponge:901325244353093674>'
+  - 'Error occurred <a:5011kekwwa:901325243862360124>'
+  - 'POG error occured! <a:headbang:901325247255568384>'
 empty:
-  - 'Fill all required fields'
-  - 'Don''t leave it'
-  - 'Why empty fields'
+  - 'Fill all required fields <a:waitwaitwait:901325254092267540>'
+  - 'Don''t leave it empty! <:whatt:901325247192653834>'
+  - 'Why empty fields <a:catgun:901325244499910727>'
 needPing:
-  - 'Ping someone!'
-  - 'Ping someone!'
-  - 'Ping someone! bruh'
+  - 'Ping someone! <a:stabstab:901325245925949440>'
+  - 'Ping someone! <a:wig:901325254633349170>'
+  - 'Ping someone! bruh <a:holysmokes:901325256634036305>'
 thinking:
-  - 'Thonking'
-  - 'Thinking...'
-  - 'Thonk... Thonk...'
-  - 'Thonking...'
-  - 'My brain is thinking...'
+  - 'Thonking <a:wig:901325254633349170>'
+  - 'Thinking... <a:burpa:901325251764428890>'
+  - 'Thonk... Thonk... <a:headbang:901325247255568384>'
+  - 'Thonking... <a:trippepe:901325254985654293>'
+  - 'My brain is thinking... <:ok:901325244504100864>'
 noPerms:
-  - 'No perms!'
-  - 'You don''t have permissions to do that!'
-  - 'You don''t have perms'
-  - 'LUL no perms!'
+  - 'No perms! <:omegalol:901325113369186344>'
+  - 'You don''t have permissions to do that! <a:lick:901325242830585896>'
+  - 'You don''t habe perms <a:boi_shakeangry:898522330765090846>'
+  - 'LUL no perms! <:vomit:901325245707845662>'
 notAvailable:
-  - 'This action is not available'
-  - 'This is not available'
-  - 'You can''t use this!'
+  - 'This action is not available <a:lick:901325242830585896>'
+  - 'This is not available <:omegalol:901325113369186344>'
+  - 'You can''t use this for now <a:sadsponge:901325244353093674>'
 noResponse:
   - 'I got nothing for you'
   - 'Sorry, I don''t see anything for you'
-  - 'I can''t get contents for this'
+  - 'I can''t get response for this'
 success:
   - 'Successful!'
-  - 'Successful'
-  - 'Done!'
-  - 'Noice! It''s done'
+  - 'Successful <a:boi_shakeangry:898522330765090846>'
+  - 'Noice! It''s done <a:blelele:901325242927054929>'
 tooLarge:
-  - 'This is too large'
-  - 'Too large for me'
+  - 'This is too large <a:blelele:901325242927054929>'
+  - 'Too large for me <a:boi_fastparrot:898522328529522759>'
   - ':eyes: can you make it smaller?'
 tooSmall:
-  - 'Too small!'
-  - 'Too small'
-  - 'So tiny for me'
+  - '<:whatt:901325247192653834> too small!'
+  - 'Too small <a:pepesword:901325250900402206>'
+  - 'So tiny for me <a:flame:901325248413204510>'
 
 # For commands
+ping:
+  - 'Pong! <a:sadsponge:901325244353093674>'
+  - 'Pong! <a:bingusangry:901325252318089276>'
+  - 'Ping <:huh:901325246165045258>'
+  - 'Ping Ping <a:funnycursed:901325245854662667>'
+banned:
+  title:
+    - 'Banned!'
+    - 'The ban hammer has spoken!'
+    - 'Talk to my ban hammer!'
+    - 'You''re now banned!'
+    - 'Ban! Ban!'
+  defaultReason: # %username% %author%
+    - 'You''re so hot to stay here <a:flame:901325248413204510>'
+    - 'Fly high! <a:5011kekwwa:901325243862360124>'
+    - 'Good bye <a:sadsponge:901325244353093674>'
+    - 'Talk to my ban hammer <a:blelele:901325242927054929>'
+    - 'The ban hammer has spoken to your ass! <a:holysmokes:901325256634036305>'
+kicked:
+  title:
+    - 'Kicked!'
+    - 'POG got kicked'
+    - 'I kicked some ass again!'
+    - 'Kicked LUL'
+  defaultReason: # %username% %author%
+    - 'See you soon to get your ban :eyes:'
+    - 'Go to your momma now! <a:peperun:901325248769703936>'
+    - 'Kicked because you''re sus!'
+    - 'Ayoo! got kicked <a:pepesword:901325250900402206>'
+    - 'Kicked!'
 stop: 
-  - 'Ok'
-  - 'Shut up! I''ll stop now'
+  - 'Ok <a:boi_scrollright:898522330786070568>'
+  - 'Shut up! I''ll stop now <a:catgun:901325244499910727>'
+  - 'Ok bitch <a:rogdance:901325242360815688>'
   - 'Stopping...'
 help:
   title: 'Command Help'
