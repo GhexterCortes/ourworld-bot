@@ -1,0 +1,11 @@
+chatbot:
+  enabled: true
+  command:
+    enabled: true
+    gender: male
+    name: ask
+    description: Ask something!
+channels:
+  enableChannelWhitelist: false
+  channelWhitelist:
+    - channelIdHere

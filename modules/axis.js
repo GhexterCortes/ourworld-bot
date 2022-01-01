@@ -184,9 +184,9 @@ maxClientEventListeners:`));
     }
 
     async setPresence(Client) {
-        log.log('Configuring bot presence...');
-        
         if(!options?.presence.enabled) return;
+
+        log.log('Configuring bot presence...');
 
         await Client.user.setPresence({
             status: Util.getRandomKey(options.presence.status),
