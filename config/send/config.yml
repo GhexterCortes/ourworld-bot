@@ -1,0 +1,5 @@
+spam:
+  whitelistChannels:
+    enabled: true
+    channelIds: []
+    convertToBlacklist: true
