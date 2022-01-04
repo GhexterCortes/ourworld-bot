@@ -1,5 +1,5 @@
-#token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token HiddenPlayer
-token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token Axis
+token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token HiddenPlayer
+#token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token Axis
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
