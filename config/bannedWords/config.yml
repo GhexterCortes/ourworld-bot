@@ -3,3 +3,4 @@ database:
   databaseChannelId: "928904657076649984"
   databaseMessageId: "929070695244243035"
   databaseName: BannedWords
+matchingPercentage: 0.7

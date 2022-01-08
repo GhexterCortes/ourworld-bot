@@ -58,7 +58,8 @@ class BannedWords {
                 databaseChannelId: '',
                 databaseMessageId: '',
                 databaseName: 'BannedWords',
-            }
+            },
+            matchingPercentage: 0.8
         }));
     }
 
@@ -116,7 +117,7 @@ class BannedWords {
             if(!words.length || !content) return false;
 
             let bannedWords = content.filter(w => words.some(bw => {
-                return w.toLowerCase().startsWith(bw.toLowerCase()) || StringSmilarity.compareTwoStrings(w, bw) >= 0.5;
+                return w.toLowerCase().startsWith(bw.toLowerCase()) || StringSmilarity.compareTwoStrings(w, bw) >= this.scriptConfig.matchingPercentage;
             }));
                 bannedWords = bannedWords.filter((val, index, self) => self.indexOf(val) === index);
             const embed = new MessageEmbed();
