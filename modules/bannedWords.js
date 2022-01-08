@@ -2,6 +2,7 @@ const Database = require('./_database');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const { InteractionCommandBuilder } = require('../scripts/builders');
 const MakeConfig = require('../scripts/makeConfig');
+const StringSmilarity = require('string-similarity');
 const { MessageEmbed } = require('discord.js');
 const Yml = require('yaml');
 
@@ -69,13 +70,18 @@ class BannedWords {
                 const words = this.database.response.words;
 
                 if(!words.length) return SafeInteract.reply(interaction, 'No words are banned');
-                return SafeInteract.reply(interaction, 'Banned words:\n```\n'+ words.join('\n') +'\n```');
+                return SafeInteract.reply(interaction, { content: ' ', embeds: [
+                    new MessageEmbed()
+                        .setAuthor({ name: 'Banned words' })
+                        .setDescription(`||${words.join('||\n||')}||`)
+                        .setColor('RED')
+                ] });
             case 'add':
                 const word = interaction.options.getString('word');
 
                 if(!word || word == '@a') return SafeInteract.reply(interaction, 'Please provide a word');
-                if(await this.addBannedWord(word.split(' '))) {
-                    return SafeInteract.reply(interaction, 'Word added to banned words');
+                if(await this.addBannedWord(word.replace(/\n/g, ' ').split(' '))) {
+                    return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setColor('RED').setDescription('`'+ word.replace(/\n/g, ' ').split(' ').join('`, `') +'` banned!') ] });
                 } else {
                     return SafeInteract.reply(interaction, 'Can\'t add word to banned words');
                 }
@@ -89,11 +95,13 @@ class BannedWords {
 
                 try {
                     await this.database.update({ words: bannedWords });
-                    return SafeInteract.reply(interaction, 'Word removed from banned words');
+                    return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setColor('RED').setDescription('`'+ removeWord +'` removed from banned words') ] });
                 } catch(err) {
                     return SafeInteract.reply(interaction, 'Can\'t remove word from banned words');
                 }
         }
+
+        await this.database.automaticFetch();
     }
 
     async onLoad(Client) {
@@ -107,7 +115,9 @@ class BannedWords {
 
             if(!words.length || !content) return false;
 
-            let bannedWords = content.filter(w => words.some(bw => w.startsWith(bw)));
+            let bannedWords = content.filter(w => words.some(bw => {
+                return w.toLowerCase().startsWith(bw.toLowerCase()) || StringSmilarity.compareTwoStrings(w, bw) >= 0.5;
+            }));
                 bannedWords = bannedWords.filter((val, index, self) => self.indexOf(val) === index);
             const embed = new MessageEmbed();
 
@@ -118,7 +128,9 @@ class BannedWords {
             embed.setDescription('```\n'+ bannedWords.join(', ') +'\n```');
             embed.setColor('RED');
             
-            const reply = await SafeMessage.reply(message, { content: ' ', embeds: [embed] });
+            const reply = await SafeMessage.reply(message, { content: 'Foker timed out for 10s', embeds: [embed] });
+
+            await message?.member?.timeout(10000, 'Banned words').catch(err => true);
 
             await SafeMessage.react(message, '🇫');
             await SafeMessage.react(message, '🇴');
@@ -129,7 +141,7 @@ class BannedWords {
             setTimeout(async () => {
                 await SafeMessage.delete(message);
                 await SafeMessage.delete(reply);
-            }, 5000);
+            }, 3000);
         });
     }
 
@@ -145,10 +157,10 @@ class BannedWords {
 
         switch(typeof word) {
             case 'string':
-                word = [this.removeSpecialChars(word).toLowerCase()];
+                word = [this.removeSpecialChars(word)];
                 break;
             case 'object':
-                word.map(w => this.removeSpecialChars(w).toLowerCase());
+                word.map(w => this.removeSpecialChars(w));
                 break;
             default:
                 return false;
@@ -171,7 +183,7 @@ class BannedWords {
     }
 
     removeSpecialChars(string) {
-        return string.replace(/[^\w\s]/gi, '');
+        return string.toLowerCase().replace(/[^\w\s]/gi, '');
     }
 }
 
