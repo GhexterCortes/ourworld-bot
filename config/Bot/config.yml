@@ -73,8 +73,8 @@ messageLogging:
 processErrors:
   clientShardError: true
   processWarning: true
-  processUnhandledRejection: true
-  processUncaughtException: true
+  processUnhandledRejection: false
+  processUncaughtException: false
 
 client:
   # Bot intents
