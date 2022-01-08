@@ -1,9 +1,9 @@
 const Yml = require('yaml');
 const Util = require('fallout-utility');
 const MakeConfig = require('../scripts/makeConfig');
-const SafeMessage = require('../scripts/safeMessage');
+const { SafeMessage } = require('../scripts/safeActions');
 
-const config = Yml.parse(MakeConfig('./config/chatBridge.yml', {
+const config = Yml.parse(MakeConfig('./config/chatBridge/config.yml', {
         playerRoles: {
             colors: {
                 "admin": "green",
@@ -29,10 +29,10 @@ const config = Yml.parse(MakeConfig('./config/chatBridge.yml', {
 
 class ChatBridge {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.0'];
     }
 
-    start(Client) {
+    onStart(Client) {
         
         if(config.channels.length <= 1) return false;
 

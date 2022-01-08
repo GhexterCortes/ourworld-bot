@@ -1,43 +1,23 @@
 const Yml = require('yaml');
 const Fetch = require('node-fetch');
 const MakeConfig = require('../scripts/makeConfig');
-const SafeMessage = require('../scripts/safeMessage');
-const SafeInteract = require('../scripts/safeInteract');
 const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
+const { InteractionCommandBuilder } = require('../scripts/builders');
+
+let scriptConfig;
 
 class ChatBot {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.0'];
     }
 
-    start(Client) {
-        const scriptConfig = this.getConfig('./config/chatbot.yml');
+    onStart(Client) {
+        scriptConfig = this.getConfig('./config/chatbot/config.yml');
         
         if(scriptConfig.chatbot.enabled && scriptConfig.chatbot.command.enabled) {
-            this.commands = [
-                new InteractionCommandBuilder()
-                    .setCommand(SlashCommandBuilder => SlashCommandBuilder
-                        .setName(scriptConfig.chatbot.command.name)
-                        .setDescription(scriptConfig.chatbot.command.description)
-                        .addStringOption(query => query.setName('query').setDescription('The question to ask.'))
-                    )
-                    .setAllowExecuteViaDm(true)
-                    .setExecute(async (interaction) => {
-                        const query = interaction.options.getString('query');
-                        if(!query) return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setDescription('No question provided!').setColor('RED') ] });
-
-                        try{
-                            await SafeInteract.deferReply(interaction);
-                            const response = await this.getResponse(query, Client.user.username, Client.user.username, interaction.user.username, scriptConfig.chatbot.gender);
-
-                            await SafeInteract.editReply(interaction, response);
-                        } catch(err) {
-                            await SafeInteract.editReply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED') ] });
-                        }
-                    })
-            ]
+            this.addCommand(Client);
         }
 
         Client.on('messageCreate', async (message) => {
@@ -47,7 +27,7 @@ class ChatBot {
 
             try {
                 await message.channel.sendTyping();
-                const reply = await this.getResponse(message.content, Client.user.username, Client.AxisUtility.getConfig().owner, message.author.username, scriptConfig.chatbot.gender);
+                const reply = await this.getResponse(message.content, Client.user.username, Client.AxisUtility.get().config.owner, message.author.username, scriptConfig.chatbot.gender);
 
                 // set reply without pinging the author
                 await SafeMessage.reply(message, {
@@ -63,6 +43,31 @@ class ChatBot {
         });
 
         return true;
+    }
+
+    addCommand(Client) {
+        this.commands = [
+            new InteractionCommandBuilder()
+                .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                    .setName(scriptConfig.chatbot.command.name)
+                    .setDescription(scriptConfig.chatbot.command.description)
+                    .addStringOption(query => query.setName('query').setDescription('The question to ask.'))
+                )
+                .setAllowExecuteViaDm(true)
+                .setExecute(async (interaction) => {
+                    const query = interaction.options.getString('query');
+                    if(!query) return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setDescription('No question provided!').setColor('RED') ] });
+
+                    try{
+                        await SafeInteract.deferReply(interaction);
+                        const response = await this.getResponse(query, Client.user.username, Client.user.username, interaction.user.username, scriptConfig.chatbot.gender);
+
+                        await SafeInteract.editReply(interaction, response);
+                    } catch(err) {
+                        await SafeInteract.editReply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED') ] });
+                    }
+                })
+        ];
     }
 
     async getResponse(message, botName = 'Bot', ownerName = 'Person', authorName = 'bitch', botGender = 'male') {
@@ -84,9 +89,9 @@ class ChatBot {
         return Yml.parse(MakeConfig(location, {
             chatbot: {
                 enabled: true,
+                gender: 'male',
                 command: {
                     enabled: true,
-                    gender: 'male',
                     name: 'ask',
                     description: 'Ask something!'
                 }

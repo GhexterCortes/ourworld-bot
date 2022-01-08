@@ -1,7 +1,7 @@
 const Ping = require('./ping');
 const { replaceAll, getRandomKey, isNumber } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
-const SafeMessage = require('../../scripts/safeMessage');
+const { SafeMessage } = require('../../scripts/safeActions');
 
 const cache = {};
 
@@ -30,7 +30,7 @@ async function addServer(ip, message, config) {
     if(config.autoEmbedIp.disableMultipleUpload && findCache(message.author.id, message.channelId)) return sendError(getRandomKey(config.messages.alreadyUploaded), message, config.messages.embedColors['error'], true, true);
     insertCache(message.author.id, message.channelId);
 
-    const embed = new MessageEmbed().setAuthor(displayIp(ip)).setColor(config.messages.embedColors['buffer']);
+    const embed = new MessageEmbed().setAuthor({ name: displayIp(ip) }).setColor(config.messages.embedColors['buffer']);
     const reply = await sendError(getRandomKey(config.messages.pending), message, config.messages.embedColors['buffer']);
 
     let errors = 0;
@@ -38,8 +38,8 @@ async function addServer(ip, message, config) {
 
     // Update loop
     async function updateServer() {
+        if(deleted(message) || deleted(reply)) return deleteReply(true);
         if(message.edit && !getIp(message.content)) { return deleteReply(true); } else { ip = getIp(message.content); }
-        if(message.deleted || reply.deleted) return deleteReply(true);
         const server = await Ping(ip);
 
         if(!server) return updateError();
@@ -69,7 +69,7 @@ async function addServer(ip, message, config) {
 
     async function sendUpdateError(error) {
         const errorEmbed = new MessageEmbed().setColor(config.messages.embedColors['error']);
-        if(/[\n]/m.test(error)) { errorEmbed.setDescription(error); } else { errorEmbed.setAuthor(error); }
+        if(/[\n]/m.test(error)) { errorEmbed.setDescription(error); } else { errorEmbed.setAuthor({ name: error }); }
 
         return SafeMessage.edit(reply, {
             content: ' ',
@@ -81,8 +81,8 @@ async function addServer(ip, message, config) {
 
     async function deleteReply(removeUserChannelCache = true) {
         if(removeUserChannelCache) removeCache(message.author.id, message.channelId);
-        if(config.autoEmbedIp.deleteAfterInactive && !message.deleted) await SafeMessage.delete(message);
-        if(!reply.deleted) await SafeMessage.delete(reply);
+        if(config.autoEmbedIp.deleteAfterInactive && !deleted(message)) await SafeMessage.delete(message);
+        if(!deleted(reply)) await SafeMessage.delete(reply);
     }
 }
 
@@ -167,13 +167,20 @@ async function sendError(message, source, embedColor, autoDeleteReply, deleteOri
 
     const embed = new MessageEmbed().setColor(embedColor);
 
-    if(/[\n]/m.test(message)) { embed.setDescription(message); } else { embed.setAuthor(message); }
+    if(/[\n]/m.test(message)) { embed.setDescription(message); } else { embed.setAuthor({ name: message }); }
     
     const reply = await SafeMessage.send(source.channel, { content: ' ', embeds: [embed] });
     if(deleteOriginalMessage) await SafeMessage.delete(source);
     if(autoDeleteReply) setTimeout(() => SafeMessage.delete(reply), 5000);
 
     return reply;
+}
+
+function deleted(message) {
+    const channel = message ? message.channel : null;
+    const targetMessage = channel ? channel.messages.cache.get(message.id) : false;
+
+    return targetMessage ? false : true;
 }
 
 function removeColorId(text) {

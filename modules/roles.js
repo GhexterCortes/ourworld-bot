@@ -1,27 +1,24 @@
 const Yml = require('yaml');
 const Database = require('./_database');
 const MakeConfig = require('../scripts/makeConfig');
-const { Logger } = require('fallout-utility');
 const UsrGuild = require('../scripts/userGuild');
 const ms = require('ms');
 
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
-const SafeInteract = require('../scripts/safeInteract');
-const SafeMessage = require('../scripts/safeMessage');
+const { InteractionCommandBuilder } = require('../scripts/builders');
+const { SafeInteract, SafeMessage } = require('../scripts/safeActions');
 let UserGuild = null;
 
-const log = new Logger('RoleManagement');
 let scriptConfig = null;
 let db = null;
 
 class Role {
     constructor() {
-        this.versions = ['1.4.1', '1.4.2', '1.4.3', '1.4.4'];
+        this.versions = ['1.6.0'];
     }
 
-    async start(Client) {
+    async onStart(Client) {
         UserGuild = new UsrGuild(Client);
-        scriptConfig = this.getConfig('./config/roles.yml');
+        scriptConfig = this.getConfig('./config/roles/config.yml');
         db = await new Database(scriptConfig.databaseServerId, scriptConfig.databaseChannelId, scriptConfig.databaseName).start(Client);
 
         await db.fetchData(scriptConfig.databaseMessageId ? scriptConfig.databaseMessageId : null, true);
@@ -99,8 +96,9 @@ class Role {
         }
 
         if(fetchInterval && Client) {
+            const log = Client.AxisUtility.get().logger;
             for (const user of db.response.users) {
-                log.warn(`Updating ${user.userId}'s ${user.roleId} role`);
+                log.warn(`Updating ${user.userId}'s ${user.roleId} role`, 'RoleManagement');
 
                 if(user.time > new Date().getTime()) continue;
                 const member = await UserGuild.getMember(user.guildId, user.userId);
@@ -108,11 +106,11 @@ class Role {
                 const role = await member.roles.cache.find(r => r.id === user.roleId);
                 if(!role) continue;
 
-                const action = await member.roles.remove(role).catch(err => { log.error(err); return false; });
+                const action = await member.roles.remove(role).catch(err => { log.error(err, 'RoleManagement'); return false; });
                 await db.update({ users: db.response.users.filter(u => !(u.userId === user.userId && u.roleId === user.roleId && u.guildId === user.guildId)) });
                 
-                if(!action) { log.error(`Action failed`); continue; }
-                log.warn(`Removed role from user ${member.tag}`);
+                if(!action) { log.error(`Action failed`, 'RoleManagement'); continue; }
+                log.warn(`Removed role from user ${member.tag}`, 'RoleManagement');
 
                 if(scriptConfig.dmAfterRoleRemove.enabled) await SafeMessage.send(member, scriptConfig.dmAfterRoleRemove.message.replace('%role%', role.name).replace('%server%', member.guild.name));
             }

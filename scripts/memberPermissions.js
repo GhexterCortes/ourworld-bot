@@ -1,25 +1,4 @@
-const { Permissions } = require('discord.js');
-
 module.exports = {
-    /**
-     * 
-     * @param {Object} member - Guild member object
-     * @returns {boolean} Returns if member is administrator
-     */
-    admin(member) {
-        if(member && member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return true;
-        return false;
-    },
-
-    /**
-     * @param {Object} member - Guild member object
-     * @returns {boolean} Returns if member is moderator
-    */
-    moderator(member) {
-        if(member && member.permissions.has([Permissions.FLAGS.BAN_MEMBERS, Permissions.FLAGS.KICK_MEMBERS])) return true;
-        return false;
-    },
-
     /**
      * @param {String} channelId - Channel ID
      * @param {Object} blacklistChannels - list of channels to blacklist
@@ -29,11 +8,12 @@ module.exports = {
      * @returns {boolean} Returns if channel is accessible
     */
     isIgnoredChannel(channelId, blacklistChannels) {
-        if(
-            blacklistChannels.enabled && !blacklistChannels.convertToWhitelist && blacklistChannels.channels.includes(channelId.toString())
+        if(blacklistChannels.enabled && (
+            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.find(chnl => chnl == channelId)
             || 
-            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.includes(channelId.toString())
-        ) { return true; }
+            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.find(chnl => chnl == channelId)
+        )) { return true; }
+
         return false;
     }
 }

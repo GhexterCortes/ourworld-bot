@@ -2,11 +2,11 @@ const Message = require('./message/index.js');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.0'];
         this.commands = Message.commands();
     }
 
-    async start() {
+    async onStart() {
         return true;
     }
 }

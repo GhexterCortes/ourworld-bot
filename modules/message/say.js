@@ -1,12 +1,11 @@
-const InteractionCommandBuilder = require('../../scripts/interactionCommandBuilder');
-const SafeMessage = require('../../scripts/safeMessage');
-const SafeInteract = require('../../scripts/safeInteract');
 const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
+const { InteractionCommandBuilder } = require('../../scripts/builders');
+const { SafeMessage, SafeInteract } = require('../../scripts/safeActions');
 const MakeConfig = require('../../scripts/makeConfig');
 const Yml = require('yaml');
 
-const config = Yml.parse(MakeConfig('./config/say.yml', {
+const config = Yml.parse(MakeConfig('./config/send/config.yml', {
     spam: {
         whitelistChannels: {
             enabled: true,

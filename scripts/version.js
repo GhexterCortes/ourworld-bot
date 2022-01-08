@@ -1,1 +1,1 @@
-module.exports = '1.4.4';
+module.exports = require('../package.json').version;

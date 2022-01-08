@@ -6,9 +6,7 @@ autoEmbedIp:
   deleteAfterInactive: true
   disableMultipleUpload: true
   allowedChannelIds:
-  - '911491519389786142'
-
-#  - '876048902187540520'
+    - '911491519389786142'
 messages:
   pending: Loading...
   noIpProvided: |-

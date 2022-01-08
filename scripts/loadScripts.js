@@ -1,8 +1,7 @@
 const Path = require('path');
 const Util = require('fallout-utility');
+const DataTypeValidator = require('./dataTypeValidator');
 const Fs = require('fs');
-
-const log = new Util.Logger('ScriptsLoader');
 
 /**
 * @param {string} location - The path to scripts
@@ -10,30 +9,33 @@ const log = new Util.Logger('ScriptsLoader');
 * @returns {Object} - returns an object with the loaded scripts
 */
 module.exports = async (Client, location) => {
-    const config = Client.AxisUtility.getConfig();
+    const log = Client.AxisUtility.get().logger;
+    const config = Client.AxisUtility.get().config;
     const scripts = {};
     const commands = { MessageCommands: [], InteractionCommands: [] };
 
+    // Load all scripts
     if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
 
     const modulesList = Fs.readdirSync(location).filter(file => file.endsWith('.js') && !file.startsWith('_'));
 
+    // Start scripts
     for (const file of modulesList) {
         const path = Path.join(location , file);
         const importModule = require(path);
+        const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
 
         try {
             // Name of the script
-            const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
-            if(!name || !validateString(name)) throw new Error('Invalid Script Name: Name must be all lowercase with a special characters');
+            if(!name || !DataTypeValidator.moduleName(name)) throw new Error('Invalid Script Name: Name must be all lowercase without a special characters');
 
             // Check supported version
-            if (importModule?.versions && !importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
+            if (!importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
 
             // Import script
             scripts[name] = importModule;
             scripts[name]['_information'] = {file: file, name: name, path: path};
-            if (!await Promise.resolve(scripts[name].start(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
+            if (!await Promise.resolve(scripts[name].onStart(Client))) { throw new Error(`Couldn't start script ${file}. Returned false`); }
 
             // Register Commands
             loadCommands(scripts[name], commands);
@@ -41,6 +43,7 @@ module.exports = async (Client, location) => {
         } catch (err) {
             log.error(`Coudln't load ${file}: ${err.message}`, file);
             log.error(err, file);
+            delete scripts[name];
         }
     }
 
@@ -66,22 +69,15 @@ function loadCommands(script, commands) {
     }
 }
 function parseMessageCommand(command, commands) {
-    if(!command.name || !validateString(command.name)) throw new Error(`Invalid command name: ${command.name}`);
-    if(!command.execute || !validateFunction(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
+    if(!command.name || !DataTypeValidator.moduleName(command.name)) throw new Error(`Invalid command name: ${command.name}`);
+    if(typeof command.execute !== 'function' || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
     
     commands.MessageCommands.push(command);
 }
 function parseInteractionCommand(command, commands) {
     if(!command.command || !Object.keys(command.command).length) throw new Error(`Invalid command 'command': ${command.command}`);
-    if(!command.execute || !validateFunction(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
+    if(typeof command.execute !== 'function' || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
 
+    command.command = command.command.toJSON();
     commands.InteractionCommands.push(command);
-}
-
-function validateFunction(value) {
-    return typeof value === 'function';
-}
-
-function validateString(value) {
-    return typeof value === 'string' && value.match(/^[a-z]+$/);
 }

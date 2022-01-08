@@ -1,4 +1,4 @@
-const SafeMessage = require('../scripts/safeMessage');
+const { SafeMessage } = require('../scripts/safeActions');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class Database {

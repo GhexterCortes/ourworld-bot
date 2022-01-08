@@ -1,16 +1,18 @@
 const Yml = require('yaml');
+const MakeConfig = require('../scripts/makeConfig');
 const { MessageEmbed } = require('discord.js');
 const { getRandomKey } = require('fallout-utility');
-const MakeConfig = require('../scripts/makeConfig');
-const SafeMessage = require('../scripts/safeMessage');
+const { SafeMessage } = require('../scripts/safeActions');
 
-const config = getConfig('./config/announcements.yml');
+let config;
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.0'];
     }
-    async start(Client) {
+    async onStart(Client) {
+        config = this.getConfig('./config/announcements/config.yml');
+
         Client.on('messageCreate', async message => {
             if(!this.checkChannel(message.channelId, config.announcementChannels) || message.author.bot || message.author.system) return;
 
@@ -64,6 +66,39 @@ class Create {
         return response;
     }
 
+    getConfig(location) {
+        const defaultConfig = {
+            announcementChannels: '',
+            minAnnouncementMessageLenght: 20,
+            ping: {
+                requireRolePing: {
+                    enabled: true,
+                    roles: []
+                },
+                disableEveryone: true
+            },
+            action: {
+                deleteOriginalMessage: true,
+                deleteMessageAfterMilliseconds: 10000,
+                embedErrorColor: 'DANGER'
+            },
+            threads: {
+                enabled: false,
+                threadName: 'About this announcement'
+            },
+            messages: {
+                messageTooSmall: 'Announcement message is too short.',
+                noPingedRole: 'You have to ping a valid role for this announcement message.',
+                pingedEveryone: {
+                    message: 'You\'re not allowed to ping everyone.',
+                    subAnnouncement: 'The announcement that pinged everyone was deleted. Sorry for pinging everyone.'
+                }
+            }
+        };
+    
+        return Yml.parse(MakeConfig(location, defaultConfig));
+    }
+
     async makeThread(message) {
         if(!config.threads.enabled) return;
 
@@ -77,36 +112,3 @@ class Create {
 }
 
 module.exports = new Create();
-
-function getConfig(location) {
-    const defaultConfig = {
-        announcementChannels: '',
-        minAnnouncementMessageLenght: 20,
-        ping: {
-            requireRolePing: {
-                enabled: true,
-                roles: []
-            },
-            disableEveryone: true
-        },
-        action: {
-            deleteOriginalMessage: true,
-            deleteMessageAfterMilliseconds: 10000,
-            embedErrorColor: 'DANGER'
-        },
-        threads: {
-            enabled: false,
-            threadName: 'About this announcement'
-        },
-        messages: {
-            messageTooSmall: 'Announcement message is too short.',
-            noPingedRole: 'You have to ping a valid role for this announcement message.',
-            pingedEveryone: {
-                message: 'You\'re not allowed to ping everyone.',
-                subAnnouncement: 'The announcement that pinged everyone was deleted. Sorry for pinging everyone.'
-            }
-        }
-    };
-
-    return Yml.parse(MakeConfig(location, defaultConfig));
-}

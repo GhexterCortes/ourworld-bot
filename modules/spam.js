@@ -1,14 +1,14 @@
 const MemberPermission = require('../scripts/memberPermissions');
-const SafeMessage = require('../scripts/safeMessage');
+const { SafeMessage } = require('../scripts/safeActions');
 const { MessageEmbed } = require('discord.js');
 
 class Spammer {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.0'];
     }
 
-    async start(Client) {
-        const config = Client.AxisUtility.getConfig();
+    async onStart(Client) {
+        const config = Client.AxisUtility.get().config;
         Client.on('messageCreate', async (message) => {
             if (!message || message.author.bot) return;
 
@@ -32,7 +32,7 @@ class Spammer {
 
                 console.log(owner);
                 if(owner) await SafeMessage.send(owner, {
-                    content: 'This message was marked as spam! by ' + message.author.tag,
+                    content: `This message was marked as spam! by **${message.author.tag}** at **${message.guild.name}**`,
                     embeds: [
                         new MessageEmbed()
                             .setColor(config.embedColor)
@@ -43,7 +43,7 @@ class Spammer {
             }
 
             // count message pings
-            if(!MemberPermission.admin(message.member) && message.mentions.users.size > 0 &&
+            if(message.member && (!message.member && message.member.permissions.has(['MANAGE_MESSAGES']) ) && message.mentions.users.size > 0 &&
                 (
                     message.content.toLowerCase().startsWith('pls ')
                     ||

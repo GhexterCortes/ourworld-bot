@@ -1,13 +1,13 @@
 const Server = require('./server/');
 
-const config = Server.getConfig('./config/serverPinger.yml');
+const config = Server.getConfig('./config/serverPinger/config.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.1', '1.4.4'];
+        this.versions = ['1.6.0'];
     }
 
-    async start(Client) {
+    async onStart(Client) {
         Server.onMessage(Client, config);
 
         return true;
