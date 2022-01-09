@@ -45,6 +45,8 @@ permissions:
         permissions: ['ADMINISTRATOR']
       - command: 'send'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'bannedwords'
+        permissions: ['MANAGE_MESSAGES']
 
 # Ignored channels based on IDs
 blacklistChannels:            
