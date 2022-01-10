@@ -11,7 +11,7 @@
   "engineStrict": true,
   "license": "MIT",
   "dependencies": {
-    "@acegoal07/discordjs-pagination": "^1.1.4",
+    "@acegoal07/discordjs-pagination": "^1.1.5",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@vitalets/google-translate-api": "^7.0.0",
     "commander": "^8.3.0",
