@@ -8,7 +8,7 @@ const Yml = require('yaml');
 
 class BannedWords {
     constructor() {
-        this.versions = ['1.6.0'];
+        this.versions = ['1.6.0','1.6.1'];
         this.scriptConfig = this.getConfig('./config/bannedWords/config.yml');
         this.database = new Database(this.scriptConfig.database.databaseGuildId, this.scriptConfig.database.databaseChannelId, this.scriptConfig.database.databaseName);
     }

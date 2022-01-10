@@ -10,7 +10,7 @@ let scriptConfig;
 
 class ChatBot {
     constructor() {
-        this.versions = ['1.6.0'];
+        this.versions = ['1.6.0','1.6.1'];
     }
 
     onStart(Client) {

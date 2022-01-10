@@ -24,7 +24,7 @@ let config = Yml.parse(MakeConfig('./config/randomAnimals/config.yml', defaultCo
 
 class RandomAnimals {
     constructor() {
-        this.versions = ['1.6.0'];
+        this.versions = ['1.6.0','1.6.1'];
         this.commands = [];
     }
 

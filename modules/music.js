@@ -7,7 +7,7 @@ const Genius = new Lyrics.Client();
 
 class Create {
     constructor() {
-        this.versions = ['1.6.0'];
+        this.versions = ['1.6.0','1.6.1'];
         this.commands = [
             new MessageCommandBuilder()
                 .setName('lyrics')
