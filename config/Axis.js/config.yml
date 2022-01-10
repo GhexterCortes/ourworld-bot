@@ -27,7 +27,12 @@ presence:
 version:
   # The message to display when the version command is used
   message: |-
-      **{username} v{version}**
+      **Server Version**
+      ```
+      1.18.1-1.16.5
+      ```
+
+      **{username} Bot v{version}**
       Based on Axis bot v{version}.
       https://github.com/FalloutStudios/Axis
 
