@@ -35,7 +35,7 @@ class CustomCommands {
 
     async onLoad(Client) {
         Client.on('messageCreate', async (message) => {
-            if((message.content && !this.prefixes.includes(message.content.split(' ').shift().trim().toLowerCase())) || message.author.bot || message.author.system) return;
+            if(!message.content || !this.prefixes.includes(message.content.split(' ').shift().trim().toLowerCase()) || message.author.bot || message.author.system) return;
 
             const reply = await SafeMessage.reply(message, getRandomKey(Client.AxisUtility.get().language.thinking));
             await SafeMessage.edit(reply, { content: ' ', embeds: [await this.ping()] });
