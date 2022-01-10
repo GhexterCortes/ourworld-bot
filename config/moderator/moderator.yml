@@ -1,0 +1,33 @@
+kick:
+  enabled: true
+  defaultReason:
+   - Kicked! shuta ka
+   - Kicked! Putangina mo kase
+   - Gago na kick buti nga
+   - Kicked bc you're sus
+   - Kicked bc idk
+   - Kicked!
+   - Damn
+   - Sadge not sadge
+ban:
+  enabled: true
+  defaultReason:
+   - Banned lol
+   - Deserved lol
+   - BANNN!
+   - Banned bc of being a foker
+   - Foker
+   - Dam
+   - Talk to my ban hammer!
+   - The ban hammer has spoken
+mute:
+  enabled: true
+  defaultDuration: "1m"
+  defaultReason:
+   - Muted!!!
+   - Shut up
+   - Shit up now
+   - Foker shut your mouth
+   - L
+   - Mute hammer!
+   - Krazy muted

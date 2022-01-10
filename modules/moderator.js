@@ -11,7 +11,7 @@ let config = [];
 
 class Moderator {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.6.1'];
     }
 
     async onStart(Client) {
@@ -261,7 +261,7 @@ class Moderator {
                 duration = interaction.options.getString('duration') ? ms(interaction.options.getString('duration')) : duration;
 
                 if (!user) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'User not found') ], ephemeral: true });
-                if (duration !== 0 && !duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? `Muted: ${ms(duration, { long: true })} ${reason}` : 'Unmuted')) ] });
+                if (duration !== 0 && !duration) return SafeInteract.reply(interaction, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Invalid Duration') ] });
 
                 // mute user
                 mute = await interaction?.guild.members.cache.get(user.id).timeout(duration, reason).catch(async err => {
@@ -299,7 +299,7 @@ class Moderator {
                     await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, false, 'Unable to mute user') ] });
                     return false;
                 });
-                if(mute) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, 'Muted: '+ reason) ] });
+                if(mute) await SafeMessage.reply(message, { content: ' ', embeds: [ this.makeReasonEmbed(user, true, (duration ? `Muted: ${ms(duration, { long: true })} ${reason}` : 'Unmuted')) ] });
 
                 break;
         }
