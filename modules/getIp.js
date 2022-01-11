@@ -48,7 +48,7 @@ class CustomCommands {
             host: this.server,
             port: this.port,
             closeTimeout: 3000
-        }).catch(err => { log.error(err); return false; });
+        }).catch(err => { this.logger.error(err); return false; });
 
         embed.setAuthor({ name: 'Server Information' });
         embed.setColor();
