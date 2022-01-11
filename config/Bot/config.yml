@@ -28,6 +28,8 @@ permissions:
         permissions: ['KICK_MEMBERS']
       - command: 'ban'
         permissions: ['BAN_MEMBERS']
+      - command: 'log'
+        permissions: ['MANAGE_MESSAGES']
   
   # Slash commands permissions
   interactionCommands:
@@ -43,6 +45,8 @@ permissions:
         permissions: ['ADMINISTRATOR']
       - command: 'role-timer'
         permissions: ['ADMINISTRATOR']
+      - command: 'log'
+        permissions: ['MANAGE_MESSAGES']
       - command: 'send'
         permissions: ['MANAGE_MESSAGES']
       - command: 'bannedwords'
