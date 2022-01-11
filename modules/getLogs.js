@@ -1,6 +1,7 @@
 const { InteractionCommandBuilder, MessageCommandBuilder} = require('../scripts/builders');
 const { SafeInteract, SafeMessage } = require('../scripts/safeActions');
 const { MessageEmbed } = require('discord.js');
+const { limitText } = require('fallout-utility');
 const PasteGG = require('paste.gg');
 const Fs = require('fs');
 
@@ -26,13 +27,13 @@ class GetLog {
                     .setName('log')
                     .setDescription('Get the bot latest log')    
                 )
+                .setAllowExecuteViaDm(true)
                 .setExecute(async (interaction) => SafeInteract.reply(interaction, { content: ' ', embeds: await this.getLog(), ephemeral: true }))
         ];
         return true;
     }
 
     async getLog() {
-        let embeds = [];
         const embed = new MessageEmbed().setAuthor({ name: 'latest.log' }).setColor('BLUE');
 
         try{
@@ -50,37 +51,15 @@ class GetLog {
                 ]
             });
 
-            const split = this.splitString(log, 4000);
-            let limit = 0;
-            for (const string of split) {
-                const newEmbed = new MessageEmbed().setAuthor({ name: 'latest.log' }).setColor('BLUE');
-                newEmbed.setDescription('```log\n' + string + '\n```');
-                if(paste && paste.status === 'success') newEmbed.setFooter({ text: 'Log pasted at ' + paste.result.url });
-                embeds = [...embeds, newEmbed];
+            embed.setDescription('```\n' + limitText(log, 5997, '...') + '\n```');
+            if(paste && paste.status === 'success') embed.setFooter({ text: 'Full Log at ' + paste.result.url });  
 
-                limit++;
-                if(limit >= 10) break;
-            }
-
-            return embeds;
+            return [embed];
         } catch (err) {
             console.error(err);
-            embed.setDescription('```\nError while reading the log\n```');
+            embed.setDescription('```\nError while reading the log\n```\n```\n'+ err.stack +'\n```');
             return [embed];
         }
-    }
-
-    splitString (str, n) {
-        if (str.length <= n) {
-            return [str];
-        }
-        const result = [];
-        let i = 0;
-        while (i < str.length) {
-            result.push(str.substr(i, n));
-            i += n;
-        }
-        return result;
     }
 }
 
