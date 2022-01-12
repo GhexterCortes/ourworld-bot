@@ -91,7 +91,6 @@ class ChatBridge {
         if(!channel || !channel.playerChats.send || channel.botId != message.author.id) return;
 
         const chat = this.parsePlayerChat(message.content);
-        if(!chat && !message.embeds) return;
 
         message.embeds = message.embeds.map(embed => embed.setFooter({ text: 'From '+ message.channel.name }));
         const receivers = config.channels.filter(chnl => chnl.messagesChannelId != message.channelId && chnl.playerChats.receive);
@@ -99,10 +98,11 @@ class ChatBridge {
             const receiverConsoleChannel = message.guild.channels.cache.get(receiver.consoleChannelId);
             const receiverMessagesChannel = message.guild.channels.cache.get(receiver.messagesChannelId);
             if(!channel) continue;
-            if(!chat && message.embeds.length) return SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ ...message.embeds ] });
+            if(message.embeds.length) await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ ...message.embeds ] });
 
+            if(!chat) continue;
             await SafeMessage.send(receiverConsoleChannel, chat[0]);
-            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: chat[2]['author'] }).setDescription(chat[2]['content']).setFooter({ text: 'Game chat from '+ message.channel.name }) , ...message.embeds ] });
+            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: chat[2]['author'] }).setDescription(chat[2]['content']).setFooter({ text: 'Game chat from '+ message.channel.name }) ] });
         }
     }
 

@@ -10,8 +10,20 @@ class CustomCommands {
         this.logger = null;
         this.embedColor = '#0099ff';
         this.prefixes = ['!ip', '?ip', '>ip', '$ip'];
-        this.server = 'play.ourmcworld.ml';
-        this.port = 25565;
+        this.servers = [
+            {
+                ip: 'play.ourmcworld.ml',
+                port: 25565
+            },
+            {
+                ip: 'OurWorldS3.aternos.me',
+                port: 63471
+            },
+            {
+                ip: 'OurWorldTestServer.aternos.me',
+                port: 34360
+            }
+        ]
     }
 
     async onStart(Client) {
@@ -26,7 +38,8 @@ class CustomCommands {
                 )
                 .setExecute(async (interaction) => {
                     await SafeInteract.deferReply(interaction, { ephemeral: true });
-                    await SafeInteract.editReply(interaction, { content: ' ', embeds: [await this.ping()], ephemeral: true });
+                    await SafeInteract.editReply(interaction, { content: ' ', embeds: await this.preload(), ephemeral: true});
+                    await SafeInteract.editReply(interaction, { content: ' ', embeds: await this.ping(), ephemeral: true });
                 })
         ];
 
@@ -37,40 +50,67 @@ class CustomCommands {
         Client.on('messageCreate', async (message) => {
             if(!message.content || !this.prefixes.includes(message.content.split(' ').shift().trim().toLowerCase()) || message.author.bot || message.author.system) return;
 
-            const reply = await SafeMessage.reply(message, getRandomKey(Client.AxisUtility.get().language.thinking));
-            await SafeMessage.edit(reply, { content: ' ', embeds: [await this.ping()] });
+            const reply = await SafeMessage.reply(message, { content: ' ', embeds: this.preload() });
+            await SafeMessage.edit(reply, { content: ' ', embeds: await this.ping() });
         });
     }
 
-    async ping() {
-        const embed = new MessageEmbed();
-        const pong = await ping({
-            host: this.server,
-            port: this.port,
-            closeTimeout: 3000
-        }).catch(err => { this.logger.error(err); return false; });
+    preload() {
+        let embeds = [];
 
-        embed.setAuthor({ name: 'Server Information' });
-        embed.setColor();
-        embed.setDescription('**IP:**\n```\n'+ this.server + (this.port && this.port !== 25565 ? ':'+ this.port : '') + '\n```');
+        for (const srv of this.servers) {
+            const embed = new MessageEmbed();
+            
+            embed.setAuthor({ name: 'Server Information' });
+            embed.setColor('BLUE');
+            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
 
-        if(pong) {
-            if(pong?.description === '§4Server not found.' || pong?.version?.name === "§4● Offline" || pong?.players?.max == 0) {
-                embed.addField('Status', '<:crashed:853258980066852896> Offline', false);
-            } else {
-                embed.addField('Status', '<:online:853258979907469322> Online', true);
-                embed.addField('Players', pong?.players?.online + '/' + pong?.players?.max, true);
-                embed.addField('Version', (pong?.version?.name ? pong.version.name : 'Unknown'), true);
-                // TODO: embed.addField('Latency', (pong?.latency ? pong.latency + 'ms' : 'Unknown'), true);
-            }
-        } else {
-            embed.addField('Status', '<:crashed:853258980066852896> Can\'t connect to server.', false);
+            embed.addField('Status', '<a:loading:870586127973756949> Connecting...', false);
+
+            embed.setTimestamp();
+            embed.setFooter({ text: 'Last Updated' });
+
+            embeds.push(embed);
         }
 
-        embed.setTimestamp();
-        embed.setFooter({ text: 'Last Updated' });
+        return embeds;
+    }
 
-        return embed;
+    async ping() {
+        let embeds = [];
+
+        for (const srv of this.servers) {
+            const pong = await ping({
+                host: srv.ip,
+                port: srv.port,
+                closeTimeout: 3000
+            }).catch(err => { this.logger.error(err); return false; });
+
+            const embed = new MessageEmbed();
+            embed.setAuthor({ name: 'Server Information' });
+            embed.setColor('BLUE');
+            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
+
+            if(pong) {
+                if(pong?.description === '§4Server not found.' || pong?.version?.name === "§4● Offline" || pong?.players?.max == 0) {
+                    embed.addField('Status', '<:crashed:853258980066852896> Offline', false);
+                } else {
+                    embed.addField('Status', '<:online:853258979907469322> Online', true);
+                    embed.addField('Players', pong?.players?.online + '/' + pong?.players?.max, true);
+                    embed.addField('Version', (pong?.version?.name ? pong.version.name : 'Unknown'), true);
+                    // TODO: embed.addField('Latency', (pong?.latency ? pong.latency + 'ms' : 'Unknown'), true);
+                }
+            } else {
+                embed.addField('Status', '<:crashed:853258980066852896> Can\'t connect to server.', false);
+            }
+
+            embed.setTimestamp();
+            embed.setFooter({ text: 'Last Updated' });
+
+            embeds.push(embed);
+        }
+
+        return embeds;
     }
 }
 
