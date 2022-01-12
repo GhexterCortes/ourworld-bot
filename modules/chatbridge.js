@@ -2,6 +2,7 @@ const Yml = require('yaml');
 const Util = require('fallout-utility');
 const MakeConfig = require('../scripts/makeConfig');
 const { SafeMessage } = require('../scripts/safeActions');
+const { MessageEmbed } = require('discord.js');
 
 const config = Yml.parse(MakeConfig('./config/chatBridge/config.yml', {
         playerRoles: {
@@ -60,10 +61,12 @@ class ChatBridge {
         const receivers = config.channels.filter(chnl => chnl.messagesChannelId != message.channelId && chnl.discordChats.receive);
         
         for(const receiver of receivers) {
+            const receiverConsoleChannel = message.guild.channels.cache.get(receiver.consoleChannelId);
             const receiverMessagesChannel = message.guild.channels.cache.get(receiver.messagesChannelId);
             if(!receiverMessagesChannel) continue;
 
-            await SafeMessage.send(receiverMessagesChannel, `**${message.author.username}** > ${chat}`);
+            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name }) , ...message.embeds ] });
+            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a [{"text":"[","color":"gray"},{"text":"From Discord","color":"aqua"},{"text":"] ","color":"gray"},"'+ message.author.username +' > '+ Util.limitText(message.content, 153, '...') +'"]');
         }
     }
 
@@ -77,15 +80,16 @@ class ChatBridge {
         const receivers = config.channels.filter(chnl => chnl.messagesChannelId != message.channelId && chnl.playerChats.receive);
         for(const receiver of receivers) {
             const receiverConsoleChannel = message.guild.channels.cache.get(receiver.consoleChannelId);
+            const receiverMessagesChannel = message.guild.channels.cache.get(receiver.messagesChannelId);
             if(!channel) continue;
 
             await SafeMessage.send(receiverConsoleChannel, chat[0]);
-            await SafeMessage.send(receiverConsoleChannel, chat[1]);
+            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: chat[2]['author'] }).setDescription(chat[2]['content']).setFooter({ text: 'Game chat from '+ message.channel.name }) , ...message.embeds ] });
         }
     }
 
-    parsePlayerChat(chat, prefix) {
-        chat = !chat.startsWith('​') ? Util.replaceAll(chat, '\\', '').split(' > ') : [];
+    parsePlayerChat(chat) {
+        chat = chat ? Util.replaceAll(chat, '\\', '').split(' > ') : [];
 
         if(chat.length <= 1) return false;
 
@@ -94,7 +98,6 @@ class ChatBridge {
         const content = chat[1];
 
         chat = [
-            (prefix ? prefix : ''),
             (role ? `${this.addRoleColor(role.trim())} ` : ''),
             `${author.trim()} > `,
             Util.limitText(content.trim(), 153, '...')
@@ -102,7 +105,11 @@ class ChatBridge {
 
         return [
             `tellraw @a ${JSON.stringify(chat)}`,
-            `discord bcast ​${(prefix ? `${prefix} ` : '')}${(role ? `**${role.trim()}** ` : '')}${author.trim()} > ${Util.limitText(content.trim(), 153, '...')}`
+            `${(role ? role.trim() +' ' : '')}${author.trim()} > ${Util.limitText(content.trim(), 153, '...')}`,
+            {
+                author: author.trim(),
+                content: content.trim()
+            }
         ];
     }
 

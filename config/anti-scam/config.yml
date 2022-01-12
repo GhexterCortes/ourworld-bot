@@ -27,7 +27,7 @@ reply:
     - Anti-sus police
     - FBI Anti-sus links
     - Anti-sus ban hammer
-  addTimestamp: false
+  addTimestamp: true
 autoDetect:
   enabled: true
   channels:
