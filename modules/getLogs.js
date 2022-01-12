@@ -51,7 +51,7 @@ class GetLog {
                 ]
             });
 
-            embed.setDescription('```\n' + limitText(log, 5997, '...') + '\n```');
+            embed.setDescription('```\n' + limitText(log, 4000, '...') + '\n```');
             if(paste && paste.status === 'success') embed.setFooter({ text: 'Full Log at ' + paste.result.url });  
 
             return [embed];
