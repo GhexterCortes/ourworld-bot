@@ -59,14 +59,30 @@ class ChatBridge {
 
         const chat = message.content;
         const receivers = config.channels.filter(chnl => chnl.messagesChannelId != message.channelId && chnl.discordChats.receive);
-        
+
+        const sendGame = [
+            {
+                text: "[",
+                color: "white"
+            },
+            {
+                text: "From Discord",
+                color: "aqua"
+            },
+            {
+                text: "] ",
+                color: "white"
+            },
+            message.author.username +' > '+ Util.limitText(message.content, 153, '...')
+        ];
+
         for(const receiver of receivers) {
             const receiverConsoleChannel = message.guild.channels.cache.get(receiver.consoleChannelId);
             const receiverMessagesChannel = message.guild.channels.cache.get(receiver.messagesChannelId);
             if(!receiverMessagesChannel) continue;
 
             await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name }) , ...message.embeds ] });
-            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a [{"text":"[","color":"gray"},{"text":"From Discord","color":"aqua"},{"text":"] ","color":"gray"},"'+ message.author.username +' > '+ Util.limitText(message.content, 153, '...') +'"]');
+            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ sendGame);
         }
     }
 
