@@ -82,7 +82,7 @@ class ChatBridge {
             if(!receiverMessagesChannel) continue;
 
             await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name }) , ...message.embeds ] });
-            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ sendGame);
+            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify(sendGame));
         }
     }
 
