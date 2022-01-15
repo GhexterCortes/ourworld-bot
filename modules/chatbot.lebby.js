@@ -4,7 +4,7 @@ const MakeConfig = require('../scripts/makeConfig');
 const { replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
-const { InteractionCommandBuilder } = require('../scripts/builders');
+const { InteractionCommandBuilder, MessageCommandBuilder} = require('../scripts/builders');
 
 let scriptConfig;
 
@@ -65,6 +65,23 @@ class ChatBot {
                         await SafeInteract.editReply(interaction, response);
                     } catch(err) {
                         await SafeInteract.editReply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED') ] });
+                    }
+                }),
+            new MessageCommandBuilder()
+                .setName(scriptConfig.chatbot.command.name)
+                .setDescription(scriptConfig.chatbot.command.description)
+                .addArgument('query', true, 'The question to ask.')
+                .setExecute(async (args, message) => {
+                    if(!args?.length) return SafeMessage.reply(message, { content: ' ', embeds: [ new MessageEmbed().setDescription('No question provided!').setColor('RED') ] });
+                    const query = args.join(' ');
+
+                    try {
+                        const reply = await SafeMessage.reply(message, { content: ' ', embeds: [ new MessageEmbed().setDescription('Please wait...').setColor('YELLOW') ] });
+                        const response = await this.getResponse(query, Client.user.username, Client.user.username, message.author.username, scriptConfig.chatbot.gender);
+
+                        await SafeMessage.edit(reply, { content: response, embeds: [], allowedMentions: { repliedUser: false } });
+                    } catch (err) {
+                        await SafeMessage.reply(message, { content: ' ', embeds: [new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED')] });
                     }
                 })
         ];
