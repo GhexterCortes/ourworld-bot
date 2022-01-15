@@ -92,7 +92,8 @@ class BannedWords {
                 if(!removeWord) return SafeInteract.reply(interaction, 'Please provide a word');
                 if(!this.database.response.words.includes(removeWord) && removeWord != '@a') return SafeInteract.reply(interaction, 'Word is not banned');
                 
-                const bannedWords = this.database.response.words.filter(w => w !== removeWord && removeWord !== '@a');
+                const removeWords = removeWord.split(' ').map(w => w.toLowerCase());
+                const bannedWords = this.database.response.words.filter(w => !removeWords.includes(w) && removeWord !== '@a');
 
                 try {
                     await this.database.update({ words: bannedWords });
