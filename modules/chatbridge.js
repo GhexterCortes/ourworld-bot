@@ -56,7 +56,7 @@ class ChatBridge {
 
     async userChat(message) {
         const channel = config.channels.find(chnl => chnl.messagesChannelId == message.channelId);
-        if(!channel || !channel.discordChats.send || !message.content || message.author.bot || message.author.system) return;
+        if(!channel || !channel.discordChats.send || message.author.bot || message.author.system) return;
 
         const receivers = config.channels.filter(chnl => chnl.messagesChannelId != message.channelId && chnl.discordChats.receive);
 
