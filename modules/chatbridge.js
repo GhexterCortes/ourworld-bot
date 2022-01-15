@@ -85,8 +85,10 @@ class ChatBridge {
             // count attachments
             if(message.attachments?.size > 0) embed.addField('📎 '+ (message.attachments.size > 1 ? 'Attachments' : 'Attachment'), '**'+ message.attachments.size +'** attached '+ (message.attachments.size > 1 ? 'files' : 'file'));
 
-            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ embed, ...message.embeds ] });
-            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify([...sendGame, message.author.username +' > '+ Util.limitText(message.content, 153, '...')]));
+            (async () => {
+                await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ embed, ...message.embeds ] });
+                await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify([...sendGame, message.author.username +' > '+ Util.limitText(message.content, 153, '...')]));
+            })();
         }
     }
 
@@ -105,8 +107,10 @@ class ChatBridge {
             if(message.embeds.length) await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ ...message.embeds ] });
 
             if(!chat) continue;
-            await SafeMessage.send(receiverConsoleChannel, chat[0]);
-            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: chat[2]['author'] }).setDescription(chat[2]['content']).setFooter({ text: 'Game chat from '+ message.channel.name }) ] });
+            (async () => {
+                await SafeMessage.send(receiverConsoleChannel, chat[0]);
+                await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: chat[2]['author'] }).setDescription(chat[2]['content']).setFooter({ text: 'Game chat from '+ message.channel.name }) ] });
+            })();
         }
     }
 
