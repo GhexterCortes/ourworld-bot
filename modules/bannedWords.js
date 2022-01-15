@@ -88,11 +88,11 @@ class BannedWords {
                 }
             case 'remove':
                 const removeWord = interaction.options.getString('word');
+                const removeWords = removeWord.split(' ').map(w => w.toLowerCase());
 
                 if(!removeWord) return SafeInteract.reply(interaction, 'Please provide a word');
-                if(!this.database.response.words.includes(removeWord) && removeWord != '@a') return SafeInteract.reply(interaction, 'Word is not banned');
+                if(!this.database.response.words.some(w => removeWords.includes(w)) && removeWord != '@a') return SafeInteract.reply(interaction, 'Word is not banned');
                 
-                const removeWords = removeWord.split(' ').map(w => w.toLowerCase());
                 const bannedWords = this.database.response.words.filter(w => !removeWords.includes(w) && removeWord !== '@a');
 
                 try {
