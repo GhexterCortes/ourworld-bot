@@ -73,7 +73,6 @@ class ChatBridge {
                 text: "] ",
                 color: "white"
             },
-            message.author.username +' > '+ Util.limitText(message.content, 153, '...')
         ];
 
         for(const receiver of receivers) {
@@ -84,10 +83,10 @@ class ChatBridge {
             const embed = new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name });
 
             // count attachments
-            if(message.attachments?.size > 0) embed.addField('Attachments 📎', '**'+ message.attachments.size +'** attached files');
+            if(message.attachments?.size > 0) embed.addField('📎 Attachments', '**'+ message.attachments.size +'** attached files');
 
             await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ embed, ...message.embeds ] });
-            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify(sendGame));
+            await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify([...sendGame, message.author.username +' > '+ Util.limitText(message.content, 153, '...')]));
         }
     }
 
