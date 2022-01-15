@@ -97,7 +97,7 @@ class BannedWords {
 
                 try {
                     await this.database.update({ words: bannedWords });
-                    return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setColor('RED').setDescription('`'+ removeWord +'` removed from banned words') ] });
+                    return SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setColor('RED').setDescription('`'+ removeWords.join('`, `') +'` removed from banned words') ] });
                 } catch(err) {
                     return SafeInteract.reply(interaction, 'Can\'t remove word from banned words');
                 }
