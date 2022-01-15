@@ -81,7 +81,12 @@ class ChatBridge {
             const receiverMessagesChannel = message.guild.channels.cache.get(receiver.messagesChannelId);
             if(!receiverMessagesChannel) continue;
 
-            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name }) , ...message.embeds ] });
+            const embed = new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name });
+
+            // count attachments
+            if(message.attachments?.size > 0) embed.addField('Attachments 📎', '**'+ message.attachments.size +'** attached files');
+
+            await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ embed, ...message.embeds ] });
             await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify(sendGame));
         }
     }
