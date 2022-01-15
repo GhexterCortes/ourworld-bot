@@ -83,7 +83,7 @@ class ChatBridge {
             const embed = new MessageEmbed().setAuthor({ name: message.author.username }).setDescription(message.content).setFooter({ text: 'User chat from '+ message.channel.name });
 
             // count attachments
-            if(message.attachments?.size > 0) embed.addField('📎 Attachments', '**'+ message.attachments.size +'** attached files');
+            if(message.attachments?.size > 0) embed.addField('📎 '+ (message.attachments.size > 1 ? 'Attachments' : 'Attachment'), '**'+ message.attachments.size +'** attached '+ (message.attachments.size > 1 ? 'files' : 'file'));
 
             await SafeMessage.send(receiverMessagesChannel, { content: ' ', embeds: [ embed, ...message.embeds ] });
             await SafeMessage.send(receiverConsoleChannel, 'tellraw @a '+ JSON.stringify([...sendGame, message.author.username +' > '+ Util.limitText(message.content, 153, '...')]));
