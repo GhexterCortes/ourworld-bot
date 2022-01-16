@@ -1,6 +1,22 @@
 database:
   databaseGuildId: "876039624814899220"
   databaseChannelId: "928904657076649984"
-  databaseMessageId: "929070695244243035"
+  databaseMessageId: "932195496376819752"
   databaseName: BannedWords
-matchingPercentage: 0.7
+wordMatching:
+  caseSensitive: false
+  fullWord: false
+  ignoreBots: false
+  deleteMatchedMessage: true
+  defaultPunishment: timeout
+  similarityMatch:
+    enabled: true
+    percentage: 0.7
+punishments:
+  timeout:
+    duration: 10s
+    defaultReason: You have been timed out for using a banned word.
+  kick:
+    defaultReason: You have been kicked for using a banned word.
+  ban:
+    defaultReason: You have been banned for using a banned word.

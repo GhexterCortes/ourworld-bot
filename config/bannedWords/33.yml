@@ -1,0 +1,7 @@
+database:
+  databaseGuildId: "876039624814899220"
+  databaseChannelId: "928904657076649984"
+  databaseMessageId: "929070695244243035"
+  databaseName: BannedWords
+defaultPunishment: timeout
+matchingPercentage: 0.7
