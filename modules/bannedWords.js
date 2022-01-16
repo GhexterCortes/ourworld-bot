@@ -38,15 +38,15 @@ class BannedWords {
                         .addStringOption(word => word
                             .setName('word')
                             .setDescription('The word to ban')
-                            .addChoice('timeout', 'timeout')
-                            .addChoice('kick', 'kick')
-                            .addChoice('ban', 'ban')
                             .setRequired(true)
                         )
                         .addStringOption(punishment => punishment
                             .setName('punishment')
                             .setDescription('The punishment to apply to the word (default: timeout)')
                             .setRequired(false)
+                            .addChoice('Temp mute/timeout user', 'timeout')
+                            .addChoice('Kick user', 'kick')
+                            .addChoice('Ban user', 'ban')
                         )
                     )
                     .addSubcommand(remove => remove
@@ -152,7 +152,7 @@ class BannedWords {
 
                 try{
                     await this.database.setData({ words: newWords });
-                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Added '+ (banWords.length > 1 ? 'words' : 'word' ) }).setDescription('Banned: `' + banWords.join('` `') + '`').setColor('GREEN') ] });
+                    await SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Added '+ (banWords.length > 1 ? 'words' : 'word' ) }).setDescription('Banned: `' + banWords.join('` `') + '`').addField('Punishment', punishment, false).setColor('GREEN') ] });
                 } catch(err) {
                     await SafeInteract.reply(interaction, { content: ' ', embeds: [ new MessageEmbed().setAuthor({ name: 'Error' }).setColor('RED').setDescription('An error occured while adding the word to the database') ] });
                 }
