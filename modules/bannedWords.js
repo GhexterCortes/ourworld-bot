@@ -178,7 +178,7 @@ class BannedWords {
                 const embed = new MessageEmbed();
                 embed.setAuthor({ name: 'Banned words' });
                 embed.setColor('RED');
-                embed.setDescription('||`' + words.map(w => w.word).join('`|| ||`') + '`||');
+                embed.setDescription(words.map(w => '||`'+ w.word +'`|| — **Punishment:** `'+ w.punishment + '`').join('\n'));
 
                 await SafeInteract.reply(interaction, { content: ' ', embeds: [ embed ] });
                 break;
