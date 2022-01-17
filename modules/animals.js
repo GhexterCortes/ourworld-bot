@@ -45,23 +45,35 @@ class RandomAnimals {
             new MessageCommandBuilder()
                 .setName('dog')
                 .setDescription('Get random dog')
-                .setExecute(async (args, message) => SafeMessage.reply(message, await getDog())),
+                .addArgument('caption', false, 'Set custom caption')
+                .setExecute(async (args, message) => {
+                    const caption = args ? args.join(' ') : null;
+                    return SafeMessage.reply(message, await getDog(caption));
+                }),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
                     .setName('dog')
                     .setDescription('Get random dog')    
+                    .addStringOption(caption => caption
+                        .setName('caption')
+                        .setDescription('Set custom caption')
+                        .setRequired(false)    
+                    )
                 )
-                .setExecute(async (interaction) => SafeInteract.reply(interaction, await getDog()))
+                .setExecute(async (interaction) => {
+                    const caption = interaction.options.getString('caption');
+                    return SafeInteract.reply(interaction, await getDog(caption));
+                })
         ]
     
-        async function getDog() {
+        async function getDog(caption) {
             const dog = await RandomAnimalsAPI.dog();
             
             if(!dog) return { embeds: [ new MessageEmbed().setTitle(config) ] };
     
             return { embeds: [
                 new MessageEmbed()
-                    .setTitle(getRandomKey(config.animals.dog.textTitle))
+                    .setTitle(caption ? caption : getRandomKey(config.animals.dog.textTitle))
                     .setImage(dog)
                     .setColor(Client.AxisUtility.get().config.embedColor)
             ] };
@@ -75,23 +87,35 @@ class RandomAnimals {
             new MessageCommandBuilder()
                 .setName('cat')
                 .setDescription('Get random cat')
-                .setExecute(async (args, message) => SafeMessage.reply(message, await getCat())),
+                .addArgument('caption', false, 'Set custom caption')
+                .setExecute(async (args, message) => {
+                    const caption = args ? args.join(' ') : null;
+                    return SafeMessage.reply(message, await getCat(caption));
+                }),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
                     .setName('cat')
                     .setDescription('Get random cat')    
+                    .addStringOption(caption => caption
+                        .setName('caption')
+                        .setDescription('Set custom caption')
+                        .setRequired(false)    
+                    )
                 )
-                .setExecute(async (interaction) => SafeInteract.reply(interaction, await getCat()))
+                .setExecute(async (interaction) => {
+                    const caption = interaction.options.getString('caption');
+                    SafeInteract.reply(interaction, await getCat(caption));
+                })
         ]
     
-        async function getCat() {
+        async function getCat(caption) {
             const cat = await RandomAnimalsAPI.cat();
             
             if(!cat) return { embeds: [ new MessageEmbed().setTitle(config) ] };
     
             return { embeds: [
                 new MessageEmbed()
-                    .setTitle(getRandomKey(config.animals.cat.textTitle))
+                    .setTitle(caption ? caption : getRandomKey(config.animals.cat.textTitle))
                     .setImage(cat)
                     .setColor(Client.AxisUtility.get().config.embedColor)
             ] };
