@@ -96,8 +96,8 @@ class BannedWords {
         const member = message?.member;
 
         if(!member) return;
+        if(message.author.bot || message.author.system) return SafeMessage.delete(message);
 
-        console.log(punishment);
         switch (punishment) {
             case 1:
                 await BannedWordsUtil.Punishment.timeout({ member: member, reason: getRandomKey(punishmentConfig.timeout.defaultReason), time: ms(punishmentConfig.timeout.duration) });
