@@ -9,11 +9,11 @@ module.exports = (message, bannedWords, config) => {
             if(!config.fullWord) {
                 test = config.caseSensitive ? word.startsWith(bannedWord.word) : word.toLowerCase().startsWith(bannedWord.word.toLowerCase())
                     || 
-                    config.similarityMatch.enabled && StringSimilarity.compareTwoStrings(word, bannedWord.word) >= config.similarityMatch.percentage;
+                    config.similarityMatch.enabled && bannedWord.punishment < 1 && StringSimilarity.compareTwoStrings(word, bannedWord.word) >= config.similarityMatch.percentage;
             } else {
                 test = config.caseSensitive ? bannedWord.word == word : bannedWord.word.toLowerCase() == word.toLowerCase()
                     || 
-                    config.similarityMatch.enabled && StringSimilarity.compareTwoStrings(word, bannedWord.word) >= config.similarityMatch.percentage;
+                    config.similarityMatch.enabled && bannedWord.punishment < 1 && StringSimilarity.compareTwoStrings(word, bannedWord.word) >= config.similarityMatch.percentage;
             }
 
             if(test) banned.push(bannedWord);
