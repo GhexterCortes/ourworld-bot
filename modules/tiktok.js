@@ -1,7 +1,6 @@
 const Tiktok = require('tiktok-scraper-without-watermark');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
-const { replaceAll } = require('fallout-utility');
-const { Attachment, MessageEmbed } = require('discord.js');
+const { replaceAll, getRandomKey } = require('fallout-utility');
 
 class Tangina {
     constructor() {
@@ -28,12 +27,14 @@ class Tangina {
                     if(!video?.nowm) continue;
 
                     const reply = await SafeMessage.reply(message, {
+                        content: `[Download]${video.nowm}`,
                         files: [
                             {
                                 attachment: video.nowm,
-                                name: 'tiktok.mp4',
+                                name: 'video.mp4'
                             }
-                        ]
+                        ],
+                        allowedMentions: { repliedUser: false }
                     });
 
                     if(reply) sent = true;
