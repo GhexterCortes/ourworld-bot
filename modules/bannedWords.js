@@ -1,5 +1,6 @@
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const { InteractionCommandBuilder } = require('../scripts/builders');
+const { weirdToNormalChars } = require('weird-to-normal-chars');
 const { MessageEmbed } = require('discord.js');
 const { getRandomKey } = require('fallout-utility');
 const ms = require('ms');
@@ -205,7 +206,7 @@ class BannedWords {
     }
 
     removeSpecialChars(string) {
-        return string.toLowerCase().replace(/[^\w\s]/gi, '');
+        return weirdToNormalChars(string).toLowerCase().replace(/[^\w\s]/gi, '');
     }
 }
 
