@@ -45,6 +45,10 @@ permissions:
         permissions: ['ADMINISTRATOR']
       - command: 'role-timer'
         permissions: ['ADMINISTRATOR']
+      - command: 'kick'
+        permissions: ['KICK_MEMBERS']
+      - command: 'ban'
+        permissions: ['BAN_MEMBERS']
       - command: 'log'
         permissions: ['MANAGE_MESSAGES']
       - command: 'send'
