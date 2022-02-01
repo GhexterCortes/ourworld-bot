@@ -49,6 +49,8 @@ permissions:
         permissions: ['KICK_MEMBERS']
       - command: 'ban'
         permissions: ['BAN_MEMBERS']
+      - command: 'mute'
+        permissions: ['MODERATE_MEMBERS']
       - command: 'log'
         permissions: ['MANAGE_MESSAGES']
       - command: 'send'
