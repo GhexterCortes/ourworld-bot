@@ -1,5 +1,6 @@
 token: ODU0MjMwMzY2MDg4MjAwMjMz.YMg6Bg.xvfAbyBdzPpnxVFFeTepruSuqfw # Bot token HiddenPlayer
 #token: OTAzOTM5MzE5NDkwODI2MjYw.YX0RGA.Q9IyQarYuc6TMAjEH6bYd2-o0Ug # Bot token Axis
+#token: ODg2ODc0MDExMjMyMDAyMDY4.YT77yQ.TYUTQo11DokecgwsjyHGLdIkwy4 # Bpt tokem E Player 
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
@@ -89,7 +90,7 @@ processErrors:
   processUncaughtException: false
 
 client:
-  # Bot intents
+  fetchAllMembers: true
   intents:
     - 'GUILDS'
     - 'GUILD_MEMBERS'
