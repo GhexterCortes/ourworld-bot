@@ -1,4 +1,4 @@
-interval: 1000
+interval: 2100
 roles:
   - role: gae
     guildId: "830456204735807529"
