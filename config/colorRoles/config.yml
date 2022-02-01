@@ -1,0 +1,12 @@
+interval: 1000
+roles:
+  - role: gae
+    guildId: "830456204735807529"
+    randomize: false
+    colors:
+      - "#da2c2f"
+      - "#f7ad0d"
+      - "#ffed00"
+      - "#2ac51b"
+      - "#2c4dda"
+      - "#a82abe"
