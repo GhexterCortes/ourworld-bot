@@ -20,7 +20,15 @@ class GetLog {
                     await SafeMessage.react(message, '⌛');
                     await SafeMessage.send(message.author, { content: ' ', embeds: await this.getLog() });
                     await SafeMessage.reactionRemoveAll(message);
-                    await SafeMessage.react(message, '✅');
+                    await SafeMessage.reply(message, {
+                        content: ' ',
+                        embeds: [
+                            new MessageEmbed()
+                                .setAuthor({ name: 'Log sent' })
+                                .setColor('BLUE')
+                                .setDescription('The log has been sent to your DMs.')
+                        ]
+                    });
                 }),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
@@ -50,7 +58,8 @@ class GetLog {
                     }
                 ]
             });
-
+            
+            embed.setAuthor({ name: 'latest.log', url: paste.result.url });
             embed.setDescription('```\n' + limitText(log, 4000, '...') + '\n```');
             if(paste && paste.status === 'success') embed.setFooter({ text: 'Full Log at ' + paste.result.url });  
 
