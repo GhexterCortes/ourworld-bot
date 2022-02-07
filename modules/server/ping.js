@@ -14,8 +14,6 @@ module.exports = async (ip) => {
             server?.description === '§4Server not found.'
             ||
             server?.version.name === "§4● Offline"
-            ||
-            server?.players.max == 0
         ) return null;
 
         return server;

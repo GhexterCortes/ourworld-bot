@@ -1,10 +1,10 @@
 autoEmbedIp:
   enabled: true
-  ignoreBots: false
+  ignoreBots: true
   fetchErrorLimit: 3
   requireServerIP: true
-  deleteAfterInactive: true
-  disableMultipleUpload: true
+  deleteAfterInactive: false
+  disableMultipleUpload: false
   allowedChannelIds:
     - '911491519389786142'
 messages:

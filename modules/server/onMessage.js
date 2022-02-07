@@ -42,7 +42,7 @@ async function addServer(ip, message, config) {
         if(message.edit && !getIp(message.content)) { return deleteReply(true); } else { ip = getIp(message.content); }
         const server = await Ping(ip);
 
-        if(!server) return updateError();
+        if(!server || server.players?.max == 0) return updateError();
 
         let description = placeholders(config.messages.serverEmbedDescription, server, ip);
 

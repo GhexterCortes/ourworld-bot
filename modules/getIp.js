@@ -9,7 +9,8 @@ class CustomCommands {
         this.versions = ['1.6.0','1.6.1'];
         this.logger = null;
         this.embedColor = '#0099ff';
-        this.prefixes = ['!ip', '?ip', '>ip', '$ip'];
+        this.prefixes = ['!ip', '?ip', '>ip', '$ip', '.ip'];
+        this.loadingStatus = ['§7◌ Saving...', '§7◌ Preparing...', '§7◌ Loading...', '§7◌ Starting...', '§7◌ Saving...', '§7◌ Stopping...']
         this.servers = [
             {
                 ip: 'play.ourmcworld.ml',
@@ -65,7 +66,7 @@ class CustomCommands {
             embed.setColor('BLUE');
             embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
 
-            embed.addField('Status', '<a:loading:870586127973756949> Connecting...', false);
+            embed.addField('Status', '<a:pending:853258979944693770> Connecting...', false);
 
             embed.setTimestamp();
             embed.setFooter({ text: 'Last Updated' });
@@ -92,13 +93,18 @@ class CustomCommands {
             embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
 
             if(pong) {
-                if(pong?.description === '§4Server not found.' || pong?.version?.name === "§4● Offline" || pong?.players?.max == 0) {
+                if(pong?.description === '§4Server not found.' || pong?.version?.name === "§4● Offline" || pong?.players.max === 0 && !this.loadingStatus.some(s => pong.version.name === s)) {
                     embed.addField('Status', '<:crashed:853258980066852896> Offline', false);
                 } else {
-                    embed.addField('Status', '<:online:853258979907469322> Online', true);
-                    embed.addField('Players', pong?.players?.online + '/' + pong?.players?.max, true);
-                    embed.addField('Version', (pong?.version?.name ? pong.version.name : 'Unknown'), true);
-                    // TODO: embed.addField('Latency', (pong?.latency ? pong.latency + 'ms' : 'Unknown'), true);
+                    if (pong?.players.max === 0 && this.loadingStatus.some(s => pong.version.name === s)) {
+                        embed.addField('Status', '<a:pending:853258979944693770> '+this.clean(this.removeColorId(pong.version.name))?.trim(), false);
+                    } else {
+
+                        embed.addField('Status', '<:online:853258979907469322> Online', true);
+                        embed.addField('Players', pong?.players?.online + '/' + pong?.players?.max, true);
+                        embed.addField('Version', (pong?.version?.name ? pong.version.name : 'Unknown'), true);
+                        // TODO: embed.addField('Latency', (pong?.latency ? pong.latency + 'ms' : 'Unknown'), true);
+                    }
                 }
             } else {
                 embed.addField('Status', '<:crashed:853258980066852896> Can\'t connect to server.', false);
@@ -111,6 +117,14 @@ class CustomCommands {
         }
 
         return embeds;
+    }
+
+    clean(text) {
+        return text.replace(/[^\w\s]/gi, '');
+    }
+
+    removeColorId(text) {
+        return text.replace(/§./g, "");
     }
 }
 

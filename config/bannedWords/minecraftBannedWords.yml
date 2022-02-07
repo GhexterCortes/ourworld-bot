@@ -1,0 +1,4 @@
+gamechats:
+  - chatChannel: CHANNEL_ID
+    consoleChannel: CHANNEL_ID
+    chatUsernameMessageSeparator: ">"
