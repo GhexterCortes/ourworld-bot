@@ -5,8 +5,10 @@ const { SafeMessage, SafeInteract } = require('../../scripts/safeActions');
 const MakeConfig = require('../../scripts/makeConfig');
 const Yml = require('yaml');
 
+let spamming = false;
 const config = Yml.parse(MakeConfig('./config/send/config.yml', {
     spam: {
+        allowPings: false,
         whitelistChannels: {
             enabled: true,
             channelIds: [],
@@ -116,6 +118,10 @@ module.exports = new InteractionCommandBuilder()
                 .setRequired(true)    
             )
         )
+        .addSubcommand(stopSpam => stopSpam
+            .setName('stopspam')
+            .setDescription('Stop spamming a message')    
+        )
     )
     .setExecute(async (interaction, Client) => {
         this.say = async () => {
@@ -168,17 +174,20 @@ module.exports = new InteractionCommandBuilder()
             const text = interaction.options.getString('text');
             const count = interaction.options.getInteger('count');
 
-            if(count > 100 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 100!', ephemeral: true });
+            if(count > 50 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 50!', ephemeral: true });
             if(config.spam.whitelistChannels.enabled && !(
                 !config.spam.whitelistChannels.channelIds.includes(interaction.channel.id) && config.spam.whitelistChannels.convertToBlacklist
                 ||
                 config.spam.whitelistChannels.channelIds.includes(interaction.channel.id) && !config.spam.whitelistChannels.convertToBlacklist
             )) return SafeInteract.reply(interaction, { content: 'This command is disabled in this channel!', ephemeral: true });
-
+            if(!config.spam.allowPings && text.includes('<@')) return SafeInteract.reply(interaction, { content: 'Pings are not allowed!', ephemeral: true });
+            
             await SafeInteract.deferReply(interaction);
             let success = true;
+            spamming = true;
 
             for (let i = 0; i < count; i++) {
+                if(!spamming) { success = false; break; }
                 if(!await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`)) {
                     success = false;
                     await SafeMessage.send(interaction.channel, `An error occurred while spamming!`);
@@ -187,6 +196,12 @@ module.exports = new InteractionCommandBuilder()
             }
 
             await SafeInteract.editReply(interaction, success ? 'Spam success!' : 'Spam cancelled!');
+        }
+        this.stopspam = async () => {
+            await SafeInteract.deferReply(interaction);
+            
+            spamming = false;
+            await SafeInteract.editReply(interaction, spamming ? 'Stopping spam...' : 'Bot is not spamming!');
         }
 
         const command = interaction.options.getSubcommand();

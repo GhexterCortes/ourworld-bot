@@ -12,7 +12,7 @@ interactionCommands:
   version:
     enabled: true
   stop:
-    enabled: true
+    enabled: false
   help:
     enabled: true
 
