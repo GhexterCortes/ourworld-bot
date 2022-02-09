@@ -174,7 +174,7 @@ module.exports = new InteractionCommandBuilder()
             const text = interaction.options.getString('text');
             const count = interaction.options.getInteger('count');
 
-            if(count > 50 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 50!', ephemeral: true });
+            if(count > 100 || count < 1) return SafeInteract.reply(interaction, { content: 'The count must be between 1 and 100!', ephemeral: true });
             if(config.spam.whitelistChannels.enabled && !(
                 !config.spam.whitelistChannels.channelIds.includes(interaction.channel.id) && config.spam.whitelistChannels.convertToBlacklist
                 ||
