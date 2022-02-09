@@ -200,8 +200,8 @@ module.exports = new InteractionCommandBuilder()
         this.stopspam = async () => {
             await SafeInteract.deferReply(interaction);
             
-            spamming = false;
             await SafeInteract.editReply(interaction, spamming ? 'Stopping spam...' : 'Bot is not spamming!');
+            spamming = false;
         }
 
         const command = interaction.options.getSubcommand();
