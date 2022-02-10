@@ -39,13 +39,10 @@ class CustomCommands {
                 )
                 .setExecute(async (interaction) => {
                     await SafeInteract.deferReply(interaction, { ephemeral: true });
-                    await SafeInteract.editReply(interaction, { content: ' ', ...this.preload(), ephemeral: true});
-                    await SafeInteract.editReply(interaction, { content: ' ', ...await this.ping(), ephemeral: true });
+                    await SafeInteract.editReply(interaction, { content: ' ', ...this.preload(true), ephemeral: true});
+                    await SafeInteract.editReply(interaction, { content: ' ', ...await this.ping(true), ephemeral: true });
 
-                    const reply = await interaction.fetchReply().catch(() => null);
-                    if(!reply) return;
-
-                    return this.addCollector(reply, interaction.user.id || interaction.member.user.id, null, Client);
+                    return this.addCollector(interaction, interaction.user.id || interaction.member.user.id, null, Client);
                 })
         ];
 
@@ -63,7 +60,7 @@ class CustomCommands {
         });
     }
 
-    preload() {
+    preload(removeCancel = false) {
         let embeds = [];
 
         for (const srv of this.servers) {
@@ -81,18 +78,19 @@ class CustomCommands {
             embeds.push(embed);
         }
 
+        const component = new MessageActionRow()
+
+        if(!removeCancel) component.addComponents(new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel').setDisabled(true))
+        component.addComponents(new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true))
         return {
             embeds: embeds, 
             components: [
-                new MessageActionRow().addComponents([
-                    new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel').setDisabled(true),
-                    new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true)
-                ])
+                component
             ]
         };
     }
 
-    async ping() {
+    async ping(removeCancel = false) {
         let embeds = [];
 
         for (const srv of this.servers) {
@@ -131,37 +129,54 @@ class CustomCommands {
             embeds.push(embed);
         }
 
+        const component = new MessageActionRow();
+
+        if(!removeCancel) component.addComponents(new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel'));
+        component.addComponents(new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch'))
         return {
             embeds: embeds,
             components: [
-                new MessageActionRow().addComponents([
-                    new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel'),
-                    new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch')
-                ])
+                component
             ] 
         };
     }
 
     async addCollector(message, author, originalMessage, Client) {
         if(!message) return;
-        const collector = message.createMessageComponentCollector({
+        let collector = !message.applicationId ? message.createMessageComponentCollector({
             filter: (m) => m.customId == 'fetch' || m.customId == 'cancel',
-            time: 20000
-        });
+            time: 5000
+        }) : 'Interaction';
 
+        if(collector === 'Interaction') {
+            const reply = await message.fetchReply().catch(err => null);
+            if(!reply) return;
+
+            collector = reply.createMessageComponentCollector({
+                filter: (m) => m.customId == 'fetch' || m.customId == 'cancel',
+                time: 20000
+            });
+        }
+
+        if(!collector) return;
         collector.on('collect', async (i) => {
             if(i.user.id !== author) return SafeInteract.reply(i, { content: 'This is not your command' });
 
             if (!i.deffered) await i.deferUpdate();
             switch(i.customId) {
                 case 'fetch':
+                    if(message.applicationId) {
+                        await SafeInteract.editReply(message, { content: ' ', ...this.preload(true) });
+                        await SafeInteract.editReply(message, { content: ' ', ...await this.ping(true) });
+                        break;
+                    }
+
                     await SafeMessage.edit(message, { content: ' ', ...this.preload() });
                     await SafeMessage.edit(message, { content: ' ', ...await this.ping() });
                     break;
                 case 'cancel':
-                    await SafeMessage.delete(message);
+                    if(message) await SafeMessage.delete(message);
                     if (originalMessage) await SafeMessage.delete(originalMessage);
-                    message = null;
                     break;
             }
 
@@ -170,6 +185,10 @@ class CustomCommands {
 
         collector.on('end', async () => {
             if(!message) return;
+
+            if(message.applicationId) return SafeInteract.editReply(message, { content: ' ', components: [new MessageActionRow().addComponents(new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true))] 
+            });
+
             await SafeMessage.edit(message, { content: ' ', components: [new MessageActionRow().addComponents([
                     new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel').setDisabled(true),
                     new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true)
