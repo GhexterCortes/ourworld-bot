@@ -1,6 +1,6 @@
 const { InteractionCommandBuilder, MessageCommandBuilder} = require('../scripts/builders');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const { ping } = require('minecraft-protocol');
 const { getRandomKey } = require('fallout-utility');
 
@@ -9,7 +9,7 @@ class CustomCommands {
         this.versions = ['1.6.0','1.6.1'];
         this.logger = null;
         this.embedColor = '#0099ff';
-        this.prefixes = ['!ip', '?ip', '>ip', '$ip', '.ip'];
+        this.prefixes = ['!ip', '?ip', '>ip', '$ip', '.ip', '-ip'];
         this.loadingStatus = ['§7◌ Saving...', '§7◌ Preparing...', '§7◌ Loading...', '§7◌ Starting...', '§7◌ Saving...', '§7◌ Stopping...']
         this.servers = [
             {
@@ -39,8 +39,13 @@ class CustomCommands {
                 )
                 .setExecute(async (interaction) => {
                     await SafeInteract.deferReply(interaction, { ephemeral: true });
-                    await SafeInteract.editReply(interaction, { content: ' ', embeds: await this.preload(), ephemeral: true});
-                    await SafeInteract.editReply(interaction, { content: ' ', embeds: await this.ping(), ephemeral: true });
+                    await SafeInteract.editReply(interaction, { content: ' ', ...this.preload(), ephemeral: true});
+                    await SafeInteract.editReply(interaction, { content: ' ', ...await this.ping(), ephemeral: true });
+
+                    const reply = await interaction.fetchReply().catch(() => null);
+                    if(!reply) return;
+
+                    return this.addCollector(reply, interaction.user.id || interaction.member.user.id, null, Client);
                 })
         ];
 
@@ -51,8 +56,10 @@ class CustomCommands {
         Client.on('messageCreate', async (message) => {
             if(!message.content || !this.prefixes.includes(message.content.split(' ').shift().trim().toLowerCase()) || message.author.bot || message.author.system) return;
 
-            const reply = await SafeMessage.reply(message, { content: ' ', embeds: this.preload() });
-            await SafeMessage.edit(reply, { content: ' ', embeds: await this.ping() });
+            const reply = await SafeMessage.reply(message, { content: ' ', ...this.preload() });
+            await SafeMessage.edit(reply, { content: ' ', ...await this.ping() });
+
+            return this.addCollector(reply, message.author.id, message, Client);
         });
     }
 
@@ -74,7 +81,15 @@ class CustomCommands {
             embeds.push(embed);
         }
 
-        return embeds;
+        return {
+            embeds: embeds, 
+            components: [
+                new MessageActionRow().addComponents([
+                    new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel').setDisabled(true),
+                    new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true)
+                ])
+            ]
+        };
     }
 
     async ping() {
@@ -116,7 +131,51 @@ class CustomCommands {
             embeds.push(embed);
         }
 
-        return embeds;
+        return {
+            embeds: embeds,
+            components: [
+                new MessageActionRow().addComponents([
+                    new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel'),
+                    new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch')
+                ])
+            ] 
+        };
+    }
+
+    async addCollector(message, author, originalMessage, Client) {
+        if(!message) return;
+        const collector = message.createMessageComponentCollector({
+            filter: (m) => m.customId == 'fetch' || m.customId == 'cancel',
+            time: 20000
+        });
+
+        collector.on('collect', async (i) => {
+            if(i.user.id !== author) return SafeInteract.reply(i, { content: 'This is not your command' });
+
+            if (!i.deffered) await i.deferUpdate();
+            switch(i.customId) {
+                case 'fetch':
+                    await SafeMessage.edit(message, { content: ' ', ...this.preload() });
+                    await SafeMessage.edit(message, { content: ' ', ...await this.ping() });
+                    break;
+                case 'cancel':
+                    await SafeMessage.delete(message);
+                    if (originalMessage) await SafeMessage.delete(originalMessage);
+                    message = null;
+                    break;
+            }
+
+            collector.resetTimer();
+        });
+
+        collector.on('end', async () => {
+            if(!message) return;
+            await SafeMessage.edit(message, { content: ' ', components: [new MessageActionRow().addComponents([
+                    new MessageButton().setLabel('Delete').setStyle('DANGER').setCustomId('cancel').setDisabled(true),
+                    new MessageButton().setLabel('Reload').setStyle('SUCCESS').setCustomId('fetch').setDisabled(true)
+                ])] 
+            });
+        });
     }
 
     clean(text) {
