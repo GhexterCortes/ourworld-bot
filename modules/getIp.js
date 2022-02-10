@@ -160,7 +160,7 @@ class CustomCommands {
 
         if(!collector) return;
         collector.on('collect', async (i) => {
-            if(i.user.id !== author) return SafeInteract.reply(i, { content: 'This is not your command' });
+            if(i.user.id !== author) return SafeInteract.reply(i, { content: 'This is not your command', ephemeral: true });
 
             if (!i.deffered) await i.deferUpdate();
             switch(i.customId) {
