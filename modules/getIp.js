@@ -145,7 +145,7 @@ class CustomCommands {
         if(!message) return;
         let collector = !message.applicationId ? message.createMessageComponentCollector({
             filter: (m) => m.customId == 'fetch' || m.customId == 'cancel',
-            time: 5000
+            time: 20000
         }) : 'Interaction';
 
         if(collector === 'Interaction') {
