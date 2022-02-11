@@ -27,7 +27,7 @@ class Tangina {
                     if(!video?.nowm) continue;
 
                     const reply = await SafeMessage.reply(message, {
-                        content: `[Download]${video.nowm}`,
+                        content: ' ',
                         files: [
                             {
                                 attachment: video.nowm,
