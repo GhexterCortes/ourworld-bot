@@ -25,9 +25,9 @@ class Snipe {
                         .setAuthor({ name: 'Boi got sniped' })
                         .setDescription(snipe.message.content)
                         .setTimestamp(snipe.time)
-                        .setFooter({ text: `Sniped from ${message.author.tag}`, iconURL: message.author.displayAvatarURL() });
+                        .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: message.author.displayAvatarURL() });
 
-                    if (message.attachments.size > 0) embed.addField(message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${message.attachments.size}** ${message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
+                    if (snipe.message.attachments.size > 0) embed.addField(snipe.message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${snipe.message.attachments.size}** ${snipe.message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
                     await SafeMessage.reply(message, {
                         content: ' ',
                         embeds: [embed]
@@ -48,9 +48,9 @@ class Snipe {
                             .setAuthor({ name: 'Boi got sniped' })
                             .setDescription(snipe.message.content)
                             .setTimestamp(snipe.time)
-                            .setFooter({ text: `Sniped from ${interaction.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
+                            .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
-                        if (interaction.attachments.size > 0) embed.addField(interaction.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${interaction.attachments.size}** ${interaction.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
+                        if (snipe.message.attachments.size > 0) embed.addField(snipe.message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${snipe.message.attachments.size}** ${snipe.message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
                         await SafeInteract.reply(interaction, {
                             content: ' ',
                             embeds: [embed]
@@ -90,10 +90,16 @@ class Snipe {
 
     removeSnipe(message) {
         this.snipes = this.snipes.filter(s => s.message.id !== message.id);
+        this.reverseSnipes();
     }
 
     limitSnipes() {
         this.snipes = this.snipes.slice(0, this.config.snipeMessageLimit);
+        this.reverseSnipes();
+    }
+
+    reverseSnipes() {
+        this.snipes = this.snipes.reverse();
     }
 
     getConfig() {
