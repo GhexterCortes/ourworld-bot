@@ -25,7 +25,7 @@ class Snipe {
                         .setAuthor({ name: 'Boi got sniped' })
                         .setDescription(snipe.message.content)
                         .setTimestamp(snipe.time)
-                        .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: message.author.displayAvatarURL() });
+                        .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
                     if (snipe.message.attachments.size > 0) embed.addField(snipe.message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${snipe.message.attachments.size}** ${snipe.message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
                     await SafeMessage.reply(message, {
