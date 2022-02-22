@@ -27,7 +27,7 @@ class Tangina {
                     if(!video?.nowm) continue;
 
                     const reply = await SafeMessage.reply(message, {
-                        content: ' ',
+                        content: `Sent by: **${message.author.tag}**`,
                         files: [
                             {
                                 attachment: video.nowm,
