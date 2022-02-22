@@ -207,7 +207,7 @@ module.exports = new InteractionCommandBuilder()
             const reply = await interaction.fetchReply().catch(() => false);
             const collector = reply ? reply.createMessageComponentCollector({
                 filter: (component) => (component.customId === 'spamYes' || component.customId === 'spamNo') && component.user.id === interaction.user.id,
-                timer: 10000
+                timer: 5000
             }) : null;
             if (!collector) return SafeInteract.deleteReply(interaction);
 
