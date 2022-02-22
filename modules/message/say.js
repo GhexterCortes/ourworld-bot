@@ -1,5 +1,5 @@
 const { replaceAll } = require('fallout-utility');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const { InteractionCommandBuilder } = require('../../scripts/builders');
 const { SafeMessage, SafeInteract } = require('../../scripts/safeActions');
 const MakeConfig = require('../../scripts/makeConfig');
@@ -182,20 +182,86 @@ module.exports = new InteractionCommandBuilder()
             )) return SafeInteract.reply(interaction, { content: 'This command is disabled in this channel!', ephemeral: true });
             if(!config.spam.allowPings && text.includes('<@')) return SafeInteract.reply(interaction, { content: 'Pings are not allowed!', ephemeral: true });
             
-            await SafeInteract.deferReply(interaction);
-            let success = true;
-            spamming = true;
+            await SafeInteract.reply(interaction, {
+                content: ' ',
+                embeds: [
+                    new MessageEmbed()
+                        .setTitle('Spam')
+                        .setDescription(`Are you sure you want to spam this shit **${count}** times?`)
+                        .setColor('RED')
+                ],
+                components: [
+                    new MessageActionRow().addComponents([
+                        new MessageButton()
+                            .setLabel('Yes')
+                            .setStyle('DANGER')
+                            .setCustomId('spamYes'),
+                        new MessageButton()
+                            .setLabel('No')
+                            .setStyle('SUCCESS')
+                            .setCustomId('spamNo')
+                    ])
+                ]
+            });
 
-            for (let i = 0; i < count; i++) {
-                if(!spamming) { success = false; break; }
-                if(!await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`)) {
-                    success = false;
-                    await SafeMessage.send(interaction.channel, `An error occurred while spamming!`);
-                    break;
+            const reply = await interaction.fetchReply().catch(() => false);
+            const collector = reply ? reply.createMessageComponentCollector({
+                filter: (component) => (component.customId === 'spamYes' || component.customId === 'spamNo') && component.user.id === interaction.user.id,
+                timer: 10000
+            }) : null;
+            if (!collector) return SafeInteract.deleteReply(interaction);
+
+            collector.on('collect', async (component) => {
+                if(component.customId === 'spamYes' || component.customId === 'spamNo') {
+                    await SafeInteract.editReply(interaction, {
+                        components: [
+                            new MessageActionRow().addComponents([
+                                new MessageButton()
+                                    .setLabel('Yes')
+                                    .setStyle('DANGER')
+                                    .setCustomId('spamYes')
+                                    .setDisabled(true),
+                                new MessageButton()
+                                    .setLabel('No')
+                                    .setStyle('SUCCESS')
+                                    .setCustomId('spamNo')
+                                    .setDisabled(true)
+                            ])
+                        ]
+                    });
                 }
-            }
 
-            await SafeInteract.editReply(interaction, success ? 'Spam success!' : 'Spam cancelled!');
+                switch(component.customId) {
+                    case 'spamYes':
+                        let success = true;
+                        spamming = true;
+                        for (let i = 0; i < count; i++) {
+                            if (!component.deferred) await component.deferUpdate().catch(() => false);
+                            if(!spamming) { success = false; break; }
+                            if(!await SafeMessage.send(interaction.channel, `\`spam\`: ${text}`)) {
+                                success = false;
+                                await SafeMessage.send(interaction.channel, `An error occurred while spamming!`);
+                                break;
+                            }
+                        }
+                        await SafeInteract.editReply(interaction, {
+                            embeds: [
+                                new MessageEmbed()
+                                    .setTitle('Spam')
+                                    .setDescription(`Spamming **${text}** ${success ? 'was successful!' : 'was not successful!'}`)
+                                    .setColor(success ? 'GREEN' : 'RED')
+                            ]
+                        });
+                        return collector.stop();
+                    case 'spamNo': 
+                        if (!component.deferred) await component.deferUpdate().catch(() => false);
+                        return collector.stop();
+                }
+            });
+
+            collector.on('end', async () => {
+                spamming = false;
+            });
         }
         this.stopspam = async () => {
             await SafeInteract.deferReply(interaction);
