@@ -14,15 +14,13 @@ class CustomCommands {
         this.servers = [
             {
                 ip: 'play.ourmcworld.ml',
+                description: 'Main server IP',
                 port: 25565
             },
             {
-                ip: 'OurWorldS3.aternos.me',
-                port: 63471
-            },
-            {
-                ip: 'OurWorldTestServer.aternos.me',
-                port: 34360
+                ip: 'test.ourmcworld.ml',
+                description: 'Public server for testing purposes',
+                port: 25565
             }
         ]
     }
@@ -68,7 +66,7 @@ class CustomCommands {
             
             embed.setAuthor({ name: 'Server Information' });
             embed.setColor('BLUE');
-            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
+            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```' + (srv?.description ? '\n' + srv.description : ''));
 
             embed.addField('Status', '<a:pending:853258979944693770> Connecting...', false);
 
@@ -103,7 +101,7 @@ class CustomCommands {
             const embed = new MessageEmbed();
             embed.setAuthor({ name: 'Server Information' });
             embed.setColor('BLUE');
-            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```');
+            embed.setDescription('**IP:**\n```\n'+ srv.ip + (srv.port && srv.port !== 25565 ? ':'+ srv.port : '') + '\n```' + (srv?.description ? '\n' + srv.description : ''));
 
             if(pong) {
                 if(pong?.description === '§4Server not found.' || pong?.version?.name === "§4● Offline" || pong?.players.max === 0 && !this.loadingStatus.some(s => pong.version.name === s)) {
