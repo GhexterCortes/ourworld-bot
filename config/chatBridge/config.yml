@@ -22,8 +22,8 @@ channels:
       receive: true
       send: true
     botId: "841956155190411284"
-  - messagesChannelId: "856557072166420511"
-    consoleChannelId: "841984692026474526"
+  - messagesChannelId: "946044380920295444"
+    consoleChannelId: "946044628661075999"
     playerChats:
       receive: true
       send: true
