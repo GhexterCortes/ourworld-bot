@@ -23,7 +23,7 @@ class Snipe {
 
                     let embed = new MessageEmbed()
                         .setAuthor({ name: 'Boi got sniped' })
-                        .setDescription(snipe.message.content)
+                        .setDescription(snipe.message.content + (snipe.message.edited ? ' (edited)' : ''))
                         .setTimestamp(snipe.time)
                         .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
@@ -46,7 +46,7 @@ class Snipe {
 
                         let embed = new MessageEmbed()
                             .setAuthor({ name: 'Boi got sniped' })
-                            .setDescription(snipe.message.content)
+                            .setDescription(snipe.message.content + (snipe.message.edited ? ' (edited)' : ''))
                             .setTimestamp(snipe.time)
                             .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
