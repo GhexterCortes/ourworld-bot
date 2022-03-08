@@ -1,7 +1,7 @@
 database:
-  databaseGuildId: "876039624814899220"
-  databaseChannelId: "928904657076649984"
-  databaseMessageId: "932195496376819752"
+  databaseGuildId: "830456204735807529"
+  databaseChannelId: "907897856478806016"
+  databaseMessageId: "950724040358776834"
   databaseName: BannedWords
 wordMatching:
   caseSensitive: false

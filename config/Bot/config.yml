@@ -58,6 +58,8 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'bannedwords'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'test-minecraft-bot'
+        permissions: ['ADMINISTRATOR']
 
 # Ignored channels based on IDs
 blacklistChannels:            
