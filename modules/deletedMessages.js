@@ -7,6 +7,9 @@ class DeletedMessages {
         this.versions = ['1.6.0', '1.6.1'];
     }
 
+    /**
+     * @param {import "discord.js".Client} Client
+     */
     onStart(Client) {
         Client.on('messageDelete', async message => {
             if (message.author.bot || message.author.system) return;
@@ -17,7 +20,7 @@ class DeletedMessages {
 
             if (message.member.permissions.has('MANAGE_MESSAGES')) return;
             if ((message.mentions.users.size > 0 || message.mentions.roles.size > 0) && (currentTime - createdAt) <= ms('1d')) await this.punishGhostPing(message);
-            if ((currentTime - createdAt) <= ms('10s')) await this.punishQuickDelete(message);
+            // if ((currentTime - createdAt) <= ms('10s')) await this.punishQuickDelete(message);
         });
         return true;
     }
