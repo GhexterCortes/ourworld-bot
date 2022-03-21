@@ -38,7 +38,12 @@ class ChatBot {
                 });
             } catch(err) {
                 console.error(err);
-                await SafeMessage.reply(message, { content: ' ', embeds: [new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED')] });
+                const reply = await SafeMessage.reply(message, { content: ' ', embeds: [new MessageEmbed().setAuthor({ name: 'Chat Bot Error' }).setDescription(err.stack).setColor('RED')], allowedMentions: { repliedUser: false } });
+
+                setTimeout(async () => {
+                    await SafeMessage.delete(reply);
+                    await SafeMessage.delete(message);
+                }, 3000);
             }
         });
 
@@ -90,9 +95,95 @@ class ChatBot {
     async getResponse(message, botName = 'Bot', ownerName = 'Person', authorName = 'bitch', botGender = 'male') {
         if(!message) throw new Error('No message provided!');
         if(botGender.toLowerCase() != 'male' && botGender.toLowerCase() != 'female') throw new Error('Invalid gender specified');
+        
+        const params = [
+            {
+                name: 'message',
+                value: message
+            },
+            {
+                name: 'botname',
+                value: botName
+            },
+            {
+                name: 'master',
+                value: ownerName
+            },
+            {
+                name: 'user',
+                value: authorName
+            },
+            {
+                name: 'orientation',
+                value: 'gay'
+            },
+            {
+                name: 'religion',
+                value: 'none'
+            },
+            { 
+                name: 'birthdate',
+                value: 'April 4, 2021'
+            },
+            {
+                name: 'birthday',
+                value: 'April 4'
+            },
+            {
+                name: 'birthplace',
+                value: 'Ghex\'s computer'
+            },
+            {
+                name: 'birthyear',
+                value: '2021'
+            },
+            {
+                name: 'age',
+                value: getAge('2020/04/02')
+            },
+            {
+                name: 'city',
+                value: 'Hard Drive'
+            },
+            {
+                name: 'country',
+                value: 'Philippines'
+            },
+            {
+                name: 'email',
+                value: 'ghextershumies@gmail.com'
+            },
+            {
+                name: 'family',
+                value: 'Axis based bot'
+            },
+            {
+                name: 'job',
+                value: 'Watching chat chaos'
+            },
+            {
+                name: 'favoriteband',
+                value: 'idk'
+            },
+            {
+                name: 'favoritesong',
+                value: 'King and Queens by Ava Max'
+            },
+            {
+                name: 'gender',
+                value: botGender
+            },
+            {
+                name: 'kindmusic',
+                value: 'Dance Pop'
+            },
+            {
+                name: 'Location',
+                value: 'Heroku\'s server'
+            }
+        ];
 
-        const url = `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(message)}&botname=${encodeURIComponent(botName)}&ownername=${encodeURIComponent(ownerName)}&user=${encodeURIComponent(authorName)}`;
-
+        const url = `https://api.affiliateplus.xyz/api/chatbot${parseUrl(params)}`;
         let response = await Fetch(url).then(res => res.json());
         if(!response['message']) throw new Error('No response from the API!');
         
@@ -119,6 +210,34 @@ class ChatBot {
             }
         }))
     }
+}
+
+function parseUrl (params) {
+    let url = '';
+
+    let i = 0;
+    for(const param of params) {
+        const _ = i ? '&' : '?';
+        
+        const name = param.name;
+        const value = encodeURIComponent(param.value);
+
+        url += _ + name + '=' + value;
+        i++;
+    }
+
+    return url;
+}
+
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
 }
 
 module.exports = new ChatBot();
