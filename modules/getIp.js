@@ -13,13 +13,8 @@ class CustomCommands {
         this.loadingStatus = ['§7◌ Saving...', '§7◌ Preparing...', '§7◌ Loading...', '§7◌ Starting...', '§7◌ Saving...', '§7◌ Stopping...']
         this.servers = [
             {
-                ip: 'play.ourmcworld.ml',
-                description: 'Main server IP',
-                port: 25565
-            },
-            {
-                ip: 'test.ourmcworld.ml',
-                description: 'Public server for testing purposes',
+                ip: 'play.ourmcworld.gq',
+                description: 'Server\'s IP',
                 port: 25565
             }
         ]

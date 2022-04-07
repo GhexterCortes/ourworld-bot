@@ -50,4 +50,4 @@ version:
 # 0 - means infinite event listeners can be used
 #     changing this to infinite or exceeding to the default value
 #     can cause memory leaks.
-maxClientEventListeners:
+maxClientEventListeners: 11

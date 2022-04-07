@@ -1,15 +1,18 @@
 const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
+const stringSimilarity = require('string-similarity');
 const { MessageEmbed } = require('discord.js');
 const MakeConfig = require('../scripts/makeConfig');
 const Yml = require('yaml');
 const ms = require('ms');
+const { getRandomKey } = require('fallout-utility');
 
 class Snipe {
     constructor() {
         this.versions = ['1.6.0','1.6.1'];
         this.snipes = [];
         this.config = this.getConfig();
+        this.dumbs = ['snipe?', 'lmao', 'do you know how to spell snipe?', 'fr', 'LAMO', 'lol']
     }
 
     onStart(Client) {
@@ -28,6 +31,7 @@ class Snipe {
                         .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
                     if (snipe.message.attachments.size > 0) embed.addField(snipe.message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${snipe.message.attachments.size}** ${snipe.message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
+                    if (snipe.repliedUser) embed.addField('Replied to', snipe.repliedUser.tag, false);
                     await SafeMessage.reply(message, {
                         content: ' ',
                         embeds: [embed]
@@ -51,6 +55,7 @@ class Snipe {
                             .setFooter({ text: `Sniped from ${snipe.message.author.tag}`, iconURL: snipe.message.author.displayAvatarURL() });
 
                         if (snipe.message.attachments.size > 0) embed.addField(snipe.message.attachments.size > 1 ? 'Attachments' : 'Attachment', `Message includes **${snipe.message.attachments.size}** ${snipe.message.attachments.size > 1 ? 'attachments' : 'attachment'}`, false);
+                        if (snipe.repliedUser) embed.addField('Replied to', snipe.repliedUser.tag, false);
                         await SafeInteract.reply(interaction, {
                             content: ' ',
                             embeds: [embed]
@@ -63,6 +68,15 @@ class Snipe {
         Client.on('messageDelete', (message) => {
             if (message.author.bot || message.author.system || !message.guild) return;
             this.addSnipe(message);
+        });
+
+        Client.on('messageCreate', (message) => {
+            if (message.author.bot || message.author.system || !message.guild || !message.content.startsWith('!')) return;
+
+            const isDUmb = stringSimilarity.compareTwoStrings('snipe', message.content.toLowerCase().replace(/!/g, '').trim());
+            if (isDUmb < 0.4) return;
+
+            SafeMessage.reply(message, getRandomKey(this.dumbs));
         });
 
         if (this.config.snipeClear.enabled) {
@@ -78,9 +92,14 @@ class Snipe {
         this.snipes = [];
     }
 
-    addSnipe(message) {
+    /**
+     * 
+     * @param {import 'discord.js'.Message} message 
+     */
+    async addSnipe(message) {
         this.snipes.push({
             message: message,
+            repliedUser: await message.fetchReference().then(e => e.author).catch(() => null) || undefined,
             time: new Date(),
             channel: message.channel
         });
