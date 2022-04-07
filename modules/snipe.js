@@ -71,7 +71,7 @@ class Snipe {
         });
 
         Client.on('messageCreate', (message) => {
-            if (message.author.bot || message.author.system || !message.guild || !message.content.startsWith('!')) return;
+            if (message.author.bot || message.author.system || !message.guild || !message.content.startsWith('!') || message.content.toLowerCase().replace(/!/g, '').trim() === 'snipe') return;
 
             const isDUmb = stringSimilarity.compareTwoStrings('snipe', message.content.toLowerCase().replace(/!/g, '').trim());
             if (isDUmb < 0.4444) return;
