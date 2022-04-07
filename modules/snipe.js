@@ -74,7 +74,7 @@ class Snipe {
             if (message.author.bot || message.author.system || !message.guild || !message.content.startsWith('!')) return;
 
             const isDUmb = stringSimilarity.compareTwoStrings('snipe', message.content.toLowerCase().replace(/!/g, '').trim());
-            if (isDUmb < 0.4) return;
+            if (isDUmb < 0.4444) return;
 
             SafeMessage.reply(message, getRandomKey(this.dumbs));
         });
