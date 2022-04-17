@@ -1,0 +1,15 @@
+{
+  "name": "hiddenplayer",
+  "scripts": {
+    "clean": "rm -rf ./modules",
+    "compile": "npm run clean && tsc",
+    "test": "npm run compile && reciple"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.24",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "reciple": "^1.0.10"
+  }
+}
