@@ -1,5 +1,5 @@
 import { CommandInteraction, EmbedFieldData, Message, MessageButton, MessageEmbed } from 'discord.js';
-import { CommandMessage, InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleInteractionCommandExecute, RecipleMessageCommandExecute, RecipleScript } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
 import { errorEmbed } from './_errorEmbed';
 
@@ -9,7 +9,7 @@ class Help implements RecipleScript {
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public allCommands: { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder }[] = [];
 
-    public onStart(client: RecipleClient) {
+    public onStart() {
         this.commands.push(
             new MessageCommandBuilder()
                 .setName('help')
