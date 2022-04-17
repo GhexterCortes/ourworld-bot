@@ -26,20 +26,24 @@ class Help {
             .addOption(option => option
             .setName('filter')
             .setDescription('Filter commands')
-            .setRequired(true)
-            .setValidator(val => !!val))
+            .setRequired(false))
             .setAllowExecuteByBots(false)
             .setAllowExecuteInDM(false)
             .setValidateOptions(true)
             .setExecute((command) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const filter = ((_a = command.command.args) === null || _a === void 0 ? void 0 : _a.join(' ')) || '';
+            return this.getMessageHelp(command.message, filter);
         })), new reciple_1.InteractionCommandBuilder()
             .setName('help')
             .setDescription('Get command help')
             .addStringOption(option => option
             .setName('filter')
             .setDescription('Filter commands')
-            .setRequired(true))
+            .setRequired(false))
             .setExecute((command) => __awaiter(this, void 0, void 0, function* () {
+            const filter = command.interaction.options.getString('filter') || '';
+            return this.getInteractionHelp(command.interaction, filter);
         })));
         return true;
     }
@@ -87,14 +91,14 @@ class Help {
             });
         }
         return new discord_js_1.MessageEmbed()
-            .setAuthor({ name: `Help Command` })
-            .setDescription(`**${builder.name}** — ${command.description}`)
+            .setAuthor({ name: `${builder.name}` })
+            .setDescription(`${command.description}`)
             .addFields(optionFields)
             .setColor('BLUE');
     }
     getMessageHelp(command, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.indexOf(filter) > -1));
+            const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
             const exactCommand = this.allCommands.find(c => c.type === "MESSAGE_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
             if (exactCommand)
                 return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
@@ -107,7 +111,7 @@ class Help {
     getInteractionHelp(command, filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let content = '';
-            const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.indexOf(filter) > -1));
+            const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
             const exactCommand = this.allCommands.find(c => c.type === "INTERACTION_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
             if (exactCommand)
                 return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
@@ -121,13 +125,13 @@ class Help {
         const contentLimit = 5;
         let pages = [];
         for (let i = 0; i < commands.length; i += contentLimit) {
-            const page = new discord_js_1.MessageEmbed();
+            const page = new discord_js_1.MessageEmbed().setColor('BLUE').setAuthor({ name: 'Commands' });
             for (let j = i; j < i + contentLimit; j++) {
                 if (j >= commands.length)
                     break;
                 page.addFields([{
-                        name: `**${commands[j].name}** — ${commands[j].description}`,
-                        value: `\`\`\`\n${commands[j].usage}\n\`\`\``,
+                        name: `${commands[j].name}`,
+                        value: `${commands[j].description}\n\`\`\`\n${commands[j].usage}\n\`\`\``,
                         inline: false
                     }]);
             }
@@ -137,7 +141,10 @@ class Help {
             .addPages(pages)
             .setAuthorIndependent(true)
             .setTimer(20000)
-            .setOnDisableAction(djs_pagination_1.OnDisableAction.DISABLE_BUTTONS);
+            .setOnDisableAction(djs_pagination_1.OnDisableAction.DISABLE_BUTTONS)
+            .setButtons(buttons => buttons
+            .addButton(djs_pagination_1.ButtonType.PREVIOUS_PAGE, new discord_js_1.MessageButton().setLabel('Prev').setStyle('PRIMARY').setCustomId('previous'))
+            .addButton(djs_pagination_1.ButtonType.NEXT_PAGE, new discord_js_1.MessageButton().setLabel('Next').setStyle('SUCCESS').setCustomId('next')));
     }
 }
 module.exports = new Help();

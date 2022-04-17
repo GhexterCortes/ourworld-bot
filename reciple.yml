@@ -10,7 +10,7 @@ commands:
     enabled: true
     replyOnError: false
     registerCommands: true
-    guilds: []
+    guilds: ['876039624814899220']
 
 permissions:
   messageCommands:

@@ -1,6 +1,6 @@
-import { CommandInteraction, EmbedFieldData, Message, MessageEmbed } from 'discord.js';
+import { CommandInteraction, EmbedFieldData, Message, MessageButton, MessageEmbed } from 'discord.js';
 import { CommandMessage, InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleInteractionCommandExecute, RecipleMessageCommandExecute, RecipleScript } from 'reciple';
-import { OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
+import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
 import { errorEmbed } from './_errorEmbed';
 
 
@@ -17,14 +17,15 @@ class Help implements RecipleScript {
                 .addOption(option => option
                     .setName('filter')
                     .setDescription('Filter commands')
-                    .setRequired(true)
-                    .setValidator(val => !!val)
+                    .setRequired(false)
                 )
                 .setAllowExecuteByBots(false)
                 .setAllowExecuteInDM(false)
                 .setValidateOptions(true)
                 .setExecute(async command => {
+                    const filter = command.command.args?.join(' ') || '';
 
+                    return this.getMessageHelp(command.message, filter);
                 }),
             new InteractionCommandBuilder()
                 .setName('help')
@@ -32,10 +33,12 @@ class Help implements RecipleScript {
                 .addStringOption(option => option
                     .setName('filter')
                     .setDescription('Filter commands')
-                    .setRequired(true)    
+                    .setRequired(false)    
                 )
                 .setExecute(async command => {
+                    const filter = command.interaction.options.getString('filter') || '';
 
+                    return this.getInteractionHelp(command.interaction, filter);
                 })
         );
 
@@ -95,14 +98,14 @@ class Help implements RecipleScript {
         }
 
         return new MessageEmbed()
-            .setAuthor({ name: `Help Command` })
-            .setDescription(`**${builder.name}** — ${command.description}`)
+            .setAuthor({ name: `${builder.name}` })
+            .setDescription(`${command.description}`)
             .addFields(optionFields)
             .setColor('BLUE');
     }
 
     public async getMessageHelp(command: Message, filter: string) {
-        const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.indexOf(filter) > -1));
+        const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
         const exactCommand = this.allCommands.find(c => c.type === "MESSAGE_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
 
         if (exactCommand) return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
@@ -116,7 +119,7 @@ class Help implements RecipleScript {
     public async getInteractionHelp(command: CommandInteraction, filter: string) {
         let content = '';
 
-        const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.indexOf(filter) > -1));
+        const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
         const exactCommand = this.allCommands.find(c => c.type === "INTERACTION_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
 
         if (exactCommand) return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
@@ -132,14 +135,14 @@ class Help implements RecipleScript {
         let pages: MessageEmbed[] = [];
 
         for (let i = 0; i < commands.length; i += contentLimit) {
-            const page = new MessageEmbed();
+            const page = new MessageEmbed().setColor('BLUE').setAuthor({ name: 'Commands' });
 
             for (let j = i; j < i + contentLimit; j++) {
                 if (j >= commands.length) break;
 
                 page.addFields([{
-                    name: `**${commands[j].name}** — ${commands[j].description}`,
-                    value: `\`\`\`\n${commands[j].usage}\n\`\`\``,
+                    name: `${commands[j].name}`,
+                    value: `${commands[j].description}\n\`\`\`\n${commands[j].usage}\n\`\`\``,
                     inline: false
                 }]);
             }
@@ -151,7 +154,11 @@ class Help implements RecipleScript {
             .addPages(pages)
             .setAuthorIndependent(true)
             .setTimer(20000)
-            .setOnDisableAction(OnDisableAction.DISABLE_BUTTONS);
+            .setOnDisableAction(OnDisableAction.DISABLE_BUTTONS)
+            .setButtons(buttons => buttons
+                .addButton(ButtonType.PREVIOUS_PAGE, new MessageButton().setLabel('Prev').setStyle('PRIMARY').setCustomId('previous')) 
+                .addButton(ButtonType.NEXT_PAGE, new MessageButton().setLabel('Next').setStyle('SUCCESS').setCustomId('next'))
+            );
     }
 }
 
