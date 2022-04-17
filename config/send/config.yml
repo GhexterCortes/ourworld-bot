@@ -1,6 +1,0 @@
-spam:
-  allowPings: false
-  whitelistChannels:
-    enabled: true
-    channelIds: []
-    convertToBlacklist: true
