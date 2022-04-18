@@ -68,7 +68,7 @@ class ServerIP implements RecipleScript {
     public async pingServers(message: Message) {
         const serverEmbeds = this.servers.map(server => this.getLoadingEmbed(server.ip, 'Loading...', undefined, undefined, server.description));
 
-        const reply = await message.reply({ content: ' ', embeds: serverEmbeds }).catch(() => { return { edit: () => {} } });
+        const reply = await message.reply({ content: ' ', embeds: serverEmbeds }).catch(() => { return { edit: () => { /** */ } } });
         for (const server of this.servers) {
             const status = await this.getServerStatus(server.ip, server.port);
             const embed = this.getLoadingEmbed(server.ip, status.status, status.online ? status.version : undefined, status.online ? status.players : undefined, server.description);
