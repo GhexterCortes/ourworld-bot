@@ -16,6 +16,7 @@
     "minecraft-protocol": "^1.33.0",
     "reciple": "^1.0.11",
     "string-similarity": "^4.0.4",
+    "tiktok-scraper-ts": "^1.2.6",
     "yaml": "^2.0.1"
   }
 }
