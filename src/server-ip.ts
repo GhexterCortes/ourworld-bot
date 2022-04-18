@@ -1,18 +1,18 @@
 import { NewPingResult, ping } from 'minecraft-protocol';
 import { Message, MessageEmbed } from 'discord.js';
-import { RecipleClient, RecipleScript } from 'reciple';
+import { RecipleClient, RecipleScript, isIgnoredChannel } from 'reciple';
 import yml from 'yaml';
 import path from 'path';
 import fs from 'fs';
 
 class ServerIP implements RecipleScript {
-    public versions: string[] = ['1.0.10'];
+    public versions: string[] = ['1.0.11'];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
     public prefixes: string[] = ['!', '.', '-', '~', '?', '>', '/'];
 
     public onStart(client: RecipleClient) {
         client.on('messageCreate', async message => {
-            if (message.author.bot || message.author.system) return;
+            if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
             if (!this.prefixes.some(p => message.content.startsWith(p) && message.content.slice(p.length).trim().split(' ')[0] == 'ip')) return;
 
             await this.pingServers(message);

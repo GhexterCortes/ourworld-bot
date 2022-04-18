@@ -3,11 +3,12 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, Recipl
 import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
 import { errorEmbed } from './_errorEmbed';
 
+export type commandUsageInfo = { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder };
 
 class Help implements RecipleScript {
-    public versions: string[] = ['1.0.10'];
+    public versions: string[] = ['1.0.11'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
-    public allCommands: { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder }[] = [];
+    public allCommands: commandUsageInfo[] = [];
 
     public onStart() {
         this.commands.push(
@@ -129,7 +130,7 @@ class Help implements RecipleScript {
         return pagination.paginate(command);
     }
 
-    public generatePagination(commands: { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder }[]) {
+    public generatePagination(commands: commandUsageInfo[]) {
         const contentLimit = 5;
 
         let pages: MessageEmbed[] = [];

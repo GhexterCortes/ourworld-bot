@@ -13,7 +13,7 @@ export interface StatusConfig {
 }
 
 class Status implements RecipleScript {
-    public versions: string[] = ['1.0.10'];
+    public versions: string[] = ['1.0.11'];
     public config: StatusConfig = Status.getConfig();
     public currentStatus = 0;
 
