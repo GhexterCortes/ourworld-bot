@@ -14,10 +14,12 @@ class TikTokScraper implements RecipleScript {
         client.on('messageCreate', async message => {
             if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
 
-            const content = replaceAll(message.content, '\n', ' ').split(' ').find(x => TikTokScraper.isTikTokDomain(x.trim()));
-            if (!content) return;
+            const content = replaceAll(message.content, '\n', ' ').split(' ').filter(x => TikTokScraper.isTikTokDomain(x.trim()));
+            if (!content.length) return;
 
-            const video = await this.scraper.video(content).catch(() => null);
+            await message.channel.sendTyping().catch(() => {});
+
+            const video = await this.scraper.video(content[0]).catch(() => null);
             if (!video) { client.logger.error(`An error occured while trying to fetch TikTok URL: ${message.content}`, 'TikTokScraper'); return; }
 
             const embed = new MessageEmbed()
@@ -27,8 +29,8 @@ class TikTokScraper implements RecipleScript {
                 .setURL(video.downloadURL)
                 .setColor('BLUE');
 
-            const reply = await message.reply({
-                content: ' ',
+            const reply = await message.channel.send({
+                content: `sent by **${message.author.tag}**`,
                 embeds: [embed, ...(content.length > 1 ? [errorEmbed('You can only send one TikTok URL in a single message')] : [])],
                 files: [
                     {
@@ -43,7 +45,7 @@ class TikTokScraper implements RecipleScript {
     }
 
     public static isTikTokDomain(url: string): boolean {
-        return url.includes('tiktok.com');
+        return url.includes('tiktok.com') && url.includes('/video/') && !url.includes('vm.');
     }
 
     public static formatNumber(num: number): string {
