@@ -14,7 +14,7 @@
     "@ghextercortes/djs-pagination": "^0.0.5",
     "better-sqlite3": "^7.5.1",
     "minecraft-protocol": "^1.33.0",
-    "reciple": "^1.0.10",
+    "reciple": "^1.0.11",
     "string-similarity": "^4.0.4",
     "yaml": "^2.0.1"
   }
