@@ -1,6 +1,8 @@
-import { TTScraper as TikTok } from 'tiktok-scraper-ts';
 import { MessageEmbed } from 'discord.js';
+import { replaceAll } from 'fallout-utility';
+import { TTScraper as TikTok } from 'tiktok-scraper-ts';
 import { isIgnoredChannel, RecipleClient, RecipleScript } from 'reciple';
+import { errorEmbed } from './_errorEmbed';
 
 class TikTokScraper implements RecipleScript {
     public versions: string[] = ['1.0.11'];
@@ -11,21 +13,23 @@ class TikTokScraper implements RecipleScript {
     public onLoad(client: RecipleClient) {
         client.on('messageCreate', async message => {
             if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
-            if (!TikTokScraper.isTikTokDomain(message.content)) return;
 
-            const video = await this.scraper.video(message.content).catch(() => null);
+            const content = replaceAll(message.content, '\n', ' ').split(' ').find(x => TikTokScraper.isTikTokDomain(x.trim()));
+            if (!content) return;
+
+            const video = await this.scraper.video(content).catch(() => null);
             if (!video) { client.logger.error(`An error occured while trying to fetch TikTok URL: ${message.content}`, 'TikTokScraper'); return; }
 
             const embed = new MessageEmbed()
                 .setAuthor({ name: video?.author ? `@${video?.author}` : 'Unknown Author' })
                 .setDescription(video.description ? TikTokScraper.formatDescription(video.description) : ' ')
-                .setFooter({ text: `💬 ${TikTokScraper.formatNumber(video.commentCount ?? 0)} 💖 ${TikTokScraper.formatNumber(video.likesCount ?? 0)} 👀 ${TikTokScraper.formatNumber(video.playCount ?? 0)}` })
+                .setFooter({ text: `💬 ${TikTokScraper.formatNumber(video.commentCount ?? 0)}  💖 ${TikTokScraper.formatNumber(video.likesCount ?? 0)}  👀 ${TikTokScraper.formatNumber(video.playCount ?? 0)}` })
                 .setURL(video.downloadURL)
                 .setColor('BLUE');
 
             const reply = await message.reply({
                 content: ' ',
-                embeds: [embed],
+                embeds: [embed, ...(content.length > 1 ? [errorEmbed('You can only send one TikTok URL in a single message')] : [])],
                 files: [
                     {
                         attachment: video.downloadURL,
