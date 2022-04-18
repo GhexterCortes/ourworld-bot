@@ -2,7 +2,7 @@ import { ActivitiesOptions, PresenceData } from 'discord.js';
 import path from 'path';
 import yml from 'yaml';
 import fs from 'fs';
-import { RecipleClient, RecipleScript } from 'reciple';
+import { RecipleClient, RecipleScript, version } from 'reciple';
 import { getRandomKey } from 'fallout-utility';
 
 export interface StatusConfig {
@@ -13,7 +13,7 @@ export interface StatusConfig {
 }
 
 class Status implements RecipleScript {
-    public versions: string[] = ['1.0.11'];
+    public versions: string[] = [version];
     public config: StatusConfig = Status.getConfig();
     public currentStatus = 0;
 

@@ -1,12 +1,12 @@
 import { NewPingResult, ping } from 'minecraft-protocol';
 import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { RecipleClient, RecipleScript, isIgnoredChannel } from 'reciple';
+import { RecipleClient, RecipleScript, isIgnoredChannel, version } from 'reciple';
 import yml from 'yaml';
 import path from 'path';
 import fs from 'fs';
 
 class ServerIP implements RecipleScript {
-    public versions: string[] = ['1.0.11'];
+    public versions: string[] = [version];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
     public prefixes: string[] = ['!', '.', '-', '~', '?', '>', '/'];
 

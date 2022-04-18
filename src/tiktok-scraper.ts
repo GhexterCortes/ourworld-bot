@@ -1,11 +1,11 @@
 import { MessageEmbed } from 'discord.js';
 import { replaceAll } from 'fallout-utility';
 import { TTScraper as TikTok } from 'tiktok-scraper-ts';
-import { isIgnoredChannel, RecipleClient, RecipleScript } from 'reciple';
+import { isIgnoredChannel, RecipleClient, RecipleScript, version } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
 class TikTokScraper implements RecipleScript {
-    public versions: string[] = ['1.0.11'];
+    public versions: string[] = [version];
     public scraper: TikTok = new TikTok();
     
     public onStart() { return true; }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import yml from 'yaml';
 import path from 'path';
-import { RecipleScript, RecipleClient } from 'reciple';
+import { RecipleScript, RecipleClient, version } from 'reciple';
 import { Message, GuildMember } from 'discord.js';
 import stringSmilarity from 'string-similarity';
 import { errorEmbed } from './_errorEmbed';
@@ -26,7 +26,7 @@ export interface SentMessage {
 }
 
 class SpamManager implements RecipleScript {
-    public versions: string[] = ['1.0.11'];
+    public versions: string[] = [version];
     public config: SpamManagerConfig = SpamManager.getConfig();
     public sentMessages: SentMessage[] = [];
 
@@ -110,7 +110,7 @@ class SpamManager implements RecipleScript {
     }
 
     public async timeout(member: GuildMember) {
-        return member.isCommunicationDisabled() ? member.disableCommunicationUntil(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
+        return member.isCommunicationDisabled() || !member.moderatable ? member.timeout(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
     }
 
     public async kick(member: GuildMember) {

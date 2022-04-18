@@ -4,11 +4,11 @@ prefix: '!'
 commands:
   messageCommand:
     enabled: true
-    replyOnError: false
+    replyOnError: true
     commandArgumentSeparator: ' '
   interactionCommand:
     enabled: true
-    replyOnError: false
+    replyOnError: true
     registerCommands: true
     guilds: ['876039624814899220']
 
@@ -44,7 +44,7 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
 
 messages:
-  notEnoughArguments: 'Not enough arguments.'
+  notEnoughArguments: 'Not enough arguments or invalid value given.'
   noPermission:
     content: 'You do not have permission to use this command.'
     ephemeral: true
@@ -54,4 +54,4 @@ messages:
 
 modulesFolder: 'modules'
 
-version: 1.0.11
+version: 1.0.12

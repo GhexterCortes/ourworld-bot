@@ -1,12 +1,12 @@
 import { CommandInteraction, EmbedFieldData, Message, MessageButton, MessageEmbed } from 'discord.js';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
 import { errorEmbed } from './_errorEmbed';
 
 export type commandUsageInfo = { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder };
 
 class Help implements RecipleScript {
-    public versions: string[] = ['1.0.11'];
+    public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public allCommands: commandUsageInfo[] = [];
 
@@ -93,7 +93,7 @@ class Help implements RecipleScript {
         for (const option of builder.options ?? []) {
             optionFields.push({
                 name: option.name,
-                value: '**'+ (option.required ? 'Required' : 'Optional') +'** — '+ option.description +'\n```\n'+ option.name +'\n```',
+                value: '**'+ (option.required ? 'Required' : 'Optional') +'** — '+ option.description,
                 inline: true
             });
         }
