@@ -16,13 +16,17 @@ permissions:
   messageCommands:
     enabled: true
     commands:
-      - command: 'stop'
-        permissions: ['ADMINISTRATOR']
+      - command: 'mute'
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'unmute'
+        permissions: ['MANAGE_MESSAGES']
   interactionCommands:
     enabled: true
     commands:
-      - command: 'stop'
-        permissions: ['ADMINISTRATOR']
+      - command: 'mute'
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'unmute'
+        permissions: ['MANAGE_MESSAGES']
 
 
 ignoredChannels:
