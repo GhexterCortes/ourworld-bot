@@ -20,6 +20,8 @@ class FetchMembers implements RecipleScript {
 
         this.logger?.log(`Found ${guilds.size} guilds.`);
         for (const guild of guilds) {
+            if (!guild[1]) continue;
+
             this.logger?.warn(`Fetching members for ${guild[1].name}...`);
 
             const fetch = await guild[1].members.fetch().catch(err => this.logger?.error(err));
