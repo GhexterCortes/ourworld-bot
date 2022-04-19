@@ -77,7 +77,7 @@ class SpamManager implements RecipleScript {
 
         const existingMessage = this.sentMessages.find(sentMessage => sentMessage.user_id === user_id);
         if (existingMessage && existingMessage.message.channelId === message.channelId) {
-            if ((existingMessage.message.createdTimestamp - message.createdTimestamp) <= this.config.similarMessageCooldown) {
+            if ((message.createdTimestamp - existingMessage.message.createdTimestamp) <= this.config.similarMessageCooldown) {
                 const similarity = stringSmilarity.compareTwoStrings(existingMessage.message.content.toLowerCase(), message.content.toLowerCase());
                 
                 if (similarity >= this.config.similarMessageThreshold) {
@@ -110,7 +110,7 @@ class SpamManager implements RecipleScript {
     }
 
     public async timeout(member: GuildMember) {
-        return member.isCommunicationDisabled() || !member.moderatable ? member.timeout(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
+        return !member.isCommunicationDisabled() &&  member.moderatable ? member.timeout(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
     }
 
     public async kick(member: GuildMember) {
