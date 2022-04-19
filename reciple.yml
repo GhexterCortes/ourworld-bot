@@ -35,6 +35,9 @@ fileLogging:
   logFilePath: './logs/latest.log'
 
 client:
+  repliedUser: true
+  allowedMentions: 
+    parse: ['users', 'roles']
   intents:
     - 'GUILDS'
     - 'GUILD_MEMBERS'
