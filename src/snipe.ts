@@ -63,7 +63,7 @@ export class SnipedMessage implements SnipedMessage {
         embed.setFooter({ text: `Sniped from ${this.authorUser?.tag ?? 'Unknown'}` });
 
         if (this.repliedUser) embed.addField('Replied To', `<@!${this.repliedUser.id}>`, true);
-        if (this.attachments > 0) embed.addField(this.attachments > 1 ? 'Attachments' : 'Attachment', `📰 **${this.attachments}**`, true);
+        if (this.attachments > 0) embed.addField(this.attachments > 1 ? 'Attachments' : 'Attachment', `${this.attachments}`, true);
 
         return embed;
     }
