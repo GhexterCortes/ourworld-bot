@@ -1,4 +1,0 @@
-snipeMessageLimit: 100
-snipeClear:
-  enabled: false
-  interval: 5h

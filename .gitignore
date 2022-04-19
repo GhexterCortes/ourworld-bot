@@ -114,6 +114,5 @@ plugins/
 .github/workflows/node.js.yml
 modules/invites.js
 
-modules_old
-config_old
-package.json.old
+modules
+config

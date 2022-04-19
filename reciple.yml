@@ -1,0 +1,64 @@
+token: env:TOKEN
+prefix: '!'
+
+commands:
+  messageCommand:
+    enabled: true
+    replyOnError: true
+    commandArgumentSeparator: ' '
+  interactionCommand:
+    enabled: true
+    replyOnError: true
+    registerCommands: true
+    guilds: ['876039624814899220']
+
+permissions:
+  messageCommands:
+    enabled: true
+    commands:
+      - command: 'mute'
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'unmute'
+        permissions: ['MANAGE_MESSAGES']
+  interactionCommands:
+    enabled: true
+    commands:
+      - command: 'mute'
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'unmute'
+        permissions: ['MANAGE_MESSAGES']
+
+
+ignoredChannels:
+  enabled: false
+  convertToAllowList: false
+  channels: []
+
+fileLogging:
+  enabled: true
+  logFilePath: './logs/latest.log'
+
+client:
+  repliedUser: true
+  allowedMentions: 
+    parse: ['users', 'roles']
+  intents:
+    - 'GUILDS'
+    - 'GUILD_MEMBERS'
+    - 'GUILD_INVITES'
+    - 'GUILD_VOICE_STATES'
+    - 'GUILD_MESSAGES'
+    - 'GUILD_MESSAGE_REACTIONS'
+
+messages:
+  notEnoughArguments: 'Not enough arguments or invalid value given.'
+  noPermission:
+    content: 'You do not have permission to use this command.'
+    ephemeral: true
+  error:
+    content: 'An error occurred.'
+    ephemeral: true
+
+modulesFolder: 'modules'
+
+version: 1.0.12
