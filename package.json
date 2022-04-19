@@ -17,6 +17,7 @@
     "@ghextercortes/djs-pagination": "^0.0.5",
     "axios": "^0.26.1",
     "better-sqlite3": "^7.5.1",
+    "canvas": "^2.9.1",
     "minecraft-protocol": "^1.33.0",
     "ms": "^2.1.3",
     "reciple": "^1.0.12",

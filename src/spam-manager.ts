@@ -62,7 +62,7 @@ class SpamManager implements RecipleScript {
             const domain = SpamManager.getDomain(url);
             if (!domain) continue;
 
-            if (this.config.validDomains.includes(domain)) continue;
+            if (this.config.validDomains.some(d => d.endsWith(domain))) continue;
             if (this.config.validDomains.some(d => stringSmilarity.compareTwoStrings(d, domain) >= this.config.scamDomainThreshold || stringSmilarity.compareTwoStrings(d.split('.')[0], domain.split('.')[0]) >= this.config.scamNameThreshold)) {
                 foundSimilarDomain = true;
                 break;
