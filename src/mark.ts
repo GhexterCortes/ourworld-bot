@@ -34,7 +34,7 @@ class Mark implements RecipleScript {
                 const avatar =  command.interaction.options.getUser('user')?.displayAvatarURL({ format: 'png', size: 300 }) || command.interaction.user.displayAvatarURL({ format: 'png', size: 300 });
                 const murk = await this.getAvatar(avatar);
 
-                command.interaction.reply(murk);
+                command.interaction.editReply(murk);
             })
     ];
 
