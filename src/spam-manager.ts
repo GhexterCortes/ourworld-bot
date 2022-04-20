@@ -34,6 +34,7 @@ class SpamManager implements RecipleScript {
 
     public onLoad(client: RecipleClient) {
         client.on('messageCreate', async message => {
+            if (client?.user && message.mentions.members?.has(client?.user.id)) await message.react('🤔').catch(() => {});
             if (message.author.bot || message.author.system || !message.member) return;
             
             const isScamMessage = this.isDiscordScamMessage(message.content);
