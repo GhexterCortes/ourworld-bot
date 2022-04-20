@@ -4,6 +4,7 @@ import { RecipleClient, RecipleScript, isIgnoredChannel, version } from 'reciple
 import yml from 'yaml';
 import path from 'path';
 import fs from 'fs';
+import { errorEmbed } from './_errorEmbed';
 
 class ServerIP implements RecipleScript {
     public versions: string[] = [version];
@@ -39,7 +40,7 @@ class ServerIP implements RecipleScript {
             online: boolean;
         }
 
-        const response = await ping({ host, port, closeTimeout: 3000 })
+        const response = await ping({ host, port, closeTimeout: 5000 })
         .then(result => {
             const res = {...result, status: !(result as NewPingResult).players?.max ? 'Offline' : 'Online', online: !(result as NewPingResult).players?.max ? false : true } as ServerPingResult;
 
@@ -113,6 +114,7 @@ class ServerIP implements RecipleScript {
 
         collector.on('collect', async (component) => {
             if (!component.deferred) await component.deferUpdate().catch(() => {});
+            if (component.user.id !== parentMessage.author.id) return component.reply({ embeds: [errorEmbed('This is not your command')], ephemeral: true }).catch(() => {});
 
             if (component.customId == 'delete') {
                 await message.delete().catch(() => {});
