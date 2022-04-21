@@ -1,9 +1,9 @@
+import { RecipleClient, RecipleScript, version } from 'reciple';
 import { ActivitiesOptions, PresenceData } from 'discord.js';
+import { getRandomKey } from 'fallout-utility';
+import { createConfig } from './_createConfig';
 import path from 'path';
 import yml from 'yaml';
-import fs from 'fs';
-import { RecipleClient, RecipleScript, version } from 'reciple';
-import { getRandomKey } from 'fallout-utility';
 
 export interface StatusConfig {
     presenceList: ActivitiesOptions[];
@@ -36,17 +36,20 @@ class Status implements RecipleScript {
 
     public static getConfig(): StatusConfig {
         const configPath = path.join(process.cwd(), 'config/status/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.join(process.cwd(), 'config/status'), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify({
-                presenceList: [],
-                status: 'online',
-                presenceInterval: 2 * 60 * 1000,
-                randomPresence: true,
-            }));
-        }
+        const defaultConfig: StatusConfig = {
+            presenceList: [
+                {
+                    name: 'Minecraft',
+                    type: 'PLAYING',
+                    url: 'https://www.minecraft.net/'
+                }
+            ],
+            status: 'online',
+            presenceInterval: 2 * 60 * 1000,
+            randomPresence: true,
+        };
 
-        return yml.parse(fs.readFileSync(configPath, 'utf8')) as StatusConfig;
+        return yml.parse(createConfig(configPath, defaultConfig));
     }
 }
 

@@ -1,11 +1,11 @@
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import { ReplyMessageOptions, InteractionReplyOptions } from 'discord.js';
+import { createConfig } from './_createConfig';
 import { errorEmbed } from './_errorEmbed';
 import { Logger } from 'fallout-utility';
 import axios from 'axios';
 import path from 'path';
 import yml from 'yaml';
-import fs from 'fs';
 
 export interface ChatBotConfig {
     identity: {
@@ -152,14 +152,8 @@ class ChatBot implements RecipleScript {
 
     public static getConfig(): ChatBotConfig {
         const configPath = path.join(process.cwd(), 'config/chatbot/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.join(process.cwd(), 'config/chatbot'), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify(ChatBot.defaultConfig()));
 
-            return ChatBot.defaultConfig();
-        }
-
-        return yml.parse(fs.readFileSync(configPath, 'utf8'));
+        return yml.parse(createConfig(configPath, this.defaultConfig()));
     }
 
     public static defaultConfig(): ChatBotConfig {

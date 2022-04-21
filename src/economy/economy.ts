@@ -7,6 +7,7 @@ import path from 'path';
 import yml from 'yaml';
 import fs from 'fs';
 import { EconomyUser } from './User';
+import { createConfig } from '../_createConfig';
 
 export interface EconomyConfig {
     consoleChannelIds: string[];
@@ -133,14 +134,8 @@ export class Economy implements RecipleScript {
 
     public static getConfig(): EconomyConfig {
         const configPath = path.join(process.cwd(), 'config/economy/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.dirname(configPath), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify(Economy.getDefaultConfig()));
 
-            return Economy.getDefaultConfig();
-        }
-
-        return yml.parse(fs.readFileSync(configPath, 'utf8'));
+        return yml.parse(createConfig(configPath, Economy.getDefaultConfig()));
     }
 
     public static getDefaultConfig(): EconomyConfig {

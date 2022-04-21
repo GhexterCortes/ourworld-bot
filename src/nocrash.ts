@@ -3,7 +3,7 @@ import { Logger } from 'fallout-utility';
 import { User, MessageEmbed } from 'discord.js';
 import path from 'path';
 import yml from 'yaml';
-import fs from 'fs';
+import { createConfig } from './_createConfig';
 
 export interface NoCrashConfig {
     ownerId: string;
@@ -66,12 +66,9 @@ class NoCrash implements RecipleScript {
 
     public static getConfig(): NoCrashConfig {
         const configPath = path.join(process.cwd(), 'config/nocrash/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.dirname(configPath), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify({ ownerId: '', reportToOwner: false, preventCrash: true }));
-        }
+        const defaultConfig = { ownerId: '', reportToOwner: false, preventCrash: true };
 
-        return yml.parse(fs.readFileSync(configPath, 'utf8'));
+        return yml.parse(createConfig(configPath, defaultConfig));
     }
 }
 

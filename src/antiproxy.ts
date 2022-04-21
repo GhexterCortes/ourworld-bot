@@ -1,4 +1,3 @@
-import fs from 'fs';
 import yml from 'yaml';
 import path from 'path';
 import axios from 'axios';
@@ -6,6 +5,7 @@ import { TextChannel } from 'discord.js';
 import { Logger, replaceAll } from 'fallout-utility';
 import { RecipleClient, RecipleScript, version } from 'reciple';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
+import { createConfig } from './_createConfig';
 
 export interface AntiProxyConfig {
     token?: string;
@@ -181,20 +181,17 @@ class AntiProxy implements RecipleScript {
 
     public static getConfig(): AntiProxyConfig {
         const configPath = path.join(process.cwd(), 'config/anti-proxy/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.dirname(configPath), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify({
-                token: '',
-                consoleBotIds: [],
-                consoleChannelIds: [],
-                banIpCommand: 'ban-ip $1 $2',
-                banCommand: 'ban $1 $2',
-                banReason: 'Your IP address was found using a proxy. This is not allowed for security reasons.',
-                afterBanMessages: ['say {name} was detected using a proxy/vpn and has been banned.']
-            }));
-        }
+        const defaultConfig: AntiProxyConfig = {
+            token: '',
+            consoleBotIds: [],
+            consoleChannelIds: [],
+            banIpCommand: 'ban-ip $1 $2',
+            banCommand: 'ban $1 $2',
+            banReason: 'Your IP address was found using a proxy. This is not allowed for security reasons.',
+            afterBanMessages: ['say {name} was detected using a proxy/vpn and has been banned.']
+        };
 
-        return yml.parse(fs.readFileSync(configPath, 'utf8'));
+        return yml.parse(createConfig(configPath, defaultConfig));
     }
 }
 

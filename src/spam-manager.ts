@@ -1,4 +1,3 @@
-import fs from 'fs';
 import yml from 'yaml';
 import path from 'path';
 import { RecipleScript, RecipleClient, version } from 'reciple';
@@ -6,6 +5,7 @@ import { Message, GuildMember } from 'discord.js';
 import stringSmilarity from 'string-similarity';
 import { errorEmbed } from './_errorEmbed';
 import { getRandomKey } from 'fallout-utility';
+import { createConfig } from './_createConfig';
 
 export interface SpamManagerConfig {
     similarMessageCooldown: number;
@@ -121,47 +121,47 @@ class SpamManager implements RecipleScript {
 
     public static getConfig(): SpamManagerConfig {
         const configPath = path.join(process.cwd(), 'config/spam-manager/config.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.join(process.cwd(), 'config/spam-manager'), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify({
-                similarMessageCooldown: 1000,
-                similarMessageThreshold: 0.8,
-                similarMessageLimit: 10,
-                timeoutDuration: 3 * 60 * 1000,
-                timeoutReason: 'spam',
-                scamDomainThreshold: 0.8,
-                scamNameThreshold: 0.6,
-                scamDomainMessageLength: 50,
-                scamDomainKickReason: 'scam',
-                validDomains: [
-                    'discord.com',
-                    'discordapp.com',
-                    'discordapp.net',
-                    'discord.gg',
-                    'discord.co',
-                    'discord.gift',
-                    'discord.media',
-                    'watchanimeattheoffice.com',
-                    'bigbeans.solutions',
-                    'dis.gd',
-                    's.team',
-                    'steam-chat.com',
-                    'steamchina.com',
-                    'steamcommunity.com',
-                    'steamcontent.com',
-                    'steamgames.com',
-                    'steampowered.com',
-                    'steampowered.com.8686c.com',
-                    'steamstatic.com',
-                    'steamstatic.com.8686c.com',
-                    'steamusercontent.com',
-                    'valve.net',
-                    'valvesoftware.com'
-                ]
-            }));
-        }
 
-        return yml.parse(fs.readFileSync(configPath, 'utf8')) as SpamManagerConfig;
+        return yml.parse(createConfig(configPath, SpamManager.defaultConfig()));
+    }
+
+    public static defaultConfig(): SpamManagerConfig {
+        return {
+            similarMessageCooldown: 1000,
+            similarMessageThreshold: 0.8,
+            similarMessageLimit: 10,
+            timeoutDuration: 3 * 60 * 1000,
+            timeoutReason: 'spam',
+            scamDomainThreshold: 0.8,
+            scamNameThreshold: 0.6,
+            scamDomainMessageLength: 50,
+            scamDomainKickReason: 'scam',
+            validDomains: [
+                'discord.com',
+                'discordapp.com',
+                'discordapp.net',
+                'discord.gg',
+                'discord.co',
+                'discord.gift',
+                'discord.media',
+                'watchanimeattheoffice.com',
+                'bigbeans.solutions',
+                'dis.gd',
+                's.team',
+                'steam-chat.com',
+                'steamchina.com',
+                'steamcommunity.com',
+                'steamcontent.com',
+                'steamgames.com',
+                'steampowered.com',
+                'steampowered.com.8686c.com',
+                'steamstatic.com',
+                'steamstatic.com.8686c.com',
+                'steamusercontent.com',
+                'valve.net',
+                'valvesoftware.com'
+            ]
+        };
     }
 
     public static getDomain(url: string): string {

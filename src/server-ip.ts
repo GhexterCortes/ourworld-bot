@@ -3,8 +3,8 @@ import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.
 import { RecipleClient, RecipleScript, isIgnoredChannel, version } from 'reciple';
 import yml from 'yaml';
 import path from 'path';
-import fs from 'fs';
 import { errorEmbed } from './_errorEmbed';
+import { createConfig } from './_createConfig';
 
 class ServerIP implements RecipleScript {
     public versions: string[] = [version];
@@ -131,12 +131,9 @@ class ServerIP implements RecipleScript {
 
     public static getConfig(): { ip: string; port: number; description: string; }[] {
         const configPath = path.join(process.cwd(), '/config/server-ip/server.yml');
-        if (!fs.existsSync(configPath)) {
-            fs.mkdirSync(path.join(process.cwd(), '/config/server-ip'), { recursive: true });
-            fs.writeFileSync(configPath, yml.stringify({ servers: [{ ip: 'play.hypixel.net', port: 25565, description: '' }] }));
-        }
+        const defaultConfig = { servers: [{ ip: 'play.hypixel.net', port: 25565, description: '' }] };
 
-        const config = yml.parse(fs.readFileSync(configPath, 'utf-8')) as { servers: { ip: string; port: number; description: string; }[] };
+        const config = yml.parse(createConfig(configPath, defaultConfig)) as { servers: { ip: string; port: number; description: string; }[] };
         return config.servers;
     } 
 }
