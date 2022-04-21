@@ -59,6 +59,7 @@ class Mark implements RecipleScript {
                     .setTitle('Si Mark')
                     .setColor('ORANGE')
                     .setImage('attachment://mark.png')
+                    .setFooter({ text: `We do not endorse any political candidates; this is for meme purposes only` })
             ],
             files: [attachment]
         };
