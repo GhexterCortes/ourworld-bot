@@ -2,6 +2,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, versio
 import { MessageEmbed } from 'discord.js';
 import { Economy } from './economy/economy';
 import { errorEmbed } from './_errorEmbed';
+import { replaceAll } from 'fallout-utility';
 
 class EconomyPlugin implements RecipleScript {
     public versions: string[] = [version];
@@ -29,7 +30,39 @@ class EconomyPlugin implements RecipleScript {
                         .setDescription(`You have **${balance}** 🪙`);
                     
                     await interaction.editReply({ embeds: [embed] });
-                })
+                }),
+            // new MessageCommandBuilder()
+            //     .setName('addbal')
+            //     .setDescription('Add money to a user')
+            //     .addOption(user => user
+            //         .setName('user')
+            //         .setDescription('The user to add money to')
+            //         .setRequired(true)
+            //     )
+            //     .addOption(amount => amount
+            //         .setName('amount')
+            //         .setDescription('The amount to add')
+            //         .setRequired(true)
+            //         .setValidator(amount => parseInt(amount, 10) > 0 && parseInt(amount) < 1000000)    
+            //     )
+            //     .setExecute(async command => {
+            //         const user = command.command.args ? replaceAll(command.command.args[0], ['<@', '>'], ['', '']) : '';
+            //         const message = command.message;
+
+            //         const user_id = message.mentions.repliedUser?.id ?? message.client.users.cache.find(u => u.id === user || u.tag === user)?.id ?? await message.client.users.fetch(user)?.catch(() => undefined).then(u => u?.id) ?? undefined;
+            //         if (!user_id) return message.channel.send({ embeds: [errorEmbed('Invalid user')] });
+
+            //         const amount = command.command.args ? parseInt(command.command.args[1]) : 0;
+            //         if (!amount) return message.channel.send({ embeds: [errorEmbed('Invalid amount '+ amount)] });
+
+            //         const player = await this.economy.getUser(user_id);
+            //         if (!player) return message.channel.send({ embeds: [errorEmbed('User is not registered')] });
+
+            //         const balance = player.getBalance() + amount;
+            //         player.setBalance(balance);
+                    
+            //         await message.channel.send({ embeds: [errorEmbed(`Added **${amount}** 🪙 to **${player.playername}**`, true, false)] });
+            //     })
         ];
 
         return !!this.economy.client;
