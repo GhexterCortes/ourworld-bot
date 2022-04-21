@@ -22,12 +22,16 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'addbal'
         permissions: ['ADMINISTRATOR']
+      - command: 'spam'
+        permissions: ['MANAGE_MESSAGES']
   interactionCommands:
     enabled: true
     commands:
       - command: 'mute'
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'spam'
         permissions: ['MANAGE_MESSAGES']
 
 
