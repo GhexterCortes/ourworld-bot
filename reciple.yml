@@ -20,6 +20,8 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'addbal'
+        permissions: ['ADMINISTRATOR']
   interactionCommands:
     enabled: true
     commands:
