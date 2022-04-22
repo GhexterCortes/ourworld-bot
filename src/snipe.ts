@@ -57,7 +57,7 @@ export class SnipedMessage implements SnipedMessage {
         const embed = new MessageEmbed();
 
         embed.setColor(embedColor);
-        embed.setAuthor({ name: this.authorUser?.tag ?? 'Unknown', iconURL: this.authorUser?.displayAvatarURL({ format: 'gif', dynamic: true }) ?? undefined });
+        embed.setAuthor({ name: this.authorUser?.tag ?? 'Unknown', iconURL: this.authorUser?.displayAvatarURL({ dynamic: true, size: 56 }) ?? undefined });
         embed.setDescription(this.content);
         embed.setTimestamp(new Date(this.createdAt));
         embed.setFooter({ text: `Sniped message` });
