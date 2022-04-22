@@ -57,10 +57,10 @@ export class SnipedMessage implements SnipedMessage {
         const embed = new MessageEmbed();
 
         embed.setColor(embedColor);
-        embed.setAuthor({ name: `Sniped Message` });
+        embed.setAuthor({ name: this.authorUser?.tag ?? 'Unknown', iconURL: this.authorUser?.displayAvatarURL({ format: 'gif', dynamic: true }) ?? undefined });
         embed.setDescription(this.content);
         embed.setTimestamp(new Date(this.createdAt));
-        embed.setFooter({ text: `Sniped from ${this.authorUser?.tag ?? 'Unknown'}` });
+        embed.setFooter({ text: `Sniped message` });
 
         if (this.repliedUser) embed.addField('Replied To', `<@!${this.repliedUser.id}>`, true);
         if (this.attachments > 0) embed.addField(this.attachments > 1 ? 'Attachments' : 'Attachment', `${this.attachments}`, true);
