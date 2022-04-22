@@ -6,7 +6,7 @@ class Larry implements RecipleScript {
     public versions: string[] = [version];
     public commands?: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 
-    public async onStart(client: RecipleClient) {
+    public async onStart() {
         this.commands = [
             new MessageCommandBuilder()
                 .setName('larry-gadon')
