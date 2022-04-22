@@ -27,7 +27,7 @@ class Spam implements RecipleScript {
                     .setName('count')
                     .setDescription('The amount of times to spam the message')
                     .setRequired(true)
-                    .setValidator(c => parseInt(c) !== NaN && parseInt(c) > 0)    
+                    .setValidator(c => !isNaN(parseInt(c)) && parseInt(c) > 0)    
                 )
                 .addOption(message => message
                     .setName('message')
@@ -124,7 +124,7 @@ class Spam implements RecipleScript {
     }
 
     public static async addSpamConfirmCollector(message: Message, author: User): Promise<boolean> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             const collector = message.createMessageComponentCollector({
                 filter: (component) => component.user.id === author.id && (component.customId === 'confirm' || component.customId === 'cancel'),
                 time: 30000
