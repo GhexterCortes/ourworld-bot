@@ -4,7 +4,7 @@ import { Player, PlayerInitOptions, Queue, Track } from 'discord-player';
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import path from 'path';
 import { createConfig } from './_createConfig';
-import { Logger } from 'fallout-utility';
+import { getRandomKey, Logger } from 'fallout-utility';
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from 'discord.js';
 import { errorEmbed } from './_errorEmbed';
 
@@ -114,7 +114,7 @@ export class MusicPlayer implements RecipleScript {
                     break;
                 case 'stop':
                     queue.destroy();
-                    await c.reply({ embeds: [errorEmbed(this.getMessage('stopped', track.title), true, false)], ephemeral: true }).catch(() => {});
+                    await c.reply({ embeds: [errorEmbed(this.getMessage('stopped', track.title), false, false)], ephemeral: true }).catch(() => {});
                     break;
             }
 
@@ -135,7 +135,7 @@ export class MusicPlayer implements RecipleScript {
     }
 
     public getMessage(key: string, ...placeholders: string[]): string {
-        let message = this.config.messages[key] ?? `${key}`;
+        let message = getRandomKey(this.config.messages[key]) ?? `${key}`;
 
         let id = 0;
         for (const placeholder of placeholders) {
@@ -170,7 +170,7 @@ export class MusicPlayer implements RecipleScript {
         return new MessageActionRow().setComponents([
             new MessageButton()
                 .setCustomId('play-pause')
-                .setLabel('Play/Pause')
+                .setLabel('Pause/Resume')
                 .setStyle('PRIMARY')
                 .setDisabled(disabled),
             new MessageButton()
@@ -195,7 +195,18 @@ export class MusicPlayer implements RecipleScript {
                 joinSameVoiceChannel: 'Join voice channel I am already in',
                 connectionError: 'Connection Error',
                 noResult: 'No results found for `{0}`',
+                noQueue: 'No queue found',
+                noQuery: 'No query provided',
+                notPlaying: 'Not playing anything',
                 error: 'An error occurred',
+                noTracks: 'No tracks in queue',
+                trackNotFound: 'Track not found',
+                loopQueue: 'Looping queue',
+                loopTrack: 'Looping track **{0}**',
+                loopOff: 'Turned off looping',
+                clearQueue: 'Cleared **{0}** tracks from queue',
+                shuffleQueue: 'Shuffled queue',
+                removedTrack: 'Removed track **{0}** from queue',
                 paused: 'Paused **{0}**',
                 unpaused: 'Resumed **{0}**',
                 skipped: 'Skipped Track **{0}**',
