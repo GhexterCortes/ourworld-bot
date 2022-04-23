@@ -42,6 +42,8 @@ ignoredChannels:
 
 fileLogging:
   enabled: true
+  debugmode: true
+  stringifyLoggedJSON: false
   logFilePath: './logs/latest.log'
 
 client:
@@ -58,7 +60,7 @@ client:
 
 messages:
   notEnoughArguments: 'Not enough arguments or invalid value given.'
-  noPermission:
+  noPermissions:
     content: 'You do not have permission to use this command.'
     ephemeral: true
   error:
@@ -67,4 +69,4 @@ messages:
 
 modulesFolder: 'modules'
 
-version: 1.0.12
+version: 1.0.17
