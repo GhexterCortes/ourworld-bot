@@ -157,6 +157,7 @@ class SendMessage implements RecipleScript {
         
         client.on('interactionCreate', async interaction => {
             if (!interaction.isAutocomplete()) return;
+            if (interaction.commandName !== 'send') return;
 
             const text = interaction.options.getFocused() ?? undefined;
             const color = SendMessage.getColors(text.toString());
