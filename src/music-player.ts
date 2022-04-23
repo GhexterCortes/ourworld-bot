@@ -34,10 +34,21 @@ export class MusicPlayer implements RecipleScript {
 
         this.loadCommands(this.client.config?.modulesFolder ?? 'modules');
 
-        this.player.on('connectionError', async (q) => {
-            this.logger?.error(`Connection error for queue ${q.id} in guild ${q.guild.name}`);
+        this.player.on('error', async (q, e) => {
+            this.logger?.error(`Error in queue ${q.id} in guild ${q.guild.name}`);
+            this.logger?.error(e);
 
-            if (!q.destroyed) q.destroy();
+            if (!q.destroyed) q.destroy(true);
+
+            const queue = q as Queue<QueueMetadata>;
+            await queue.metadata?.channel.send({ embeds: [errorEmbed(this.getMessage('error'))] }).catch(() => {});
+        });
+
+        this.player.on('connectionError', async (q, e) => {
+            this.logger?.error(`Connection error for queue ${q.id} in guild ${q.guild.name}`);
+            this.logger?.error(e);
+
+            if (!q.destroyed) q.destroy(true);
 
             const queue = q as Queue<QueueMetadata>;
             await queue.metadata?.channel.send({ embeds: [errorEmbed(this.getMessage('connectionError'))] }).catch(() => {});

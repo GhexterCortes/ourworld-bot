@@ -24,6 +24,8 @@ permissions:
         permissions: ['ADMINISTRATOR']
       - command: 'spam'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'send-text'
+        permissions: ['ADMINISTRATOR']
   interactionCommands:
     enabled: true
     commands:
@@ -33,6 +35,8 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'spam'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'send'
+        permissions: ['ADMINISTRATOR']
 
 
 ignoredChannels:
