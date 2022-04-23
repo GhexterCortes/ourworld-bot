@@ -12,6 +12,29 @@ class Moderation implements RecipleScript {
         return true;
     }
 
+    public onLoad(client: RecipleClient) {
+        client.on('interactionCreate', async interaction => {
+            if (!interaction.isAutocomplete()) return;
+            if (interaction.commandName !== 'unban') return;
+            if (!interaction.guild) return;
+
+            const banned = interaction.guild.bans;
+            const text = interaction.options.getFocused() || '';
+
+            if (!banned.cache.size) await banned.fetch().catch(() => undefined);
+
+            const users = banned.cache.filter(u => !u || u.user.tag.toLowerCase().includes(text.toString().toLowerCase()) || u.user.id.includes(text.toString()));
+            let results = users.map(u => {
+                return {
+                    name: u.user.tag,
+                    value: u.user.id
+                };
+            });
+
+            interaction.respond(results.slice(0, 25)).catch(() => {});
+        });
+    }
+
     public getMessageCommands(): MessageCommandBuilder[] {
         return [
             new MessageCommandBuilder()
@@ -89,6 +112,29 @@ class Moderation implements RecipleScript {
                             errorEmbed(`**${member.user.tag}** was unmuted`, true, false)
                         ]
                     });
+                }),
+            new MessageCommandBuilder()
+                .setName('unban')
+                .setDescription('Unbans a user')
+                .addOption(user => user
+                    .setName('user')
+                    .setDescription('The user to unban')
+                    .setRequired(true)    
+                )
+                .setExecute(async command => {
+                    const message = command.message;
+                    const userId = command.command.args?.join(' ') || '';
+
+                    if (!userId) return message.reply({ embeds: [errorEmbed('Could not find user')] });
+                    if (!message.guild) return message.reply({ embeds: [errorEmbed('Could find message guild')] });
+                    if (!message.guild?.bans.cache.size) await message.guild?.bans.fetch().catch(() => undefined);
+                    
+                    const member = message.guild?.bans.cache.find(u => u.user.tag.toLowerCase() === userId.toLowerCase() || u.user.id === userId.replace(/[<@!>]/g, ''));
+                    if (!member) return message.reply({ embeds: [errorEmbed('Could not find user')] });
+
+                    await message.guild?.members.unban(member.user.id);
+
+                    return message.reply({ embeds: [errorEmbed(`<@${message.author.id}> unbanned **${member.user.tag}**`, true, false)] });
                 })
         ];
     }
@@ -161,6 +207,32 @@ class Moderation implements RecipleScript {
                             errorEmbed(`**${member.user.tag}** was unmuted`, true, false)
                         ]
                     });
+                }),
+            new InteractionCommandBuilder()
+                .setName('unban')
+                .setDescription('Unbans a user')
+                .addStringOption(user => user
+                    .setName('user')
+                    .setDescription('The user to unban')
+                    .setAutocomplete(true)
+                    .setRequired(true)
+                )
+                .setExecute(async command => {
+                    const interaction = command.interaction;
+                    const userQuery = interaction.options.getString('user');
+
+                    if (!userQuery) return interaction.reply({ embeds: [errorEmbed('You must specify a user to unban')] });
+                    if (!interaction.guild) return interaction.reply({ embeds: [errorEmbed('You cannot unban users from a DM')] });
+
+                    const user = command.client.users.cache.find(m => m.id == userQuery || m.tag == userQuery) || await command.client.users.fetch(userQuery).catch(() => undefined) || undefined;
+                    if (!user) return interaction.reply({ embeds: [errorEmbed('Could not find user')] });
+
+                    const unban = await interaction.guild.members.unban(user, `Unbanned by ${interaction.user.tag}`).catch(() => undefined);
+                    if (!unban) return interaction.reply({ embeds: [errorEmbed('Could not unban user')] });
+
+                    command.client.logger.debug(`${interaction.user.tag} unbanned ${user.tag}`, 'Moderation');
+
+                    return interaction.reply({ embeds: [errorEmbed(`<@${interaction.user.id}> unbanned **${user.tag}**`, true, false)] });
                 })
         ];
     }
