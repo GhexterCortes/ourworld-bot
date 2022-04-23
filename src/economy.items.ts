@@ -25,6 +25,8 @@ class EconomyPlugin implements RecipleScript {
                     if (user.banned) return interaction.editReply({ embeds: [errorEmbed('You are banned')] });
                     if (!this.economy.isServerOnline()) return interaction.editReply({ embeds: [errorEmbed('Server is offline')] });
 
+                    this.economy.logger.debug(`User ${user_id} requested withdraw items embed`);
+
                     const data = this.createShopEmbed(user);
                     await interaction.editReply(data);
 
@@ -51,6 +53,8 @@ class EconomyPlugin implements RecipleScript {
                             await component.reply({ embeds: [errorEmbed('You do not have enough balance')], ephemeral: true });
                             return;
                         }
+
+                        this.economy.logger.debug(`User ${user_id} requested withdraw item ${item.item}`);
 
                         await component.reply({ embeds: [errorEmbed(`You have withdrawn **${item.count}** ${item.item}`, true, false)], ephemeral: true });
                         await this.economy.sendToConsoleChannels(`give ${user.playername} ${item.item} ${item.count}`);

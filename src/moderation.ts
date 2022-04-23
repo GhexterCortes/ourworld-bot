@@ -57,6 +57,8 @@ class Moderation implements RecipleScript {
                     if (!d || d >= ms('1y')) { return command.message.reply({ embeds: [errorEmbed('Invalid duration')] }); }
 
                     await member.timeout(d, reason);
+
+                    command.client.logger.debug(`${command.message.author.tag} timed out ${member.user.tag} for ${ms(d, { long: true })} | ${reason}`, 'Moderation');
                     return command.message.reply({
                         embeds: [
                             errorEmbed(`**${member.user.tag}** timed out for \`${ms(d, { long: true })}\` | **${reason}**`, true, false)
@@ -80,6 +82,8 @@ class Moderation implements RecipleScript {
                     if (!member.moderatable) return command.message.reply({ embeds: [errorEmbed('Cannot moderate user')]})
 
                     await member.timeout(null, 'Unmuted');
+
+                    command.client.logger.debug(`${command.message.author.tag} unmuted ${member.user.tag}`, 'Moderation');
                     return command.message.reply({
                         embeds: [
                             errorEmbed(`**${member.user.tag}** was unmuted`, true, false)
@@ -125,6 +129,8 @@ class Moderation implements RecipleScript {
                     if (!d || d >= ms('1y')) { return command.interaction.reply({ embeds: [errorEmbed('Invalid duration')] }); }
 
                     await member.timeout(d, reason);
+
+                    command.client.logger.debug(`${command.interaction.user.tag} timed out ${member.user.tag} for ${ms(d, { long: true })} | ${reason}`, 'Moderation');
                     return command.interaction.reply({
                         embeds: [
                             errorEmbed(`**${member.user.tag}** timed out for \`${ms(d, { long: true })}\` | **${reason}**`, true, false)
@@ -148,6 +154,8 @@ class Moderation implements RecipleScript {
                     if (!member.moderatable) return command.interaction.reply({ embeds: [errorEmbed('Cannot moderate user')]})
 
                     await member.timeout(null, 'Unmuted');
+
+                    command.client.logger.debug(`${command.interaction.user.tag} unmuted ${member.user.tag}`, 'Moderation');
                     return command.interaction.reply({
                         embeds: [
                             errorEmbed(`**${member.user.tag}** was unmuted`, true, false)

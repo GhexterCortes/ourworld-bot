@@ -1,4 +1,4 @@
-import { ColorResolvable, MessageEmbed } from 'discord.js';
+import { ColorResolvable, MessageEmbed, TextChannel } from 'discord.js';
 import { replaceAll } from 'fallout-utility';
 import { escapeRegExp } from 'fallout-utility/dist/scripts/escapeRegExp';
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
@@ -97,6 +97,7 @@ class SendMessage implements RecipleScript {
                             const textReply = await interaction.channel.send(SendMessage.lineBreaks(message)).catch(() => undefined);
                             if (!textReply) return interaction.editReply({ content: `Failed to send message` }).catch(() => {});
 
+                            command.client.logger.debug(`Sent text to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`);
                             return interaction.editReply({ content: `Message sent` });
                             
                         case 'embed':
@@ -129,6 +130,7 @@ class SendMessage implements RecipleScript {
                             const reply = await interaction.channel.send({ embeds: [embed] }).catch(() => undefined);
                             if (!reply) return interaction.editReply({ content: `Failed to send embed` });
                             
+                            command.client.logger.debug(`Sent embed to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`);
                             return interaction.editReply({ content: `Embed sent` });
                     }
                 }),
@@ -148,6 +150,8 @@ class SendMessage implements RecipleScript {
                     
                     await message.delete();
                     await message.channel.send(text);
+
+                    command.client.logger.debug(`Sent text to ${(message.channel as TextChannel).name ?? 'unknown channel'}`);
                 })
         ];
         

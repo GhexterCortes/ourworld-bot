@@ -75,11 +75,14 @@ class AntiProxy implements RecipleScript {
         for (const player of players) {
             this.checkedIps = this.checkedIps.filter(ip => ip.ip === player.ip && ip.channelId === channelId && ip.messageId !== messageId);
             this.checkedIps.push({ messageId, channelId, ip: player.ip });
+
+            this.logger?.debug(`Added to checked IPs in message ${messageId}: ${player.ip}`);
         }
     }
 
     public async banPlayers(players: Player[], channel: TextChannel) {
         for (const player of players) {
+            this.logger?.debug(`Banned ${player.name} (${player.ip})`);
             await channel.send(this.config.banIpCommand.replace('$1', player.ip).replace('$2', this.config.banReason)).catch(() => {});
 
             if (player.name) await channel.send(this.config.banCommand.replace('$1', player.name).replace('$2', this.config.banReason)).catch(() => {});
@@ -93,6 +96,8 @@ class AntiProxy implements RecipleScript {
     public async filterProxyIp(players: Player[], messageId: string): Promise<Player[]> {
         const api = 'https://proxycheck.io/v2/';
         const filteredPlayers = [];
+        
+        this.logger?.debug(`Filtering proxy IPs`);
 
         for (const player of players) {
             if (this.checkedIps.some(c => c.ip == player.ip && c.messageId == messageId)) continue;
@@ -109,6 +114,9 @@ class AntiProxy implements RecipleScript {
 
             if (!cache) this.addCache(player);
         }
+
+        this.logger?.debug(`Found ${filteredPlayers.length} proxy users`);
+        this.logger?.debug(filteredPlayers);
 
         return filteredPlayers;
     }
@@ -132,6 +140,7 @@ class AntiProxy implements RecipleScript {
                 vpn: false
             };
 
+            this.logger?.debug(`Player ${player.name}[${player.ip}] joined the game`);
             players.push(player);
         }
 
@@ -142,15 +151,22 @@ class AntiProxy implements RecipleScript {
         this.database.prepare('DELETE FROM ip_cache WHERE ip = ?').run(player.ip);
         const statement = this.database.prepare('INSERT INTO ip_cache (player, ip, port, vpn) VALUES (?, ?, ?, ?)');
 
+        this.logger?.debug(`Adding IP cache for player: ${player.name} (${player.ip}) to database`);
         statement.run(player.name, player.ip, player.port, player.vpn ? 1 : 0);
 
+        this.logger?.debug('Added to database '+ player.name +' ('+ player.ip +')');
         return this.getCache(player.ip);
     }
 
     public getCache(ip: string): Player|undefined {
+        this.logger?.debug('Retrieving data from database');
+
         const row = this.database.prepare('SELECT * FROM ip_cache WHERE ip = ?').get(ip);
         if (!row) return undefined;
 
+        this.logger?.debug(`Found data for ip: ${ip}`);
+        this.logger?.debug(row);
+        
         return {
             name: row.player || undefined,
             ip: row.ip,
@@ -160,6 +176,7 @@ class AntiProxy implements RecipleScript {
     }
 
     public createTables(): AntiProxy {
+        this.logger?.debug('Creating tables if not exists');
         this.database.prepare(`CREATE TABLE IF NOT EXISTS ip_cache (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             player TEXT NOT NULL,
@@ -168,6 +185,7 @@ class AntiProxy implements RecipleScript {
             vpn INTEGER NOT NULL
         )`).run();
 
+        this.logger?.debug('Tables created');
         return this;
     }
 

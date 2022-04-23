@@ -40,6 +40,8 @@ class EconomyPlugin implements RecipleScript {
                     player.setBalance(amount);
                     user.setBalance(user.getBalance() + (interaction.options.getNumber('amount') ?? 0));
 
+                    this.economy.logger.debug(`User ${player.playername} sent ${user.playername} ${interaction.options.getNumber('amount')} 🪙`);
+
                     await interaction.editReply({
                         embeds: [
                             errorEmbed(`Sent **${interaction.options.getNumber('amount')}** 🪙 to **${to?.tag}**`, true, false)

@@ -164,6 +164,9 @@ class Snipe implements RecipleScript {
                 createdAt: message.createdTimestamp
             };
 
+            this.client?.logger.debug(`Sniped message (${message.id}): `);
+            this.client?.logger.debug(snipe);
+
             this.database.prepare(`INSERT INTO snipes (
                 guildId,
                 channelId,

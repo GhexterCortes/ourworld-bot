@@ -141,11 +141,15 @@ class ChatBot implements RecipleScript {
     }
 
     public async getResponse(question: string, user: string): Promise<string|ReplyMessageOptions|InteractionReplyOptions> {
+        this.logger?.debug(`Fetching chatbot api response for question: ${question}`);
         const response = await axios.get(this.getUrl(question, user)).then(res => res.data).catch(err => { this.logger?.error(err); });
         if (!response || response.error || !response.success) {
-            this.logger?.error('No valid response ');
+            this.logger?.error('No valid response');
             return { embeds: [errorEmbed('An error occured while parsing your query')] };
         }
+
+        this.logger?.debug(`Got response for question: ${question}`);
+        this.logger?.debug(response);
 
         return response.message;
     }

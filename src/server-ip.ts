@@ -5,13 +5,18 @@ import yml from 'yaml';
 import path from 'path';
 import { errorEmbed } from './_errorEmbed';
 import { createConfig } from './_createConfig';
+import { Logger } from 'fallout-utility';
 
 class ServerIP implements RecipleScript {
     public versions: string[] = [version];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
     public prefixes: string[] = ['!', '.', '-', '~', '?', '>', '/'];
+    public logger: Logger = new Logger('server-ip');
 
     public onStart(client: RecipleClient) {
+        this.logger = client.logger.cloneLogger();
+        this.logger.defaultPrefix = 'ServerIP';
+
         client.on('messageCreate', async message => {
             if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
             if (!this.prefixes.some(p => message.content.startsWith(p) && message.content.slice(p.length).trim().split(' ')[0] == 'ip')) return;
@@ -40,6 +45,8 @@ class ServerIP implements RecipleScript {
             online: boolean;
         }
 
+        this.logger.info(`Pinging ${host}:${port}`);
+
         const response = await ping({ host, port, closeTimeout: 5000 })
         .then(result => {
             const res = {...result, status: !(result as NewPingResult).players?.max ? 'Offline' : 'Online', online: !(result as NewPingResult).players?.max ? false : true } as ServerPingResult;
@@ -58,6 +65,8 @@ class ServerIP implements RecipleScript {
                 online: false
             }  as ServerPingResult;
         });
+
+        this.logger.info(`${host}:${port} is ${response.status}`);
 
         return {
             players: { max: response.players?.max ?? 0, online: response.players?.online ?? 0 },

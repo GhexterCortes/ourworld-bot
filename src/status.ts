@@ -31,6 +31,8 @@ class Status implements RecipleScript {
         client.user?.setPresence({ status: this.config.status, activities: [presence] });
         this.currentStatus = (this.currentStatus + 1) % this.config.presenceList.length;
 
+        client.logger.debug(`Updated status to ${presence.name}`, 'Status');
+
         setTimeout(() => this.setPresence(client), this.config.presenceInterval);
     }
 

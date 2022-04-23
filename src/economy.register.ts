@@ -76,6 +76,9 @@ class EconomyPlugin implements RecipleScript {
 
                     collector.on('collect', async (component) => {
                         if (component.deferred) await component.deferUpdate().catch(() => {});
+                        if (component.user.id !== interaction.user.id) return;
+
+                        this.economy.logger.debug(`Registered ${user_id}: waiting for activation using code ${auth_code}`);
 
                         await reply.edit({ components: [], embeds: [errorEmbed(`You have accepted the terms! Check your game chats to get your code then use \`/auth <code>\` to activate your account\n\nYou can resend auth code by redoing the \`/register\` command`, true, false)] });
                         await this.economy.sendToConsoleChannels(`tellraw ${playername} ${JSON.stringify(consoleMessageJSON)}`);
@@ -113,6 +116,8 @@ class EconomyPlugin implements RecipleScript {
                 
                     this.economy.database.prepare(`DELETE FROM auth WHERE user_id = ? OR playername = ?`).run(user_id, authRow.playername);
                     this.economy.database.prepare(`INSERT INTO users (user_id, playername, balance) VALUES (?, ?, ?)`).run(user_id, authRow.playername, 100);
+
+                    this.economy.logger.debug(`Activated ${user_id}: ${authRow.playername}`);
 
                     await interaction.editReply({ embeds: [errorEmbed(`You have successfully registered as **${authRow.playername}**`, true, false)] });
                 })

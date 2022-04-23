@@ -56,14 +56,21 @@ export class Economy implements RecipleScript {
     }
 
     public async fetchUser(user_id: string): Promise<EconomyUser> {
+        this.logger.debug(`Fetching user id ${user_id} from database`);
         const data = this.database.prepare('SELECT * FROM users WHERE user_id = ?').get(user_id);
         if (!data) throw new Error('Could not find user');
+
+        this.logger.debug(`Database response for user id ${user_id}`);
+        this.logger.debug(data);
 
         return (new EconomyUser(data, this)).fetchUser();
     }
 
     public purgeCache(): EconomyUser[] {
+        this.logger.debug(`Requested purge user cache`);
         this.cache = this.cache.filter(u => !u.deleted);
+
+        this.logger.debug(`Purged user cache`);
         return this.cache;
     }
 
@@ -79,7 +86,13 @@ export class Economy implements RecipleScript {
     }
 
     public async isServerOnline(): Promise<boolean> {
+        this.logger.debug(`Pinging server: ${this.config.server.host}:${this.config.server.port ?? 25565}`);
+
         const pingServer = await ping(this.config.server).catch(() => undefined);
+
+        this.logger.debug(`Ping response:`);
+        this.logger.debug(pingServer);
+
         if (!pingServer) return false;
         if (!(pingServer as NewPingResult)?.players?.max) return false;
 
@@ -92,6 +105,8 @@ export class Economy implements RecipleScript {
     }
 
     public createTables(): Economy {
+        this.logger.debug('Creating tables if they do not exist');
+
         // Users Table
         this.database.prepare(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,6 +139,7 @@ export class Economy implements RecipleScript {
             count INTEGER DEFAULT 1
         )`).run();
 
+        this.logger.debug('Created tables');
         return this;
     }
 

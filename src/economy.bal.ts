@@ -23,6 +23,8 @@ class EconomyPlugin implements RecipleScript {
                     const user = await this.economy.getUser(user_id).catch(() => null);
                     if (!user) return interaction.editReply({ embeds: [errorEmbed('You are not registered')] });
 
+                    this.economy.logger.debug(`User ${user_id} requested balance info`);
+
                     const balance = user.getBalance();
                     const embed = new MessageEmbed()
                         .setAuthor({ name: 'Balance' })

@@ -35,8 +35,8 @@ export class MusicPlayer implements RecipleScript {
         this.loadCommands(this.client.config?.modulesFolder ?? 'modules');
 
         this.player.on('error', async (q, e) => {
-            this.logger?.error(`Error in queue ${q.id} in guild ${q.guild.name}`);
-            this.logger?.error(e);
+            this.logger?.debug(`Error in queue ${q.id} in guild ${q.guild.name}`);
+            this.logger?.debug(e);
 
             if (!q.destroyed) q.destroy(true);
 
@@ -45,8 +45,8 @@ export class MusicPlayer implements RecipleScript {
         });
 
         this.player.on('connectionError', async (q, e) => {
-            this.logger?.error(`Connection error for queue ${q.id} in guild ${q.guild.name}`);
-            this.logger?.error(e);
+            this.logger?.debug(`Connection error for queue ${q.id} in guild ${q.guild.name}`);
+            this.logger?.debug(e);
 
             if (!q.destroyed) q.destroy(true);
 
@@ -55,6 +55,8 @@ export class MusicPlayer implements RecipleScript {
         });
 
         this.player.on('trackStart', async (q: Queue, track: Track) => {
+            this.logger?.debug(`Track started for queue ${q.id} in guild ${q.guild.name}`);
+
             const queue = q as Queue<QueueMetadata>;
             const channel = queue.metadata?.channel;
             if (!channel || !this.config.sendCurrentlyPlaying) return;
@@ -76,11 +78,15 @@ export class MusicPlayer implements RecipleScript {
             queue.connection.once('start', (a) => {
                 if (a.metadata.id === track.id) return;
                 collector.stop();
+
+                this.logger?.debug(`Track ended for queue ${q.id} in guild ${q.guild.name}`);
             });
 
             queue.connection.once('finish', (a) => {
                 if (a.metadata.id !== track.id) return;
                 collector.stop();
+
+                this.logger?.debug(`Track ended for queue ${q.id} in guild ${q.guild.name}`);
             });
        });
 
@@ -161,18 +167,23 @@ export class MusicPlayer implements RecipleScript {
         const commandsDir = path.join(process.cwd(), modulesDir, 'music/commands');
         if (!fs.existsSync(commandsDir)) fs.mkdirSync(commandsDir, { recursive: true });
 
+        this.logger?.debug(`Loading commands from ${commandsDir}`);
+
         const files = fs.readdirSync(commandsDir).filter(file => file.endsWith('.js'));
         for (const file of files) {
             try {
+                this.logger?.debug(`Loading command ${file}`);
                 let script = require(path.join(commandsDir, file));
                 if (script.default) script = script.default;
                 
                 this.commands = [...script(this), ...(this.commands ?? [])];
             } catch (e) {
-                this.logger?.error(`Failed to load command ${path.join(commandsDir, file)}`);
-                this.logger?.error(e);
+                this.logger?.debug(`Failed to load command ${path.join(commandsDir, file)}`);
+                this.logger?.debug(e);
             }
         }
+
+        this.logger?.log(`Loaded ${this.commands?.length ?? 0} command(s)`);
 
         return this;
     }

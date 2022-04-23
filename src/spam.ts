@@ -49,6 +49,7 @@ class Spam implements RecipleScript {
 
                     if (!confirm) return reply.edit(Spam.getSpamCancelledMessage());
                     
+                    command.client.logger.debug(`${count} messages sent to ${(message.channel as TextChannel).name ?? 'unknown channel'}`, 'Spam');
                     await this.spamMessage(message.channel as TextChannel, reply, message.author, spamMessage, parseInt(count));
                 }),
             new InteractionCommandBuilder()
@@ -83,6 +84,7 @@ class Spam implements RecipleScript {
 
                     if (!confirm) return interaction.reply(Spam.getSpamCancelledMessage());
 
+                    command.client.logger.debug(`${count} messages sent to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`, 'Spam');
                     await this.spamMessage(interaction.channel as TextChannel, reply, interaction.user, spamMessage, count);
                 })
         ];
