@@ -20,6 +20,8 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'unban'
+        permissions: ['BAN_MEMBERS']
       - command: 'addbal'
         permissions: ['ADMINISTRATOR']
       - command: 'spam'
@@ -33,10 +35,14 @@ permissions:
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
         permissions: ['MANAGE_MESSAGES']
+      - command: 'unban'
+        permissions: ['BAN_MEMBERS']
       - command: 'spam'
         permissions: ['MANAGE_MESSAGES']
       - command: 'send'
         permissions: ['ADMINISTRATOR']
+      - command: 'server-console'
+        permissions: ['BAN_MEMBERS', 'KICK_MEMBERS', 'MANAGE_NICKNAMES']
 
 
 ignoredChannels:
