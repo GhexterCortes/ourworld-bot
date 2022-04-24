@@ -132,33 +132,33 @@ class MinecraftModeration implements RecipleScript {
                             if (interaction.options.getString('reason')) banCommand += ` ${interaction.options.getString('reason')}`;
                             await this.sendToConsole(banCommand);
                             
-                            return interaction.reply({ embeds: [errorEmbed(`sent \`${banCommand}\` to <#${this.channel.id}>`, true, false)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`sent \`${banCommand}\` to <#${this.channel.id}>`, true, false)] });
                         case 'tempban':
                             let tmpbanCommand = isIp ? `tempipban ${player} ${time}` : `tempban ${player} ${time}`;
                             if (interaction.options.getString('reason')) tmpbanCommand += ` ${interaction.options.getString('reason')}`;
                             await this.sendToConsole(tmpbanCommand);
 
-                            return interaction.reply({ embeds: [errorEmbed(`sent \`${tmpbanCommand}\` to <#${this.channel.id}>`, true, false)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`sent \`${tmpbanCommand}\` to <#${this.channel.id}>`, true, false)] });
                         case 'kick':
                             let kickCommand = `kick ${player}`;
                             if (interaction.options.getString('reason')) kickCommand += ` ${interaction.options.getString('reason')}`;
                             await this.sendToConsole(kickCommand);
 
-                            return interaction.reply({ embeds: [errorEmbed(`sent \`${kickCommand}\` to <#${this.channel.id}>`, true, false)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`sent \`${kickCommand}\` to <#${this.channel.id}>`, true, false)] });
                         case 'mute':
                             let muteCommand = `mute ${player}`;
                             if (interaction.options.getString('reason')) muteCommand += ` ${interaction.options.getString('reason')}`;
                             await this.sendToConsole(muteCommand);
 
-                            return interaction.reply({ embeds: [errorEmbed(`sent \`${muteCommand}\` to <#${this.channel.id}>`, true, false)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`sent \`${muteCommand}\` to <#${this.channel.id}>`, true, false)] });
                         case 'tempmute':
                             let tmpmuteCommand = `tempmute ${player} ${time}`;
                             if (interaction.options.getString('reason')) tmpmuteCommand += ` ${interaction.options.getString('reason')}`;
                             await this.sendToConsole(tmpmuteCommand);
 
-                            return interaction.reply({ embeds: [errorEmbed(`sent \`${tmpmuteCommand}\` to <#${this.channel.id}>`, true, false)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`sent \`${tmpmuteCommand}\` to <#${this.channel.id}>`, true, false)] });
                         default:
-                            return interaction.reply({ embeds: [errorEmbed(`Unknown subcommand ${subcommand}`)] });
+                            return interaction.editReply({ embeds: [errorEmbed(`Unknown subcommand ${subcommand}`)] });
                     }
                 })
         ];
