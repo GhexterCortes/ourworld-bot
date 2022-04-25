@@ -68,11 +68,10 @@ class Spam implements RecipleScript {
                     .setRequired(true)    
                 )
                 .setExecute(async command => {
-                    const count = command.interaction.options.getNumber('count') ?? undefined;
-                    const spamMessage = command.interaction.options.getString('message') ?? undefined;
+                    const count = command.interaction.options.getNumber('count', true);
+                    const spamMessage = command.interaction.options.getString('message', true);
                     const interaction = command.interaction;
 
-                    if (!count || !spamMessage) return interaction.reply({ embeds: [errorEmbed(`Invalid arguments`)] });
                     if (this.config.spam.max < count) return interaction.reply({ embeds: [errorEmbed(`You can only spam ${this.config.spam.max} times`)] });
                     if (!this.config.spam.allowMentions && /^<@[!?&]?(\d+)>$/.test(spamMessage)) return interaction.reply({ embeds: [errorEmbed(`Mentions are not allowed`)] });
                     if (!interaction.channel) return interaction.reply({ embeds: [errorEmbed(`No channel found`)] });

@@ -159,12 +159,10 @@ class Moderation implements RecipleScript {
                     .setRequired(false)
                 )
                 .setExecute(async command => {
-                    const user = command.interaction.options.getUser('user');
+                    const user = command.interaction.options.getUser('user', true);
                     const duration = command.interaction.options.getString('duration') || '1h';
                     const reason = command.interaction.options.getString('reason') || 'No reason provided';
 
-                    if (!user) return command.interaction.reply({ embeds: [errorEmbed('You must specify a user to mute')] });
-                    
                     const member = command.interaction.guild?.members.cache.get(user.id);
                     if (!member) return command.interaction.reply({ embeds: [errorEmbed('Could not find user')] });
 
@@ -192,10 +190,9 @@ class Moderation implements RecipleScript {
                     .setRequired(true)
                 )
                 .setExecute(async command => {
-                    const user = command.interaction.options.getUser('user');
-                    if (!user) return command.interaction.reply({ embeds: [errorEmbed('You must specify a user to unmute')] });
-
+                    const user = command.interaction.options.getUser('user', true);
                     const member = command.interaction.guild?.members.cache.get(user.id);
+                    
                     if (!member) return command.interaction.reply({ embeds: [errorEmbed('Could not find user')] });
                     if (!member.moderatable) return command.interaction.reply({ embeds: [errorEmbed('Cannot moderate user')]})
 
@@ -219,9 +216,8 @@ class Moderation implements RecipleScript {
                 )
                 .setExecute(async command => {
                     const interaction = command.interaction;
-                    const userQuery = interaction.options.getString('user');
+                    const userQuery = interaction.options.getString('user', true);
 
-                    if (!userQuery) return interaction.reply({ embeds: [errorEmbed('You must specify a user to unban')] });
                     if (!interaction.guild) return interaction.reply({ embeds: [errorEmbed('You cannot unban users from a DM')] });
 
                     const user = command.client.users.cache.find(m => m.id == userQuery || m.tag == userQuery) || await command.client.users.fetch(userQuery).catch(() => undefined) || undefined;

@@ -23,7 +23,7 @@ class EconomyPlugin implements RecipleScript {
                     await command.interaction.deferReply();
 
                     const interaction = command.interaction;
-                    const user = interaction.options.getUser('user');
+                    const user = interaction.options.getUser('user', true);
 
                     const player = await this.economy.getUser(interaction.user.id).catch(() => undefined);
                     if (!player) return interaction.editReply({ embeds: [errorEmbed(`You're not registered`)] });

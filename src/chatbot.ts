@@ -89,9 +89,7 @@ class ChatBot implements RecipleScript {
                 )
                 .setExecute(async command => {
                     const interaction = command.interaction;
-                    const question = command.interaction.options.getString('question') ?? '';
-
-                    if (!question) return interaction.reply({ embeds: [errorEmbed('Please provide a question')] });
+                    const question = command.interaction.options.getString('question', true);
 
                     await interaction.deferReply();
                     const response = await this.getResponse(question, interaction.user.id);

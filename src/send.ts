@@ -25,6 +25,11 @@ class SendMessage implements RecipleScript {
                 .addSubcommand(embed => embed
                     .setName('embed')
                     .setDescription('Sends an embed to channel')
+                    .addStringOption(content => content
+                        .setName('content')
+                        .setDescription('The content of the embed')
+                        .setRequired(false)
+                    )
                     .addStringOption(authorName => authorName
                         .setName('author-name')
                         .setDescription('The name of the author')
@@ -45,9 +50,9 @@ class SendMessage implements RecipleScript {
                         .setDescription('The title of the embed')
                         .setRequired(false)
                     )
-                    .addStringOption(content => content
-                        .setName('content')
-                        .setDescription('The content of the embed')
+                    .addStringOption(description => description
+                        .setName('description')
+                        .setDescription('The description of the embed')
                         .setRequired(false)
                     )
                     .addStringOption(imageUrl => imageUrl
@@ -101,11 +106,12 @@ class SendMessage implements RecipleScript {
                             return interaction.editReply({ content: `Message sent` });
                             
                         case 'embed':
+                            const content = interaction.options.getString('content') ?? undefined;
                             const authorName = interaction.options.getString('author-name') ?? undefined;
                             const authorIconUrl = interaction.options.getString('author-icon-url') ?? undefined;
                             const authorUrl = interaction.options.getString('author-url') ?? undefined;
                             const title = interaction.options.getString('title') ?? undefined;
-                            const content = interaction.options.getString('content') ?? undefined;
+                            const description = interaction.options.getString('description') ?? undefined;
                             const imageUrl = interaction.options.getString('image-url') ?? undefined;
                             const thumbnailUrl = interaction.options.getString('thumbnail-url') ?? undefined;
                             const footerText = interaction.options.getString('footer-text') ?? undefined;
@@ -120,14 +126,14 @@ class SendMessage implements RecipleScript {
                             
                             if (authorName) embed.setAuthor({ name: authorName, iconURL: authorIconUrl, url: authorUrl });
                             if (title) embed.setTitle(title);
-                            if (content) embed.setDescription(SendMessage.lineBreaks(content));
+                            if (description) embed.setDescription(SendMessage.lineBreaks(description));
                             if (imageUrl) embed.setImage(imageUrl);
                             if (thumbnailUrl) embed.setThumbnail(thumbnailUrl);
                             if (footerText) embed.setFooter({ text: footerText, iconURL: footerIconUrl });
                             if (url) embed.setURL(url);
                             if (color) embed.setColor(color as ColorResolvable);
 
-                            const reply = await interaction.channel.send({ embeds: [embed] }).catch(() => undefined);
+                            const reply = await interaction.channel.send({ content: content ?? ' ', embeds: [embed] }).catch(() => undefined);
                             if (!reply) return interaction.editReply({ content: `Failed to send embed` });
                             
                             command.client.logger.debug(`Sent embed to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`);

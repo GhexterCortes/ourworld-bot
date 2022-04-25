@@ -24,7 +24,7 @@ class EconomyPlugin implements RecipleScript {
                 .setExecute(async command => {
                     const interaction = command.interaction;
 
-                    const playername = interaction.options.getString('playername') ?? '';
+                    const playername = interaction.options.getString('playername', true);
                     const user_id = interaction.user.id;
                     const auth_code = Economy.generateCode();
 
@@ -104,7 +104,7 @@ class EconomyPlugin implements RecipleScript {
                 .setExecute(async command => {
                     const interaction = command.interaction;
 
-                    const code = interaction.options.getString('code') ?? '';
+                    const code = interaction.options.getString('code', true);
                     const user_id = interaction.user.id;
 
                     await interaction.deferReply();

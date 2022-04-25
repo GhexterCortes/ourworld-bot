@@ -20,11 +20,12 @@ class EconomyPlugin implements RecipleScript {
                 .addNumberOption(amount => amount
                     .setName('amount')
                     .setDescription('The amount to send')
+                    .setMinValue(1)
                     .setRequired(true)    
                 )
                 .setExecute(async command => {
                     const interaction = command.interaction;
-                    const to = interaction.options.getUser('user');
+                    const to = interaction.options.getUser('user', true);
 
                     await interaction.deferReply();
 
@@ -34,7 +35,7 @@ class EconomyPlugin implements RecipleScript {
                     const user = to ? await this.economy.getUser(to.id).catch(() => undefined) : undefined;
                     if (!user) return interaction.editReply({ embeds: [errorEmbed(user ? `**${to?.tag}** is not registered` : `Can't find opponent's account`, false, false)] });
 
-                    const amount = player.getBalance() - (interaction.options.getNumber('amount') ?? 0);
+                    const amount = player.getBalance() - interaction.options.getNumber('amount', true);
                     if (amount < 0) return interaction.editReply({ embeds: [errorEmbed('You don\'t have enough balance')] });
 
                     player.setBalance(amount);
