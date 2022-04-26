@@ -111,6 +111,15 @@ class MinecraftModeration implements RecipleScript {
                         .setDescription('Give a reasonable reason')
                         .setRequired(false)    
                     )
+                )
+                .addSubcommand(console => console
+                    .setName('console')
+                    .setDescription('Send a message to the console')
+                    .addStringOption(message => message
+                        .setName('message')
+                        .setDescription('The message to send to the console')
+                        .setRequired(true)
+                    )    
                 ) as InteractionCommandBuilder)
                 .setExecute(async command => {
                     const interaction = command.interaction;
@@ -118,9 +127,23 @@ class MinecraftModeration implements RecipleScript {
 
                     if (!subcommand || !this.channel) return;
 
-                    const player = interaction.options.getString('player') ?? '';
-                    if (!player) return interaction.reply({ embeds: [errorEmbed(`Player is not defined`)] });
+                    if (subcommand == 'console') {
+                        if (!interaction.memberPermissions?.has('ADMINISTRATOR')) return interaction.reply({ embeds: [errorEmbed('You do not have permission to use this command')], ephemeral: true });
+                        const message = interaction.options.getString('message', true).split('; ');
 
+                        await interaction.reply({ embeds: [
+                            errorEmbed('Sending message(s) to console...', true)
+                        ] });
+
+                        for (const msg of message) {
+                            await this.sendToConsole(msg);
+                            interaction.followUp({ embeds: [errorEmbed(`sent \`${msg}\` to <#${this.channel.id}>`, true, false)] })
+                        }   
+
+                        return interaction.editReply({ embeds: [errorEmbed('Message(s) sent to console', true)] });
+                    }
+
+                    const player = interaction.options.getString('player', true);
                     const isIp = interaction.options.getBoolean('is-ip') ?? false;
                     const time = interaction.options.getString('time') ?? '1d';
 
