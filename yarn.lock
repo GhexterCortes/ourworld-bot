@@ -91,10 +91,10 @@
     tslib "^2.3.1"
     ws "^8.5.0"
 
-"@ghextercortes/djs-pagination@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@ghextercortes/djs-pagination/-/djs-pagination-0.0.5.tgz#2f86ce6fd46a62025a4616d0da37692934e20ea9"
-  integrity sha512-/yXxZ6/GhPRlQMGDfvxrn6ekS7qD3T4soF2oDz3ojVwKfR76q3fo+iSZ8LGEjjWDtBGnurzxmFsf12hp/1Oe1Q==
+"@ghextercortes/djs-pagination@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@ghextercortes/djs-pagination/-/djs-pagination-0.0.7.tgz#b392f36c94db88773c491f9e7b0b5f85c669126b"
+  integrity sha512-uSMJykGt3grFFFPY6VpOLBU61ggZdnHXXMNAsiEHv5CM5pAn0vYHN4kGrK7wzgHeJ4ErbTZccI5k10qFqwIxJw==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.9"

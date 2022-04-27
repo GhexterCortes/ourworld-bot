@@ -59,12 +59,13 @@ export default function (musicClient: MusicPlayer) {
 
                 const song = await searchSong(title);
                 const lyrics = await getLyrics(song);
-                if (!lyrics) return interaction.editReply({ embeds: [errorEmbed(musicClient.getMessage('noResult', title))] });
+                if (!lyrics) return interaction.editReply({ embeds: [errorEmbed(musicClient.getMessage('noResult', title), false, false)] });
 
                 const splitedLyrics = splitString(lyrics, 4000);
                 const embeds = splitedLyrics.map((lyrics, i) => {
                     const embed = new MessageEmbed()
                         .setColor('BLUE')
+                        .setAuthor({ name: song?.artist.name ?? 'unknown artist', iconURL: song?.artist.thumbnail })
                         .setThumbnail(song?.thumbnail ?? '')
                         .setURL(song?.url ?? '')
                         .setFooter({ text: `Lyrics provided by Genius`, iconURL: 'https://images.genius.com/ba9fba1d0cdbb5e3f8218cbf779c1a49.300x300x1.jpg' });
