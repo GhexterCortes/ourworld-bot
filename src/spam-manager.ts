@@ -2,12 +2,13 @@ import yml from 'yaml';
 import path from 'path';
 import { RecipleScript, RecipleClient, version } from 'reciple';
 import { Message, GuildMember } from 'discord.js';
-import stringSmilarity from 'string-similarity';
+import stringSmilarity from 'string-similarity-js';
 import { errorEmbed } from './_errorEmbed';
 import { getRandomKey } from 'fallout-utility';
 import { createConfig } from './_createConfig';
 
 export interface SpamManagerConfig {
+    ignoredChannels: string[];
     similarMessageCooldown: number;
     similarMessageThreshold: number;
     similarMessageLimit: number;
@@ -37,6 +38,7 @@ class SpamManager implements RecipleScript {
         client.on('messageCreate', async message => {
             if (client?.user && message.mentions.members?.has(client?.user.id)) await message.react(getRandomKey(['🤔', '🤨', '🧐', '👀'])).catch(() => {});
             if (message.author.bot || message.author.system || !message.member) return;
+            if (this.config.ignoredChannels.includes(message.channelId)) return;
             
             const isScamMessage = this.isDiscordScamMessage(message.content);
             const isSpam = this.isSimilarMessageSpam(message.author.id, message);
@@ -65,7 +67,7 @@ class SpamManager implements RecipleScript {
             if (!domain) continue;
 
             if (this.config.validDomains.some(d => domain.endsWith(d))) continue;
-            if (this.config.validDomains.some(d => stringSmilarity.compareTwoStrings(d, domain) >= this.config.scamDomainThreshold || stringSmilarity.compareTwoStrings(d.split('.')[0], domain.split('.')[0]) >= this.config.scamNameThreshold)) {
+            if (this.config.validDomains.some(d => stringSmilarity(d, domain) >= this.config.scamDomainThreshold || stringSmilarity(d.split('.')[0], domain.split('.')[0]) >= this.config.scamNameThreshold)) {
                 foundSimilarDomain = true;
                 break;
             }
@@ -80,7 +82,7 @@ class SpamManager implements RecipleScript {
         const existingMessage = this.sentMessages.find(sentMessage => sentMessage.user_id === user_id);
         if (existingMessage && existingMessage.message.channelId === message.channelId) {
             if ((message.createdTimestamp - existingMessage.message.createdTimestamp) <= this.config.similarMessageCooldown) {
-                const similarity = stringSmilarity.compareTwoStrings(existingMessage.message.content.toLowerCase(), message.content.toLowerCase());
+                const similarity = stringSmilarity(existingMessage.message.content.toLowerCase(), message.content.toLowerCase());
                 
                 if (similarity >= this.config.similarMessageThreshold) {
                     existingMessage.sentTimes++;
@@ -127,6 +129,7 @@ class SpamManager implements RecipleScript {
 
     public static defaultConfig(): SpamManagerConfig {
         return {
+            ignoredChannels: [],
             similarMessageCooldown: 1000,
             similarMessageThreshold: 0.8,
             similarMessageLimit: 10,
