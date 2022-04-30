@@ -1623,10 +1623,10 @@ spotify-url-info@^2.2.5:
     himalaya "~1.1.0"
     spotify-uri "~2.2.0"
 
-string-similarity@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/string-similarity/-/string-similarity-4.0.4.tgz#42d01ab0b34660ea8a018da8f56a3309bb8b2a5b"
-  integrity sha512-/q/8Q4Bl4ZKAPjj8WerIBJWALKkaPRfrvhfF8k/B23i4nzrlRj2/go1m90In7nG/3XDSbOo0+pu6RvCTM9RGMQ==
+string-similarity-js@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/string-similarity-js/-/string-similarity-js-2.1.4.tgz#73716330691946f2ebc435859aba8327afd31307"
+  integrity sha512-uApODZNjCHGYROzDSAdCmAHf60L/pMDHnP/yk6TAbvGg7JSPZlSto/ceCI7hZEqzc53/juU2aOJFkM2yUVTMTA==
 
 string-width@^1.0.1:
   version "1.0.2"
@@ -1798,6 +1798,11 @@ webidl-conversions@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
+
+weird-to-normal-chars@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/weird-to-normal-chars/-/weird-to-normal-chars-1.8.2.tgz#28460d91e0be4fda6d8c71b116043d26120059a4"
+  integrity sha512-a6HfghR8nnpRi6JjfXHOHtPR3l+nQ+uE1bMUGKOWLT2xGG8/9RPvwetvJa/Qpfn1DMqjKPKqMdUX2b+JQa0qzw==
 
 whatwg-url@^5.0.0:
   version "5.0.0"
