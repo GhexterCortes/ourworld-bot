@@ -30,9 +30,10 @@
     "opusscript": "^0.0.8",
     "reciple": "^1.0.19",
     "sodium": "^3.0.2",
-    "string-similarity": "^4.0.4",
+    "string-similarity-js": "^2.1.4",
     "tiktok-scraper-ts": "^1.2.6",
     "tweetnacl": "^1.0.3",
+    "weird-to-normal-chars": "^1.8.2",
     "yaml": "^2.0.1"
   }
 }
