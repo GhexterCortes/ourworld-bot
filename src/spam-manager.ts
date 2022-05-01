@@ -6,6 +6,7 @@ import stringSmilarity from 'string-similarity-js';
 import { errorEmbed } from './_errorEmbed';
 import { getRandomKey } from 'fallout-utility';
 import { createConfig } from './_createConfig';
+import { ping } from 'minecraft-protocol';
 
 export interface SpamManagerConfig {
     ignoredChannels: string[];
@@ -18,6 +19,7 @@ export interface SpamManagerConfig {
     scamNameThreshold: number;
     scamDomainMessageLength: number;
     scamDomainKickReason: string;
+    excludedServerIPs: string[];
     validDomains: string[];
 }
 
@@ -42,6 +44,7 @@ class SpamManager implements RecipleScript {
             
             const isScamMessage = this.isDiscordScamMessage(message.content);
             const isSpam = this.isSimilarMessageSpam(message.author.id, message);
+            const isServerAd = await this.isMinecraftServerAd(message.content);
 
             if (isScamMessage) {
                 await this.kick(message.member);
@@ -53,7 +56,39 @@ class SpamManager implements RecipleScript {
                 await this.timeout(message.member);
                 await message.channel.send({ embeds: [errorEmbed(`**${message.author.tag}** You're sending similar messages too fast!`, false, false)] }).catch(() => {});
             }
+            
+            if (isServerAd) {
+                await message.delete().catch(() => {});
+                await message.channel.send({ embeds: [errorEmbed(`**${message.author.tag}** You cannot advertise servers here`, false, false)] }).catch(() => {});
+            }
         });
+    }
+
+    public async isMinecraftServerAd(content: string): Promise<boolean> {
+        const words = content.split(' ').map(w => w.toLowerCase()).filter(w => w.length > 5 && w.includes('.') && w.split('.').length >= 2);
+        if (!words.length) return false;
+
+        let ad = false;
+
+        for (const word of words) {
+            const host = word.split(':')[0];
+            const port = word.split(':')[1] ?? 25565;
+
+            if (this.config.excludedServerIPs.some(d => host.includes(d))) continue;
+
+            const server = await ping({
+                host,
+                port: parseInt(port, 10),
+                closeTimeout: 5000
+            }).catch(() => null);
+
+            if (server) {
+                ad = true;
+                break;
+            }
+        }
+
+        return ad;
     }
 
     public isDiscordScamMessage(content: string): boolean {
@@ -139,6 +174,10 @@ class SpamManager implements RecipleScript {
             scamNameThreshold: 0.6,
             scamDomainMessageLength: 50,
             scamDomainKickReason: 'scam',
+            excludedServerIPs: [
+                'play.ourmcworld.gq',
+                'ourworld4.aternos.me'
+            ],
             validDomains: [
                 'discord.com',
                 'discordapp.com',

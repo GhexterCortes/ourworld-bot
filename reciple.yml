@@ -46,9 +46,11 @@ permissions:
 
 
 ignoredChannels:
-  enabled: false
+  enabled: true
   convertToAllowList: false
-  channels: []
+  channels: [
+    '911491519389786142'
+  ]
 
 fileLogging:
   enabled: true
