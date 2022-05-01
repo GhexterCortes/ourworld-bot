@@ -5,7 +5,7 @@ import yml from 'yaml';
 import { createConfig } from './_createConfig';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { Ad, PendingAd } from './ad-manager/Ad';
-import { Message, MessageActionRow, MessageButton, TextChannel } from 'discord.js';
+import { Message, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from 'discord.js';
 import { RawPendingAd } from './ad-manager/types';
 import { errorEmbed } from './_errorEmbed';
 
@@ -49,7 +49,7 @@ export class AdManager implements RecipleScript {
             this.logger.debug(`Added moderation channel ${channelId}`);
         }
 
-        this.logger.debug(`Listening for events...`);
+        this.logger.debug(`Listening for message event...`);
         this.client?.on('messageCreate', async (message) => {
             if (!this.config.adChannels.includes(message.channel.id)) return;
             if (!message.author.bot && !message.author.system && !message.content) return message.delete().then(() => {}).catch(() => {});
@@ -96,19 +96,85 @@ export class AdManager implements RecipleScript {
             if (!component.deferred) await component.deferUpdate().catch(() => {});
 
             const adId = parseInt(component.customId.split('_')[2], 10);
-
-            console.log(adId);
             if (!isNumber(adId)) return;
 
             const ad = await this.fetchPendingAd(adId);
             if (!ad) return;
 
             if (component.customId.startsWith(`ad_approve_`)) {
-                await ad.approve();
+                const newAd = await ad.approve().catch(err => this.logger.error(err));
+                if (!newAd) return;
+
                 await (component.message as Message).delete().catch(() => {});
+                await ad.user?.send({
+                    embeds: [
+                        new MessageEmbed()
+                            .setAuthor({ name: `Ad Approved` })
+                            .setDescription(`Your ad in \`${ad.channel?.guild.name ?? 'Unknown Guild'}\` has been approved!\n\n`)
+                            .setColor('GREEN')
+                            .setTimestamp()
+                    ],
+                    components: [
+                        new MessageActionRow()
+                            .setComponents([
+                                new MessageButton()
+                                    .setLabel('View Ad')
+                                    .setStyle('LINK')
+                                    .setURL(newAd.message!.url)
+                            ])
+                    ]
+                }).catch(err => this.logger.error(err));
             } else if (component.customId.startsWith(`ad_reject_`)) {
                 await ad.delete();
                 await (component.message as Message).delete().catch(() => {});
+                await ad.user?.send({
+                    embeds: [
+                        new MessageEmbed()
+                            .setAuthor({ name: `Ad Rejected` })
+                            .setDescription(
+                                `Your ad in \`${ad.channel?.guild.name ?? 'Unknown Guild'}\` has been rejected.\nDon't worry this is nothing personal, You can submit another ad if you want.\n\nWe can't tell the exact reason why your ad was rejected, but here are the main reasons for rejections:\n\n` +
+                                `- Your ad contains a link to a website that is not allowed.\n` +
+                                `- Your ad contains banned words.\n` +
+                                `- Your ad promotes illegal content.\n` +
+                                `- Your ad violates Discord's TOS\n` +
+                                `- Your ad violates our rules.\n` +
+                                `- Your ad is spammy.\n`
+                            )
+                            .setColor('RED')
+                            .setTimestamp()
+                    ]
+                }).catch(err => this.logger.error(err));
+            }
+        });
+
+        this.logger.debug(`Listening for leave event...`)
+        this.client?.on('guildMemberRemove', async member => {
+            const user_id = member.user.id;
+
+            this.database.prepare(`DELETE FROM pending WHERE user_id = ?`).run(user_id);
+
+            const approvedMessages = this.database.prepare('SELECT * FROM ads WHERE user_id = ?').all(user_id);
+            if (!approvedMessages.length) return;
+
+            let sent = false;
+
+            for (const approvedMessage of approvedMessages) {
+                const ad = await (new Ad(approvedMessage, this.database, this.client!)).fetch().catch(err => this.logger.error(err));
+                if (!ad) continue;
+
+                ad.delete();
+                
+                if (sent) continue;
+
+                ad.user?.send({
+                    embeds: [
+                        new MessageEmbed()
+                            .setDescription(`All of your (${approvedMessages.length}) uploaded self promotion to \`${ad.message?.guild?.name}\` has been deleted`)
+                            .setColor('RED')
+                    ]
+                }).catch(err => this.logger.error(err));
+
+                sent = true;
             }
         });
 

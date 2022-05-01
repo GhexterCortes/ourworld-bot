@@ -53,16 +53,16 @@ class PendingAd implements PendingAdType {
         if (!message) throw new Error('Message not sent');
         
         await this.delete();
-        this.database.prepare('INSERT INTO ads (id, user_id, channel_id, message_id, content, created_at) VALUES (?, ?, ?, ?, ?, ?)').run(this.id, this.user_id, this.channel_id, this.content, message.id, this.created_at);
+        this.database.prepare('INSERT INTO ads (id, user_id, channel_id, message_id, content, created_at) VALUES (?, ?, ?, ?, ?, ?)').run(this.id, this.user_id, this.channel_id, message.id, this.content, this.created_at);
 
-        return new Ad({
+        return (new Ad({
             id: this.id,
             user_id: this.user_id,
             channel_id: this.channel_id,
             message_id: message.id,
             content: this.content,
             created_at: this.created_at
-        }, this.database, this.client);
+        }, this.database, this.client)).fetch();
     }
 
     public createMessageEmbed(): MessageEmbed {
@@ -95,8 +95,8 @@ class Ad extends PendingAd {
 
     public async fetch(): Promise<Ad> {
         await super.fetch();
-        const message = await this.channel!.messages.fetch(this.message_id).catch(() => undefined) ?? undefined;
-    
+        const message = this.channel!.messages.cache.get(this.message_id) ?? await this.channel!.messages.fetch(this.message_id).catch(() => undefined) ?? undefined;
+
         if (!message) throw new Error('Message not found');
 
         this.message = message;
