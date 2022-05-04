@@ -21,10 +21,20 @@ class SendMessage implements RecipleScript {
                         .setDescription('The message to send')
                         .setRequired(true)    
                     )
+                    .addUserOption(to => to
+                        .setName('send-to')
+                        .setDescription('The user to send the embed to')
+                        .setRequired(false)    
+                    )
                 )
                 .addSubcommand(embed => embed
                     .setName('embed')
                     .setDescription('Sends an embed to channel')
+                    .addUserOption(to => to
+                        .setName('send-to')
+                        .setDescription('The user to send the embed to')
+                        .setRequired(false)    
+                    )
                     .addStringOption(content => content
                         .setName('content')
                         .setDescription('The content of the embed')
@@ -90,6 +100,7 @@ class SendMessage implements RecipleScript {
                 .setExecute(async command => {
                     const interaction = command.interaction;
                     const subcommand = interaction.options.getSubcommand();
+                    const sendTo = interaction.options.getUser('send-to') ?? interaction.channel;
 
                     switch (subcommand) {
                         case 'text':
@@ -97,12 +108,12 @@ class SendMessage implements RecipleScript {
                             
                             await interaction.reply({ content: `Sending Message`, ephemeral: true });
                             if (!message) return interaction.editReply({ content: `Message is empty` });
-                            if (!interaction.channel) return interaction.editReply({ content: `No channel found` });
+                            if (!sendTo) return interaction.editReply({ content: `No channel found` });
 
-                            const textReply = await interaction.channel.send(SendMessage.lineBreaks(message)).catch(() => undefined);
+                            const textReply = await sendTo.send(SendMessage.lineBreaks(message)).catch(() => undefined);
                             if (!textReply) return interaction.editReply({ content: `Failed to send message` }).catch(() => {});
 
-                            command.client.logger.debug(`Sent text to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`);
+                            command.client.logger.debug(`Sent text to ${(sendTo as TextChannel).name ?? 'unknown channel'}`);
                             return interaction.editReply({ content: `Message sent` });
                             
                         case 'embed':
@@ -120,7 +131,7 @@ class SendMessage implements RecipleScript {
                             const color = interaction.options.getString('color') ?? undefined;
 
                             await interaction.reply({ content: `Sending Embed`, ephemeral: true });
-                            if (!interaction.channel) return interaction.editReply({ content: `No channel found` });
+                            if (!sendTo) return interaction.editReply({ content: `No channel found` });
 
                             const embed = new MessageEmbed();
                             
@@ -133,10 +144,10 @@ class SendMessage implements RecipleScript {
                             if (url) embed.setURL(url);
                             if (color) embed.setColor(color as ColorResolvable);
 
-                            const reply = await interaction.channel.send({ content: content ?? ' ', embeds: [embed] }).catch(() => undefined);
+                            const reply = await sendTo.send({ content: content ?? ' ', embeds: [embed] }).catch(() => undefined);
                             if (!reply) return interaction.editReply({ content: `Failed to send embed` });
                             
-                            command.client.logger.debug(`Sent embed to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`);
+                            command.client.logger.debug(`Sent embed to ${(sendTo as TextChannel).name ?? 'unknown channel'}`);
                             return interaction.editReply({ content: `Embed sent` });
                     }
                 }),
