@@ -118,3 +118,4 @@ modules
 config
 .vscode
 .stignore
+*.old
