@@ -3,7 +3,8 @@
   "scripts": {
     "clean": "rm -rf ./modules",
     "compile": "yarn run clean && tsc",
-    "start": "yarn run compile && reciple"
+    "modules": "rmm add GhexterCortes/reciple-help-command",
+    "start": "yarn run compile && yarn run modules && reciple"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.5.0",

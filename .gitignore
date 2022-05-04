@@ -118,4 +118,5 @@ modules
 config
 .vscode
 .stignore
+.rmmcache
 *.old
