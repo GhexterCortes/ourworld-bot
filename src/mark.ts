@@ -4,6 +4,7 @@ import Canvas from 'canvas';
 
 class Mark implements RecipleScript {
     public versions: string[] = [version];
+    public mark?: Canvas.Image;
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [
         new MessageCommandBuilder()
             .setName('mark')
@@ -38,7 +39,11 @@ class Mark implements RecipleScript {
             })
     ];
 
-    public onStart() { return true; }
+    public async onStart() {
+        this.mark = await Canvas.loadImage('https://i.imgur.com/0aD5vGi.png');
+        
+        return !!this.mark;
+    }
     
     public async getAvatar(avatar: string) {
         const canvas = Canvas.createCanvas(300, 300);
@@ -46,9 +51,7 @@ class Mark implements RecipleScript {
 
         const avatarImg = await Canvas.loadImage(avatar);
         ctx.drawImage(avatarImg, 0, 0, canvas.width, canvas.height);
-
-        const murk = await Canvas.loadImage('https://i.imgur.com/0aD5vGi.png');
-        ctx.drawImage(murk, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(this.mark, 0, 0, canvas.width, canvas.height);
 
         const attachment = new MessageAttachment(canvas.toBuffer(), 'mark.png');
 
