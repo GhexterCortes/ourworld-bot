@@ -4,6 +4,7 @@ import { ColorResolvable, Guild, MessageEmbed, TextChannel, User } from 'discord
 import path from 'path';
 import fs from 'fs';
 import { errorEmbed } from './_errorEmbed';
+import { createConfig } from './_createConfig';
 
 export interface RawSnipedMessage {
     id: number;
@@ -83,6 +84,7 @@ export class SnipedMessage implements SnipedMessage {
 class Snipe implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
+    public ignoredStrings: string[] = Snipe.getIgnoredMessages();
     public client?: RecipleClient;
     public database: DatabaseType;
 
@@ -145,13 +147,15 @@ class Snipe implements RecipleScript {
                 })
         ];
 
+        this.client.logger.debug(`Ignored snipe messages: "${this.ignoredStrings.join('", "')}"`, 'Snipe');
+
         return true;
     }
 
     public onLoad(client: RecipleClient) {
         client.on('messageDelete', async message => {
             if (message.author?.bot || message.author?.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
-            if (!message.inGuild()) return;
+            if (!message.inGuild() || !message.content || this.ignoredStrings.some(b => b.toLowerCase() === message.content.toLowerCase())) return;
 
             const snipe: RawSnipedMessage = {
                 id: 0,
@@ -189,6 +193,10 @@ class Snipe implements RecipleScript {
         }
 
         return snipes;
+    }
+
+    public static getIgnoredMessages(): string[] {
+        return createConfig(path.join(process.cwd(), 'config/snipe/ignored.txt'), '').split('\n').map(line => line.trim()).filter(line => line.length > 0);
     }
 }
 

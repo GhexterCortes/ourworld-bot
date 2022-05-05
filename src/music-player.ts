@@ -38,7 +38,7 @@ export class MusicPlayer implements RecipleScript {
             this.logger?.debug(`Error in queue ${q.id} in guild ${q.guild.name}`);
             this.logger?.debug(e);
 
-            if (!q.destroyed) q.destroy(true);
+            if (!q.destroyed) q.skip();
 
             const queue = q as Queue<QueueMetadata>;
             await queue.metadata?.channel.send({ embeds: [errorEmbed(this.getMessage('error'))] }).catch(() => {});
@@ -48,7 +48,7 @@ export class MusicPlayer implements RecipleScript {
             this.logger?.debug(`Connection error for queue ${q.id} in guild ${q.guild.name}`);
             this.logger?.debug(e);
 
-            if (!q.destroyed) q.destroy(true);
+            if (!q.destroyed) q.skip();
 
             const queue = q as Queue<QueueMetadata>;
             await queue.metadata?.channel.send({ embeds: [errorEmbed(this.getMessage('connectionError'))] }).catch(() => {});
