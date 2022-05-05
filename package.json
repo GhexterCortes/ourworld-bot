@@ -4,7 +4,7 @@
     "clean": "rm -rf ./modules",
     "compile": "yarn run clean && tsc",
     "modules": "rmm add GhexterCortes/reciple-help-command",
-    "start": "yarn run compile && yarn run modules && reciple"
+    "build": "yarn run compile && yarn run modules && reciple"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.5.0",
