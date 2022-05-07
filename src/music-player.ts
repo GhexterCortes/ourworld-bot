@@ -59,7 +59,7 @@ export class MusicPlayer implements RecipleScript {
 
             const queue = q as Queue<QueueMetadata>;
             const channel = queue.metadata?.channel;
-            if (!channel || !this.config.sendCurrentlyPlaying) return;
+            if (!channel || !this.config.sendCurrentlyPlaying || q.destroyed) return;
 
             const embed = new MessageEmbed().setColor('BLUE');
 
@@ -216,6 +216,7 @@ export class MusicPlayer implements RecipleScript {
                 joinVoiceChannel: 'Join a voice channel',
                 joinSameVoiceChannel: 'Join voice channel I am already in',
                 connectionError: 'Connection Error',
+                seaching: 'Searching...',
                 noResult: 'No results found for `{0}`',
                 noQueue: 'No queue found',
                 noQuery: 'No query provided',

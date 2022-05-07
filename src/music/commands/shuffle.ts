@@ -1,5 +1,5 @@
 import { GuildMember } from 'discord.js';
-import { InteractionCommandBuilder } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder } from 'reciple';
 import { MusicPlayer } from '../../music-player';
 import { errorEmbed } from '../../_errorEmbed';
 
@@ -20,6 +20,23 @@ export default function (musicClient: MusicPlayer) {
 
                 queue.shuffle();
                 return interaction.reply({ embeds: [errorEmbed(musicClient.getMessage('shuffleQueue'), true)] });
+            }),
+        new MessageCommandBuilder()
+            .setName('shuffle')
+            .setDescription('Shuffle the queue')
+            .setExecute(async command => {
+                const message = command.message;
+                const member = message.member as GuildMember;
+
+                if (!member || !message.inGuild()) return message.reply({ embeds: [errorEmbed(musicClient.getMessage('notAMember'))]});
+
+                const queue = musicClient.player?.getQueue(message.guildId);
+
+                if (!queue || queue.destroyed || !queue.tracks.length) return message.reply({ embeds: [errorEmbed(musicClient.getMessage('noQueue'))] });
+                if (member.voice.channelId !== queue.connection.channel.id) return message.reply({ embeds: [errorEmbed(musicClient.getMessage('joinSameVoiceChannel'))] });
+
+                queue.shuffle();
+                return message.reply({ embeds: [errorEmbed(musicClient.getMessage('shuffleQueue'), true)] });
             })
     ];
 }

@@ -9,13 +9,13 @@ class Larry implements RecipleScript {
     public async onStart() {
         this.commands = [
             new MessageCommandBuilder()
-                .setName('larry-gadon')
+                .setName('bobo')
                 .setDescription('Bobo!')
                 .setExecute(async command => {
                     await command.message.reply(Larry.getLarryGadon());
                 }),
             new InteractionCommandBuilder()
-                .setName('larry-gadon')
+                .setName('bobo')
                 .setDescription('Bobo!')
                 .setExecute(async command => {
                     await command.interaction.reply(Larry.getLarryGadon());

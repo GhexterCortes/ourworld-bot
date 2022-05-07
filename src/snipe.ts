@@ -3,8 +3,10 @@ import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { ColorResolvable, Guild, MessageEmbed, TextChannel, User } from 'discord.js';
 import path from 'path';
 import fs from 'fs';
+import stringSimilarity from 'string-similarity-js';
 import { errorEmbed } from './_errorEmbed';
 import { createConfig } from './_createConfig';
+import { getRandomKey } from 'fallout-utility';
 
 export interface RawSnipedMessage {
     id: number;
@@ -180,6 +182,20 @@ class Snipe implements RecipleScript {
                 authorUserId,
                 createdAt
             ) VALUES (?, ?, ?, ?, ?, ?, ?)`).run(snipe.guildId, snipe.channelId, snipe.content, snipe.attachments, snipe.repliedUserId, snipe.authorUserId, snipe.createdAt);
+        });
+
+        client.on('messageCreate', async message => {
+            if (message.author?.bot || message.author?.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
+            if (!message.inGuild() || !message.content || this.ignoredStrings.some(b => b.toLowerCase() === message.content.toLowerCase())) return;
+            if (!message.content.trim().startsWith(client.config?.prefix || '!')) return;
+
+            const content = message.content.trim().slice(client.config?.prefix.length || 1).split(' ')[0].toLowerCase() ?? '';
+            const replies = ['did you mean `!snipe`?', 'dum', 'snipe!', 'idk that command lmao', 'check your spelling', 'spell it again', 'what?', 'lol', 'lmao', 'SNIPE 😭'];
+
+            if (!content || content == 'snipe') return;
+            if (stringSimilarity(content, 'snipe') < 0.5) return;
+            
+            message.reply(getRandomKey(replies)).catch(() => {});
         });
     }
 
