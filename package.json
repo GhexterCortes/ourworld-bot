@@ -3,36 +3,36 @@
   "scripts": {
     "clean": "rm -rf ./modules",
     "compile": "yarn run clean && tsc",
-    "modules": "rmm add GhexterCortes/reciple-help-command",
-    "build": "yarn run compile && yarn run modules && reciple"
+    "build": "yarn run compile && reciple"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.5.0",
     "@types/ms": "^0.7.31",
-    "@types/node": "^17.0.24",
+    "@types/node": "^17.0.31",
     "@types/string-similarity": "^4.0.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.4"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.9.0",
     "@ghextercortes/djs-pagination": "^0.0.9",
-    "axios": "^0.26.1",
+    "@vitalets/google-translate-api": "^8.0.0",
+    "axios": "^0.27.2",
     "better-sqlite3": "^7.5.1",
     "canvas": "^2.9.1",
     "discord-player": "^5.2.2",
     "discord.js": "^13.6.0",
     "fallout-utility": "^1.3.13",
     "ffmpeg-static": "^5.0.0",
-    "genius-lyrics": "^4.3.6",
+    "genius-lyrics": "^4.3.8",
     "libsodium-wrappers": "^0.7.10",
     "minecraft-protocol": "^1.34.0",
     "ms": "^2.1.3",
     "opusscript": "^0.0.8",
-    "reciple": "^1.0.19",
+    "reciple": "^1.1.2",
     "sodium": "^3.0.2",
     "string-similarity-js": "^2.1.4",
-    "tiktok-scraper-ts": "^1.2.6",
+    "tiktok-scraper-ts": "^1.2.9",
     "tweetnacl": "^1.0.3",
     "weird-to-normal-chars": "^1.8.2",
     "yaml": "^2.0.1"
