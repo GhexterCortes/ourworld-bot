@@ -1,6 +1,6 @@
 import { InteractionCommandBuilder, isIgnoredChannel, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
-import { ColorResolvable, Guild, MessageEmbed, TextChannel, User } from 'discord.js';
+import { ColorResolvable, Guild, MessageActionRow, MessageButton, MessageEmbed, TextChannel, User } from 'discord.js';
 import path from 'path';
 import fs from 'fs';
 import stringSimilarity from 'string-similarity-js';
@@ -89,6 +89,13 @@ class Snipe implements RecipleScript {
     public ignoredStrings: string[] = Snipe.getIgnoredMessages();
     public client?: RecipleClient;
     public database: DatabaseType;
+    public snipeBtn = new MessageActionRow()
+    .setComponents([
+        new MessageButton()
+            .setCustomId('snipe-btn')
+            .setLabel('Snipe')
+            .setStyle('SECONDARY')
+    ]);
 
     constructor () {
         const databasePath = path.join(process.cwd(), 'config/snipe/database.db');
@@ -116,7 +123,7 @@ class Snipe implements RecipleScript {
                 .setExecute(async command => {
                     const message = command.message;
 
-                    const snipes = await this.fetchSnipes(message.channel.id);
+                    const snipes = await this.fetchSnipes(message.channel.id, 1);
                     if (!snipes.length) return message.reply({ embeds: [errorEmbed('No snipes in this channel')] });
 
                     const snipe = snipes[0];
@@ -125,7 +132,10 @@ class Snipe implements RecipleScript {
                     const deleteSnipe = snipe.delete();
                     if (!deleteSnipe) throw new Error('Can\'t delete snipe '+ snipe.id); 
 
-                    await message.reply({ embeds: [embed] }).catch(() => {});
+                    await message.reply({
+                        embeds: [embed],
+                        components: [this.snipeBtn]
+                    });
                 }),
             new InteractionCommandBuilder()
                 .setName('snipe')
@@ -134,18 +144,84 @@ class Snipe implements RecipleScript {
                     const interaction = command.interaction;
                     if (!interaction.channel) return;
 
-                    await interaction.deferReply().catch(() => {});
+                    await interaction.deferReply().catch(err => this.client?.logger.error(err, 'Snipe'));
 
-                    const snipes = await this.fetchSnipes(interaction.channel.id);
+                    const snipes = await this.fetchSnipes(interaction.channel.id, 1);
                     if (!snipes.length) return interaction.editReply({ embeds: [errorEmbed('No snipes in this channel')] });
 
                     const snipe = snipes[0];
                     const embed = snipe.createEmbed('BLUE');
 
                     const deleteSnipe = snipe.delete();
-                    if (!deleteSnipe) throw new Error('Can\'t delete snipe '+ snipe.id); 
+                    if (!deleteSnipe) {
+                        interaction.reply({ embeds: [errorEmbed(`An error occured`)] });
+                        throw new Error('Can\'t delete snipe '+ snipe.id);
+                    }
 
-                    await interaction.editReply({ embeds: [embed] }).catch(() => {});
+                    await interaction.editReply({
+                        embeds: [embed],
+                        components: [this.snipeBtn]
+                    });
+                }),
+            new MessageCommandBuilder()
+                .setName('snipes')
+                .setDescription('View snipes count in this channel')
+                .addOption(user => user
+                    .setName('user')
+                    .setDescription('Snipes count of a specific user')
+                    .setRequired(false)
+                )
+                .setExecute(async command => {
+                    const arg = command.command.args ? command.command.args[0] : undefined;
+
+                    const channel = command.message.channel as TextChannel;
+                    let user = command.message.mentions.users.first();
+
+                    if (arg && !user) {
+                        user = client.users.cache.find(u => u.tag == arg || u.id == arg) ?? await client.users.fetch(arg).catch(() => undefined);
+                    }
+
+                    const count = this.snipesCount(channel, user);
+                    command.message.reply({ embeds: [count], components: [this.snipeBtn] });
+                }),
+            new InteractionCommandBuilder()
+                .setName('snipes')
+                .setDescription('View snipes count in this channel')
+                .addUserOption(user => user
+                    .setName('user')
+                    .setDescription('Snipes count of a specific user')
+                    .setRequired(false)
+                )
+                .setExecute(async command => {
+                    const channel = command.interaction.channel as TextChannel;
+                    const user = command.interaction.options.getUser('user') ?? undefined;
+
+                    if (!channel) return;
+
+                    await command.interaction.deferReply();
+
+                    const count = this.snipesCount(channel, user);
+                    command.interaction.editReply({ embeds: [count], components: [this.snipeBtn] });
+                }),
+            new MessageCommandBuilder()
+                .setName('snipe-rank')
+                .setDescription('View most sniped users in this channel')
+                .setExecute(async command => {
+                    const channel = command.message.channel as TextChannel;
+                    const ranks = this.ranks(channel);
+
+                    command.message.reply({ embeds: [ranks], components: [this.snipeBtn] });
+                }),
+            new InteractionCommandBuilder()
+                .setName('snipe-rank')
+                .setDescription('View most sniped users in this channel')
+                .setExecute(async command => {
+                    const channel = command.interaction.channel as TextChannel;
+                    
+                    await command.interaction.deferReply();
+                    const ranks = this.ranks(channel);
+
+                    command.interaction.editReply({ embeds: [ranks], components: [this.snipeBtn] });
                 })
         ];
 
@@ -192,10 +268,47 @@ class Snipe implements RecipleScript {
             const content = message.content.trim().slice(client.config?.prefix.length || 1).split(' ')[0].toLowerCase() ?? '';
             const replies = ['did you mean `!snipe`?', 'dum', 'snipe!', 'idk that command lmao', 'check your spelling', 'spell it again', 'what?', 'lol', 'lmao', 'SNIPE 😭'];
 
-            if (!content || content == 'snipe') return;
+            if (!content || content.startsWith('snipe')) return;
             if (stringSimilarity(content, 'snipe') < 0.5) return;
             
-            message.reply(getRandomKey(replies)).catch(() => {});
+            message.reply(getRandomKey(replies)).catch(err => this.client?.logger.error(err, 'Snipe'));
+        });
+
+        client.on('interactionCreate', async component => {
+            if (!component.isButton() || component.customId !== 'snipe-btn') return;
+
+            const channel = component.channel;
+            if (!channel) return;
+
+            const message = channel.messages.cache.get(component.message.id) ?? await channel.messages.fetch(component.message.id).catch(() => {}) ?? undefined;
+            if (message) {
+                if (message.author.id !== client.user?.id) return;
+                message.edit({ components: [] }).catch(err => this.client?.logger.error(err, 'Snipe'));
+            }
+
+            await component.deferReply().catch(err => this.client?.logger.error(err, 'Snipe'));
+
+            const snipes = await this.fetchSnipes(channel.id, 1);
+            if (!snipes.length) {
+                component.editReply({ embeds: [errorEmbed('No snipes in this channel')] }).catch(err => this.client?.logger.error(err, 'Snipe'));
+                return;
+            }
+
+            const snipe = snipes[0];
+            const embed = snipe.createEmbed('BLUE');
+
+            const deleteSnipe = snipe.delete();
+            if (!deleteSnipe) {
+                component.editReply({ embeds: [errorEmbed(`An error occured`)] }).catch(err => this.client?.logger.error(err, 'Snipe'));
+                return;
+            }
+
+            component.editReply({
+                embeds: [
+                    embed.setFooter({ text: `Sniped by ${component.user.tag}` })
+                ],
+                components: [this.snipeBtn]
+            }).catch(err => this.client?.logger.error(err, 'Snipe'));
         });
     }
 
@@ -209,6 +322,92 @@ class Snipe implements RecipleScript {
         }
 
         return snipes;
+    }
+
+    public snipesCount(channel: TextChannel, user?: User) {
+        const query = (() => {
+            if (user) {
+                return this.database.prepare(`SELECT id FROM snipes WHERE channelId = ? AND authorUserId = ?`).all(channel.id, user?.id);
+            }
+
+            return this.database.prepare(`SELECT id FROM snipes WHERE channelId = ?`).all(channel.id);
+        })() as string[];
+
+        const embed = new MessageEmbed().setColor('GREEN');
+        const count = query.length > 1 ? `**${query.length}** snipes` : `**${query.length}** snipe`;
+
+        if (user) {
+            embed.setAuthor({ name: `Total sniped messages from ${user.tag} in this channel` });
+            embed.setDescription(query.length ? count : `No sniped messages from <@${user.id}>`);
+        } else {
+            embed.setAuthor({ name: `Total sniped messages in this channel` });
+            embed.setDescription(query.length ? count : `No sniped messages in this channel`);
+        }
+
+        return embed;
+    }
+
+    public snipesRanks(channel: TextChannel) {
+        let ranks: { id: string; count: number }[] = [];
+        const query = this.database.prepare(`SELECT authorUserId from snipes WHERE channelId = ?`).all(channel.id) as { authorUserId: string }[];
+
+        for (const row of query) {
+            const user = row.authorUserId;
+            const key = ranks.find(i => i.id == user);
+            let count = key?.count ?? 0;
+
+            count++;
+            ranks = [{ id: user, count }, ...ranks.filter(e => e.id !== user)];
+        }
+
+        ranks = ranks.sort((a, b) => b.count - a.count);
+        ranks.splice(20);
+
+        return ranks;
+    }
+
+    public ranks(channel: TextChannel) {
+        const ranks = this.snipesRanks(channel);
+        const embed = new MessageEmbed().setAuthor({ name: `Most sniped users in this channel` });
+
+        let description = ``;
+        let i = 0;
+
+        for (const user of ranks) {
+            let text = '';
+            i++;
+
+            switch (i) {
+                case 1:
+                    text = '🥇';
+                    break;
+                case 2:
+                    text = '🥈';
+                    break;
+                case 3:
+                    text = '🥉';
+                    break;
+                default:
+                    text = getRandomKey([
+                        '<:vomit:901325245707845662>',
+                        '<:omegalol:901325113369186344>',
+                        '<:geminipog:901325246534156338>',
+                        '<:huh:901325246165045258>',
+                        '<a:blelele:901325242927054929>',
+                        '<a:meow:901325253140181003>',
+                        '<a:trippepe:901325254985654293>',
+                        '<a:flame:901325248413204510>'
+                    ]);
+            }
+
+            text += ` \`${user.count} ${user.count > 1 ? 'snipes' : 'snipe'}\` — <@${user.id}>\n`;
+
+            description += text;
+        }
+
+        embed.setDescription(description || `No record in this channel`);
+
+        return embed;
     }
 
     public static getIgnoredMessages(): string[] {
