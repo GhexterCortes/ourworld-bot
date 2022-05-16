@@ -1,8 +1,8 @@
 import yml from 'yaml';
 import path from 'path';
 import { createConfig } from './_createConfig';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
-import { Message, MessageActionRow, MessageButton, MessageEmbed, ReplyMessageOptions, TextChannel, User } from 'discord.js';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, version } from 'reciple';
+import { InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageEditOptions, MessageEmbed, MessageOptions, ReplyMessageOptions, TextChannel, User } from 'discord.js';
 import { errorEmbed } from './_errorEmbed';
 
 export interface SpamConfig {
@@ -44,10 +44,10 @@ class Spam implements RecipleScript {
                     if (this.config.spam.max < parseInt(count)) return message.reply({ embeds: [errorEmbed(`You can only spam ${this.config.spam.max} times`)] });
                     if (!this.config.spam.allowMentions && /^<@[!?&]?(\d+)>$/.test(spamMessage)) return message.reply({ embeds: [errorEmbed(`Mentions are not allowed`)] });
 
-                    const reply = await message.reply(Spam.getSpamConfirmMessage());
+                    const reply = await message.reply(Spam.getSpamConfirmMessage() as MessageOptions);
                     const confirm = await Spam.addSpamConfirmCollector(reply, message.author);
 
-                    if (!confirm) return reply.edit(Spam.getSpamCancelledMessage());
+                    if (!confirm) return reply.edit(Spam.getSpamCancelledMessage() as MessageEditOptions);
                     
                     command.client.logger.debug(`${count} messages sent to ${(message.channel as TextChannel).name ?? 'unknown channel'}`, 'Spam');
                     await this.spamMessage(message.channel as TextChannel, reply, message.author, spamMessage, parseInt(count));
@@ -76,12 +76,12 @@ class Spam implements RecipleScript {
                     if (!this.config.spam.allowMentions && /^<@[!?&]?(\d+)>$/.test(spamMessage)) return interaction.reply({ embeds: [errorEmbed(`Mentions are not allowed`)] });
                     if (!interaction.channel) return interaction.reply({ embeds: [errorEmbed(`No channel found`)] });
 
-                    await interaction.reply(Spam.getSpamConfirmMessage())
+                    await interaction.reply(Spam.getSpamConfirmMessage() as InteractionReplyOptions);
 
                     const reply = await interaction.fetchReply() as Message;
                     const confirm = await Spam.addSpamConfirmCollector(reply, interaction.user);
 
-                    if (!confirm) return interaction.reply(Spam.getSpamCancelledMessage());
+                    if (!confirm) return interaction.reply(Spam.getSpamCancelledMessage() as InteractionReplyOptions);
 
                     command.client.logger.debug(`${count} messages sent to ${(interaction.channel as TextChannel).name ?? 'unknown channel'}`, 'Spam');
                     await this.spamMessage(interaction.channel as TextChannel, reply, interaction.user, spamMessage, count);
@@ -96,7 +96,7 @@ class Spam implements RecipleScript {
         let error = false;
         let spamCount = 0;
 
-        await reply.edit(Spam.getSpammingMessage()).catch(() => { spamming = false; error = true; });
+        await reply.edit(Spam.getSpammingMessage() as MessageEditOptions).catch(() => { spamming = false; error = true; });
         const collector = reply.createMessageComponentCollector({
             filter: (c) => c.user.id === author.id && (c.customId === 'cancel')
         });
@@ -111,16 +111,16 @@ class Spam implements RecipleScript {
         for (let i = 0; i < count; i++) {
             if (!spamming) break;
 
-            await channel.send(`${this.config.spam.prefix}${spam}`).catch(() => { spamming = false; error = true; });
+            channel.send(`${this.config.spam.prefix}${spam}`).catch(() => { spamming = false; error = true; });
             spamCount++;
         }
 
         spamming = false;
 
         if (error) {
-            await reply.edit(Spam.getSpamCancelledMessage()).catch(() => {});
+            await reply.edit(Spam.getSpamCancelledMessage() as MessageEditOptions).catch(() => {});
         } else {
-            await reply.edit(Spam.getDoneSpamMessage()).catch(() => {});
+            await reply.edit(Spam.getDoneSpamMessage() as MessageEditOptions).catch(() => {});
         }
     }
 
@@ -144,7 +144,7 @@ class Spam implements RecipleScript {
         });
     }
 
-    public static getSpamConfirmMessage(): ReplyMessageOptions {
+    public static getSpamConfirmMessage(): ReplyMessageOptions|MessageEditOptions {
         return {
             content: ' ',
             embeds: [
@@ -159,7 +159,7 @@ class Spam implements RecipleScript {
         };
     }
 
-    public static getSpamCancelledMessage(): ReplyMessageOptions {
+    public static getSpamCancelledMessage(): ReplyMessageOptions|MessageEditOptions {
         return {
             content: ' ',
             embeds: [
@@ -172,7 +172,7 @@ class Spam implements RecipleScript {
         };
     }
 
-    public static getSpammingMessage(): ReplyMessageOptions {
+    public static getSpammingMessage(): ReplyMessageOptions|MessageEditOptions {
         return {
             content: ' ',
             embeds: [
@@ -193,7 +193,7 @@ class Spam implements RecipleScript {
         };
     }
 
-    public static getDoneSpamMessage(): ReplyMessageOptions {
+    public static getDoneSpamMessage(): ReplyMessageOptions|MessageEditOptions {
         return {
             content: ' ',
             embeds: [

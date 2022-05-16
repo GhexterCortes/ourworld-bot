@@ -200,7 +200,7 @@ class MinecraftModeration implements RecipleScript {
         client.logger.log('Minecraft Moderation started', 'McMod');
     }
 
-    public async sendToConsole(message: string|InteractionReplyOptions|WebhookEditMessageOptions) {
+    public async sendToConsole(message: string) {
         if (!this.channel) return;
 
         await this.channel.send(message).catch(() => {});

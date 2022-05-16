@@ -1,5 +1,5 @@
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
-import { ReplyMessageOptions, InteractionReplyOptions } from 'discord.js';
+import { ReplyMessageOptions, InteractionReplyOptions, MessageOptions } from 'discord.js';
 import { createConfig } from './_createConfig';
 import { errorEmbed } from './_errorEmbed';
 import { Logger } from 'fallout-utility';
@@ -138,7 +138,7 @@ class ChatBot implements RecipleScript {
         return this.api + ChatBot.parseUrlParams(params);
     }
 
-    public async getResponse(question: string, user: string): Promise<string|ReplyMessageOptions|InteractionReplyOptions> {
+    public async getResponse(question: string, user: string): Promise<string|MessageOptions> {
         this.logger?.debug(`Fetching chatbot api response for question: ${question}`);
         const response = await axios.get(this.getUrl(question, user)).then(res => res.data).catch(err => { this.logger?.error(err); });
         if (!response || response.error || !response.success) {
