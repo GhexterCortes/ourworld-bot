@@ -45,7 +45,7 @@ class ServerIP implements RecipleScript {
             online: boolean;
         }
 
-        this.logger.info(`Pinging ${host}:${port}`);
+        this.logger.debug(`Pinging ${host}:${port}`);
 
         const response = await ping({ host, port, closeTimeout: 5000 })
         .then(result => {
@@ -66,7 +66,7 @@ class ServerIP implements RecipleScript {
             }  as ServerPingResult;
         });
 
-        this.logger.info(`${host}:${port} is ${response.status}`);
+        this.logger.debug(`${host}:${port} is ${response.status}`);
 
         return {
             players: { max: response.players?.max ?? 0, online: response.players?.online ?? 0 },
