@@ -119,7 +119,7 @@ class SpamManager implements RecipleScript {
             if ((message.createdTimestamp - existingMessage.message.createdTimestamp) <= this.config.similarMessageCooldown) {
                 const similarity = stringSmilarity(existingMessage.message.content.toLowerCase(), message.content.toLowerCase());
                 
-                if (similarity >= this.config.similarMessageThreshold) {
+                if (similarity >= this.config.similarMessageThreshold || existingMessage.message.content.toLowerCase() == message.content.toLowerCase()) {
                     existingMessage.sentTimes++;
                     result = existingMessage.sentTimes > this.config.similarMessageLimit;
                 }
