@@ -65,18 +65,16 @@ class Roles implements RecipleScript {
                 removed: 0
             }
 
-            for (const role of validRoles) {
+            for (const role of selectedRoles) {
                 if (!role) continue;
-                if (selectedRoles.some(r => r?.id === role.id)) {
-                    if (!member.roles.cache.has(role.id)) {
-                        await member.roles.add(role.id).catch(() => changes.added--);
-                        changes.added++;
-                    }
+                if (!validRoles?.some(r => r.id === role.id)) continue;
+
+                if (member.roles.cache.has(role.id)) {
+                    await member.roles.remove(role).catch(() => { changes.removed--; });
+                    changes.removed++;
                 } else {
-                    if (member.roles.cache.has(role.id)) {
-                        await member.roles.remove(role.id).catch(() => changes.removed--);
-                        changes.removed++;
-                    }
+                    await member.roles.add(role).catch(() => { changes.added--; });
+                    changes.added++;
                 }
             }
 
