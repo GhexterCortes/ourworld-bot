@@ -152,4 +152,4 @@ By creating an account, you agree to the following terms:
     }
 }
 
-module.exports = new EconomyPlugin();
+export default new EconomyPlugin();

@@ -147,4 +147,4 @@ class ServerIP implements RecipleScript {
     } 
 }
 
-module.exports = new ServerIP();
+export default new ServerIP();

@@ -227,4 +227,5 @@ class ChatBot implements RecipleScript {
     }
 }
 
-module.exports = new ChatBot();
+export default new ChatBot();
+

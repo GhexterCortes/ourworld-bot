@@ -162,4 +162,4 @@ class Help implements RecipleScript {
     }
 }
 
-module.exports = new Help();
+export default new Help();

@@ -54,4 +54,4 @@ class AnimatedPP implements RecipleScript {
     public onStart() { return true; }
 }
 
-module.exports = new AnimatedPP();
+export default new AnimatedPP();

@@ -235,4 +235,4 @@ class Spam implements RecipleScript {
     }
 }
 
-module.exports = new Spam();
+export default new Spam();

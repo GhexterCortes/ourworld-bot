@@ -252,4 +252,4 @@ export class AdManager implements RecipleScript {
     }
 }
 
-module.exports = new AdManager();
+export default new AdManager();

@@ -213,4 +213,4 @@ class AntiProxy implements RecipleScript {
     }
 }
 
-module.exports = new AntiProxy();
+export default new AntiProxy();

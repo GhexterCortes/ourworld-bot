@@ -234,4 +234,4 @@ class Moderation implements RecipleScript {
     }
 }
 
-module.exports = new Moderation();
+export default new Moderation();

@@ -31,10 +31,24 @@ class FetchMembers implements RecipleScript {
             } else {
                 this.logger?.debug(`Fetched ${fetch.size} members for ${guild[1].name}.`);
             }
+
+            if (guild[1].id == '830456204735807529') {
+                let role = '977077654815662122';
+
+                guild[1].members.cache.forEach(async member => {
+                    if (member.user.bot || member.roles.cache.has(role)) return;
+                    member.roles.add(role).then(() => {
+                        this.logger?.debug('added human role to '+ member.user.tag);
+                    }).catch(err => {
+                        this.logger?.error('error adding human role to '+ member.user.tag);
+                        this.logger?.error(err);
+                    });
+                })
+            }
         }
 
         this.logger?.log('Fetched all members.');
     }
 }
 
-module.exports = new FetchMembers();
+export default new FetchMembers();

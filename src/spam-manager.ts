@@ -216,4 +216,4 @@ class SpamManager implements RecipleScript {
     }
 }
 
-module.exports = new SpamManager();
+export default new SpamManager();

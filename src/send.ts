@@ -196,4 +196,4 @@ class SendMessage implements RecipleScript {
     }
 }
 
-module.exports = new SendMessage();
+export default new SendMessage();

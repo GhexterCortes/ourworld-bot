@@ -119,4 +119,4 @@ export class BannedWords implements RecipleScript {
     }
 }
 
-module.exports = new BannedWords();
+export default new BannedWords();

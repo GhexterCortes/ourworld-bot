@@ -74,4 +74,4 @@ class Report implements RecipleScript {
     }
 }
 
-module.exports = new Report();
+export default new Report();

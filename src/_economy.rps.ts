@@ -146,4 +146,4 @@ class EconomyPlugin implements RecipleScript {
     }
 }
 
-module.exports = new EconomyPlugin();
+export default new EconomyPlugin();

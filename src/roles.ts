@@ -196,4 +196,4 @@ class Roles implements RecipleScript {
     }
 }
 
-module.exports = new Roles();
+export default new Roles();

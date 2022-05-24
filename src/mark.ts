@@ -69,4 +69,4 @@ class Mark implements RecipleScript {
     }
 }
 
-module.exports = new Mark();
+export default new Mark();

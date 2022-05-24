@@ -55,4 +55,4 @@ class Status implements RecipleScript {
     }
 }
 
-module.exports = new Status();
+export default new Status();

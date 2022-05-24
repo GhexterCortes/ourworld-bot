@@ -70,4 +70,4 @@ class Welcomer implements RecipleScript {
     }
 }
 
-module.exports = new Welcomer();
+export default new Welcomer();

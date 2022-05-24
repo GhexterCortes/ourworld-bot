@@ -216,4 +216,4 @@ class MinecraftModeration implements RecipleScript {
     }
 }
 
-module.exports = new MinecraftModeration();
+export default new MinecraftModeration();

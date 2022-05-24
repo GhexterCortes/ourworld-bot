@@ -72,4 +72,4 @@ class NoCrash implements RecipleScript {
     }
 }
 
-module.exports = new NoCrash();
+export default new NoCrash();

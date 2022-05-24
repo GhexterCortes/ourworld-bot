@@ -247,4 +247,4 @@ export class MusicPlayer implements RecipleScript {
     }
 }
 
-module.exports = new MusicPlayer();
+export default new MusicPlayer();

@@ -163,4 +163,4 @@ class LogChannel implements RecipleScript {
     }
 }
 
-module.exports = new LogChannel();
+export default new LogChannel();

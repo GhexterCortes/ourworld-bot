@@ -1,3 +1,3 @@
 import { Economy } from './economy/economy';
 
-module.exports = new Economy();
+export default new Economy();

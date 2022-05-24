@@ -126,4 +126,4 @@ class BannedWordsMC implements RecipleScript {
     }
 }
 
-module.exports = new BannedWordsMC();
+export default new BannedWordsMC();

@@ -415,4 +415,4 @@ class Snipe implements RecipleScript {
     }
 }
 
-module.exports = new Snipe();
+export default new Snipe();
