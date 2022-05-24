@@ -2,7 +2,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, versio
 import { Economy } from './economy/economy';
 import { errorEmbed } from './_errorEmbed';
 
-class EconomyPlugin implements RecipleScript {
+export class EconomyPlugin implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public economy: Economy = require('./economy.a.main');

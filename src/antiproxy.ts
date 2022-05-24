@@ -24,7 +24,7 @@ export interface Player {
     vpn: boolean;
 }
 
-class AntiProxy implements RecipleScript {
+export class AntiProxy implements RecipleScript {
     public versions: string[] = [version];
     public config: AntiProxyConfig = AntiProxy.getConfig();
     public database: DatabaseType = new Database(path.join(process.cwd(), 'config/anti-proxy/database.db'));

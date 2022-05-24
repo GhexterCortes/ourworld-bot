@@ -46,7 +46,7 @@ export interface ChatBotConfig {
     }
 }
 
-class ChatBot implements RecipleScript {
+export class ChatBot implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: ChatBotConfig = ChatBot.getConfig();

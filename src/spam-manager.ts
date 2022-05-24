@@ -29,7 +29,7 @@ export interface SentMessage {
     sentTimes: number;
 }
 
-class SpamManager implements RecipleScript {
+export class SpamManager implements RecipleScript {
     public versions: string[] = [version];
     public config: SpamManagerConfig = SpamManager.getConfig();
     public sentMessages: SentMessage[] = [];

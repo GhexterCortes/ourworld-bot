@@ -13,7 +13,7 @@ export interface GuildJoinConfig {
     goodbyeMessage?: string|MessageOptions;
 }
 
-class Welcomer implements RecipleScript {
+export class Welcomer implements RecipleScript {
     public versions: string[] = [version];
     public guilds: GuildJoinConfig[] = Welcomer.getGuilds();
 

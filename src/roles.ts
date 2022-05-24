@@ -27,7 +27,7 @@ export interface RolesConfig {
     }[]
 }
 
-class Roles implements RecipleScript {
+export class Roles implements RecipleScript {
     public versions: string[] = [version];
     public client?: RecipleClient;
     public config: RolesConfig = Roles.getConfig();

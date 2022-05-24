@@ -5,7 +5,7 @@ import { errorEmbed } from './_errorEmbed';
 import path from 'path';
 import fs from 'fs';
 
-class EconomyPlugin implements RecipleScript {
+export class EconomyPlugin implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public economy: Economy = require('./economy.a.main');

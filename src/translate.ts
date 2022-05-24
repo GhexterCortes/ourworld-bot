@@ -4,7 +4,7 @@ import translate from '@vitalets/google-translate-api';
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
-class Translator implements RecipleScript {
+export class Translator implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 

@@ -4,7 +4,7 @@ import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagi
 
 export type commandUsageInfo = { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder };
 
-class Help implements RecipleScript {
+export class Help implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public allCommands: commandUsageInfo[] = [];

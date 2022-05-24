@@ -12,7 +12,7 @@ export interface StatusConfig {
     randomPresence: boolean;
 }
 
-class Status implements RecipleScript {
+export class Status implements RecipleScript {
     public versions: string[] = [version];
     public config: StatusConfig = Status.getConfig();
     public currentStatus = 0;

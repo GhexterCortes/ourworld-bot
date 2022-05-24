@@ -4,7 +4,7 @@ import { escapeRegExp } from 'fallout-utility/dist/scripts/escapeRegExp';
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
-class SendMessage implements RecipleScript {
+export class SendMessage implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     

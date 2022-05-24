@@ -10,7 +10,7 @@ export interface ReportConfig {
     reportsChannel: string[];
 }
 
-class Report implements RecipleScript {
+export class Report implements RecipleScript {
     public versions: string[] = [version];
     public config: ReportConfig = Report.getConfig();
     public channels: TextChannel[] = [];

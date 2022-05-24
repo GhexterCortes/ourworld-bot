@@ -11,7 +11,7 @@ export interface NoCrashConfig {
     preventCrash: boolean;
 }
 
-class NoCrash implements RecipleScript {
+export class NoCrash implements RecipleScript {
     public versions: string[] = [version];
     public config: NoCrashConfig = NoCrash.getConfig();
     public logger?: Logger;

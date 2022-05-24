@@ -7,7 +7,7 @@ import { errorEmbed } from './_errorEmbed';
 import { createConfig } from './_createConfig';
 import { Logger } from 'fallout-utility';
 
-class ServerIP implements RecipleScript {
+export class ServerIP implements RecipleScript {
     public versions: string[] = [version];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
     public prefixes: string[] = ['!', '.', '-', '~', '?', '>', '/'];

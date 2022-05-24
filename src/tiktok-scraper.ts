@@ -4,7 +4,7 @@ import { TTScraper as TikTok } from 'tiktok-scraper-ts';
 import { isIgnoredChannel, RecipleClient, RecipleScript, version } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
-class TikTokScraper implements RecipleScript {
+export class TikTokScraper implements RecipleScript {
     public versions: string[] = [version];
     public scraper: TikTok = new TikTok();
     

@@ -9,7 +9,7 @@ export interface MinecraftModerationConfig {
     consoleChannel: string;
 }
 
-class MinecraftModeration implements RecipleScript {
+export class MinecraftModeration implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: MinecraftModerationConfig = MinecraftModeration.getConfig();

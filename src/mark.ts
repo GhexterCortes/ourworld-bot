@@ -2,7 +2,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, versio
 import { MessageEmbed, MessageAttachment } from 'discord.js';
 import Canvas from 'canvas';
 
-class Mark implements RecipleScript {
+export class Mark implements RecipleScript {
     public versions: string[] = [version];
     public mark?: Canvas.Image;
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [

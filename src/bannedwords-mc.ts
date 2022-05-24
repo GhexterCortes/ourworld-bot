@@ -20,7 +20,7 @@ export interface BannedWordsMCConfig {
     similarWordThreshold: number
 }
 
-class BannedWordsMC implements RecipleScript {
+export class BannedWordsMC implements RecipleScript {
     public versions: string[] = [version];
     public client?: RecipleClient;
     public logger: Logger = new Logger('BannedWords-MC');

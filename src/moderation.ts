@@ -2,7 +2,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, Recipl
 import { errorEmbed } from './_errorEmbed';
 import ms from 'ms';
 
-class Moderation implements RecipleScript {
+export class Moderation implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 

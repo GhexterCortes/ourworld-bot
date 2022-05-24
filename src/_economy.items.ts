@@ -4,7 +4,7 @@ import { Economy } from './economy/economy';
 import { errorEmbed } from './_errorEmbed';
 import { EconomyUser } from './economy/User';
 
-class EconomyPlugin implements RecipleScript {
+export class EconomyPlugin implements RecipleScript {
     public versions: string[] = [version];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public economy: Economy = require('./economy.a.main');
