@@ -8,7 +8,7 @@ commands:
     commandArgumentSeparator: ' '
   interactionCommand:
     enabled: true
-    replyOnError: true
+    replyOnError: false
     registerCommands: true
     guilds: ['876039624814899220', '830456204735807529']
 
