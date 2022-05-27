@@ -47,9 +47,13 @@ export class StaffRatings implements RecipleScript {
                 .addNumberOption(rating => rating
                     .setName('rating')
                     .setDescription('The rating to give.')
-                    .setMinValue(1)
+                    .setMinValue(0)
                     .setMaxValue(5)
                     .addChoices(
+                        {
+                            name: 'remove vote',
+                            value: 0,
+                        },
                         {
                             name: '1',
                             value: 1,
@@ -75,10 +79,15 @@ export class StaffRatings implements RecipleScript {
                 )
                 .setExecute(async command => {
                     const interaction = command.interaction;
-                    const staff = interaction.options.getUser('staff');
-                    const rating = interaction.options.getNumber('rating');
+                    const staff = interaction.options.getUser('staff', true);
+                    const rating = interaction.options.getNumber('rating', true);
 
-                    if (!staff || !rating) return;
+                    if (!rating) {
+                        await interaction.deferReply({ ephemeral: true });
+                        this.removeRating(interaction.user.id, staff.id);
+                        return interaction.editReply({ embeds: [errorEmbed(`Removed your vote for ${staff.tag}.`, true)] });
+                    }
+                    if (!staff) return;
 
                     const modal = new Modal()
                         .setTitle('Rate Staff Member')
@@ -147,6 +156,14 @@ export class StaffRatings implements RecipleScript {
         });
     }
 
+    public async removeRating(user: string, staff: string): Promise<void> {
+        this.database.prepare(`DELETE FROM ratings WHERE user_id = ? AND staff_id = ?`).run(user, staff);
+        await this.updateMessage().catch(err => {
+            this.logger.error('Failed to update message.');
+            this.logger.error(err);
+        });
+    }
+
     public createTables(): void {
         this.logger.debug('Creating tables...');
 
@@ -204,6 +221,7 @@ export class StaffRatings implements RecipleScript {
     public async getData(): Promise<MessageEmbed> {
         const embed = new MessageEmbed();
         const ratings = (await this.getRatings()).slice(0, 20);
+        const sortByVotes = [...ratings].sort((a, b) => b.raw_ratings.length - a.raw_ratings.length);
 
         embed.setTitle(`Top ${ratings.length ? ratings.length + ' ' : ''}${ratings.length <= 1 ? 'staff' : 'staffs'}`);
         embed.setColor('GREEN');
@@ -218,14 +236,19 @@ export class StaffRatings implements RecipleScript {
             const highestRole = staff.roles.cache.sort((a, b) => b.position - a.position).find(c => this.config.staffRoles.includes(c.id));
             const total = rating.ratings?.length ?? 0;
 
-            description += `**${staff.user?.tag}** <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total >= 1 ? 'votes' : 'vote'}*\n`;
+            description += `**${staff.user?.tag}** <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total > 1 ? 'votes' : 'vote'}*\n`;
         }
 
         embed.setDescription((description || 'No ratings yet.\n') + `\n\`/rate-staff\` to rate each staffs.`);
-        embed.addField('Total votes', `${StaffRatings.formatNumber(ratings.reduce((a, b) => a + b.raw_ratings.length, 0))}`, true);
         embed.setFooter({ text: `Last Updated` });
         embed.setTimestamp(Date.now());
 
+        if (ratings[0]) {
+            embed.addField('Best avarage', `<@${ratings[0].staff.user.id}> \`⭐ ${ratings[0].avarage}\` *${ratings[0].raw_ratings.length} ${ratings[0].raw_ratings.length > 1 ? 'votes' : 'vote'}*`, true);
+        }
+        if (sortByVotes[0]?.staff) embed.addField('Most votes', `<@${sortByVotes[0]?.staff.id}> \`⭐ ${sortByVotes[0]?.avarage}\`  *${sortByVotes[0]?.raw_ratings.length} ${sortByVotes[0]?.raw_ratings.length > 1 ? 'votes' : 'vote'}*`, true);
+
+        embed.addField('Total votes', `${StaffRatings.formatNumber(ratings.reduce((a, b) => a + b.raw_ratings.length, 0))}`, false);
         return embed;
     }
 

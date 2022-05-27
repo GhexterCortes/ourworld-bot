@@ -43,12 +43,12 @@ export class Ratings implements RawRatings {
         if (!staff) throw new Error('Cannot fetch staff user');
 
         this.staff = staff;
-        this.avarage = this.getAvarage();
+        this.avarage = Math.round(this.getAvarage()) / 100;
     }
 
     public getAvarage(): number {
         const total = this.ratings.reduce((acc, r) => acc + r.rating, 0);
-        return Math.round(total / this.ratings.length * 100) / 100;
+        return total / this.ratings.length * 100;
     }
     
     public async delete(): Promise<void> {
