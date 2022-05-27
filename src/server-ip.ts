@@ -1,6 +1,6 @@
 import { NewPingResult, ping } from 'minecraft-protocol';
 import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { RecipleClient, RecipleScript, isIgnoredChannel, version } from 'reciple';
+import { RecipleClient, RecipleScript, isIgnoredChannel, version, MessageCommandBuilder, InteractionCommandBuilder } from 'reciple';
 import yml from 'yaml';
 import path from 'path';
 import { errorEmbed } from './_errorEmbed';
@@ -10,20 +10,41 @@ import { Logger } from 'fallout-utility';
 export class ServerIP implements RecipleScript {
     public versions: string[] = [version];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
-    public prefixes: string[] = ['!', '.', '-', '~', '?', '>', '/'];
+    public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public logger: Logger = new Logger('server-ip');
 
     public onStart(client: RecipleClient) {
         this.logger = client.logger.cloneLogger();
         this.logger.defaultPrefix = 'ServerIP';
 
-        client.on('messageCreate', async message => {
-            if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
-            if (!this.prefixes.some(p => message.content.startsWith(p) && message.content.slice(p.length).trim().split(' ')[0] == 'ip')) return;
+        this.commands.push(
+            new MessageCommandBuilder()
+                .setName('ip')
+                .setDescription('Get the IP of a server')
+                .setExecute(async command => {
+                    const message = command.message;
 
-            const m = await this.pingServers(message);
-            this.addCollector(m, message);
-        });
+                    const status = await this.pingServers(message);
+
+                    if (!status) return;
+                    this.addCollector(status, message);
+                }),
+            new InteractionCommandBuilder()
+                .setName('ip')
+                .setDescription('Get the IP of a server')
+                .setExecute(async command => {
+                    const interaction = command.interaction;
+
+                    await interaction.reply({ embeds: [ errorEmbed('Loading...', true) ] });
+                    const reply = await interaction.fetchReply();
+                    if (!reply) return;
+
+                    const status = await this.pingServers(reply as Message, true);
+                    if (!status) return;
+
+                    this.addCollector(status, interaction.user.id);
+                })
+        );
 
         return true;
     }
@@ -115,7 +136,7 @@ export class ServerIP implements RecipleScript {
         return reply;
     }
 
-    public addCollector(message: Message, parentMessage: Message) {
+    public addCollector(message: Message, parentMessage?: Message|string) {
         const collector = message.createMessageComponentCollector({
             filter: (component) => component.customId == 'delete' || component.customId == 'reload',
             time: 20000
@@ -123,13 +144,19 @@ export class ServerIP implements RecipleScript {
 
         collector.on('collect', async (component) => {
             if (!component.deferred) await component.deferUpdate().catch(() => {});
-            if (component.user.id !== parentMessage.author.id) return component.reply({ embeds: [errorEmbed('This is not your command')], ephemeral: true }).catch(() => {});
+            if (parentMessage && (typeof parentMessage == 'string' ? component.user.id !== parentMessage : component.user.id !== parentMessage.author.id)) return component.reply({ embeds: [errorEmbed('This is not your command')], ephemeral: true }).catch(() => {});
 
-            if (component.customId == 'delete') {
-                await message.delete().catch(() => {});
-                await parentMessage.delete().catch(() => {});
-            } else if (component.customId == 'reload') {
-                await this.pingServers(message, true);
+            switch (component.customId) {
+                case 'delete':
+                    await message.delete().catch(() => {});
+                    if (typeof parentMessage != 'string') await parentMessage?.delete().catch(() => {});
+                    break;
+                case 'reload':
+                    await this.pingServers(message, true);
+                    break;
+                default:
+                    await component.reply({ embeds: [errorEmbed('Unknown Interaction')], ephemeral: true }).catch(() => {});
+
             }
 
             collector.resetTimer();
