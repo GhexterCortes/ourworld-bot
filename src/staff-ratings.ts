@@ -216,12 +216,14 @@ export class StaffRatings implements RecipleScript {
 
             // get the highest role
             const highestRole = staff.roles.cache.sort((a, b) => b.position - a.position).find(c => this.config.staffRoles.includes(c.id));
+            const total = rating.ratings?.length ?? 0;
 
-            description += `**${staff.user?.tag}** <@&${highestRole?.id}> \`⭐ ${rating.avarage}\`\n`;
+            description += `**${staff.user?.tag}** <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total >= 1 ? 'votes' : 'vote'}*\n`;
         }
 
-        embed.setDescription(description || 'No ratings yet.');
-        embed.setFooter({ text: `/rate-staff` });
+        embed.setDescription((description || 'No ratings yet.\n') + `\n\`/rate-staff\` to rate each staffs.`);
+        embed.addField('Total votes', `${StaffRatings.formatNumber(ratings.reduce((a, b) => a + b.raw_ratings.length, 0))}`, true);
+        embed.setFooter({ text: `Last Updated` });
         embed.setTimestamp(Date.now());
 
         return embed;
@@ -232,6 +234,14 @@ export class StaffRatings implements RecipleScript {
 
         const embed = await this.getData();
         this.message.edit({ content: ' ', embeds: [embed], components: [] });
+    }
+
+    // format number to 1k 1m 1b
+    public static formatNumber(num: number): string {
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'b';
+        if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'm';
+        if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        return num.toString();
     }
 }
 
