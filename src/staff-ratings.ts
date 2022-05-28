@@ -215,13 +215,14 @@ export class StaffRatings implements RecipleScript {
             await staffRatings.fetch().then(() => allRatings.push(staffRatings)).catch(() => this.logger.error(`Failed to fetch ratings for staff ${staffId}`));
         }
 
-        return allRatings.sort((a, b) => b.avarage - a.avarage);
+        return allRatings.sort((a, b) => b.avarage == a.avarage ? b.raw_ratings.length - a.raw_ratings.length : b.avarage - a.avarage);
     }
 
     public async getData(): Promise<MessageEmbed> {
         const embed = new MessageEmbed();
         const ratings = (await this.getRatings()).slice(0, 20);
         const sortByVotes = [...ratings].sort((a, b) => b.raw_ratings.length - a.raw_ratings.length);
+        const sortByAvarage = [...ratings].sort((a, b) => b.avarage - a.avarage);
 
         embed.setTitle(`Top ${ratings.length ? ratings.length + ' ' : ''}${ratings.length <= 1 ? 'staff' : 'staffs'}`);
         embed.setColor('GREEN');
@@ -236,19 +237,20 @@ export class StaffRatings implements RecipleScript {
             const highestRole = staff.roles.cache.sort((a, b) => b.position - a.position).find(c => this.config.staffRoles.includes(c.id));
             const total = rating.ratings?.length ?? 0;
 
-            description += `**${staff.user?.tag}** <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total > 1 ? 'votes' : 'vote'}*\n`;
+            description += `<@${staff.user?.id}> <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total > 1 ? 'votes' : 'vote'}*\n`;
         }
 
         embed.setDescription((description || 'No ratings yet.\n') + `\n\`/rate-staff\` to rate each staffs.`);
-        embed.setFooter({ text: `Last Updated` });
+        embed.setFooter({ text: `Sorted by avarage` });
         embed.setTimestamp(Date.now());
 
-        if (ratings[0]) {
-            embed.addField('Best avarage', `<@${ratings[0].staff.user.id}> \`⭐ ${ratings[0].avarage}\` *${ratings[0].raw_ratings.length} ${ratings[0].raw_ratings.length > 1 ? 'votes' : 'vote'}*`, true);
+        if (sortByAvarage[0]) {
+            embed.addField('Best avarage', `<@${sortByAvarage[0].staff.user.id}> \`⭐ ${sortByAvarage[0].avarage}\` *${sortByAvarage[0].raw_ratings.length} ${sortByAvarage[0].raw_ratings.length > 1 ? 'votes' : 'vote'}*`, true);
         }
         if (sortByVotes[0]?.staff) embed.addField('Most votes', `<@${sortByVotes[0]?.staff.id}> \`⭐ ${sortByVotes[0]?.avarage}\`  *${sortByVotes[0]?.raw_ratings.length} ${sortByVotes[0]?.raw_ratings.length > 1 ? 'votes' : 'vote'}*`, true);
 
-        embed.addField('Total votes', `${StaffRatings.formatNumber(ratings.reduce((a, b) => a + b.raw_ratings.length, 0))}`, false);
+        embed.addField('Total avarage', `\`⭐ ${Math.round(ratings.reduce((a, b) => a + b.avarage, 0) / ratings.length * 100) / 100}\``, true);
+        embed.addField('Total votes', `${StaffRatings.formatNumber(ratings.reduce((a, b) => a + b.raw_ratings.length, 0))}`, true);
         return embed;
     }
 
