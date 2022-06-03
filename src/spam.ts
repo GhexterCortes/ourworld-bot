@@ -14,7 +14,7 @@ export interface SpamConfig {
 }
 
 export class Spam implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public config: SpamConfig = Spam.getConfig();
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 

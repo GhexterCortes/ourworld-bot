@@ -5,7 +5,7 @@ import { errorEmbed } from './_errorEmbed';
 import { replaceAll } from 'fallout-utility';
 
 export class EconomyPlugin implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public economy: Economy = require('./economy.a.main');
 

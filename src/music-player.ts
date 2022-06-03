@@ -18,7 +18,7 @@ export interface MusicPlayerConfig {
 export type QueueMetadata = { channel: TextChannel };
 
 export class MusicPlayer implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands?: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: MusicPlayerConfig = MusicPlayer.getConfig();
     public client?: RecipleClient;

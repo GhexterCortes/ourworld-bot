@@ -3,7 +3,7 @@ import { MessageEmbed, MessageAttachment } from 'discord.js';
 import Canvas from 'canvas';
 
 export class Mark implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public mark?: Canvas.Image;
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [
         new MessageCommandBuilder()

@@ -21,7 +21,7 @@ export interface BannedWordsMCConfig {
 }
 
 export class BannedWordsMC implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public client?: RecipleClient;
     public logger: Logger = new Logger('BannedWords-MC');
     public config = BannedWordsMC.getConfig();
@@ -78,8 +78,8 @@ export class BannedWordsMC implements RecipleScript {
         const split = message.split(this.config.chatUsernameSeparator);
         if (split.length < 2) return { author: '', message: BannedWordsMC.clean(message) };
 
-        const author = split.shift()?.split(' ').shift() ?? '';
         const msg = split.pop() ?? '';
+        const author = split.pop()?.split(' ').pop() ?? '';
 
         return { author, message: BannedWordsMC.clean(msg) };
     }

@@ -3,7 +3,7 @@ import { getRandomKey } from 'fallout-utility';
 import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 
 export default new (class implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 
     public onStart(client: RecipleClient) {

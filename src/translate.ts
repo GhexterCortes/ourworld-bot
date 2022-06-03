@@ -5,7 +5,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, Recipl
 import { errorEmbed } from './_errorEmbed';
 
 export class Translator implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 
     public onStart(client: RecipleClient) {

@@ -47,7 +47,7 @@ export interface ChatBotConfig {
 }
 
 export class ChatBot implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: ChatBotConfig = ChatBot.getConfig();
     public api: string = 'https://api.affiliateplus.xyz/api/chatbot';

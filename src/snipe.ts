@@ -84,7 +84,7 @@ export class SnipedMessage implements SnipedMessage {
 }
 
 export class Snipe implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public ignoredStrings: string[] = Snipe.getIgnoredMessages();
     public client?: RecipleClient;

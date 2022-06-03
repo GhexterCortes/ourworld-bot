@@ -10,7 +10,7 @@ export interface MinecraftModerationConfig {
 }
 
 export class MinecraftModeration implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: MinecraftModerationConfig = MinecraftModeration.getConfig();
     public channel?: TextChannel;

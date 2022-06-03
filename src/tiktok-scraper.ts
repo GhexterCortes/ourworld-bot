@@ -5,7 +5,7 @@ import { isIgnoredChannel, RecipleClient, RecipleScript, version } from 'reciple
 import { errorEmbed } from './_errorEmbed';
 
 export class TikTokScraper implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public scraper: TikTok = new TikTok();
     
     public onStart() { return true; }

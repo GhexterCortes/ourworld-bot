@@ -3,7 +3,7 @@ import { errorEmbed } from './_errorEmbed';
 import ms from 'ms';
 
 export class Moderation implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 
     public onStart(client: RecipleClient) {
