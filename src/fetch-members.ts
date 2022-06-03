@@ -36,14 +36,14 @@ export class FetchMembers implements RecipleScript {
                 let role = '977077654815662122';
 
                 guild[1].members.cache.forEach(async member => {
-                    if (member.nickname != null) {
-                        member.setNickname(null)
-                            .then(() => this.logger?.debug(`Removed nickname from ${member.user.tag}`))
-                            .catch(err => {
-                                this.logger?.error('Error removing nickname from '+ member.user.tag);
-                                this.logger?.error(err);
-                            });
-                    }
+                    // if (member.nickname != null) {
+                    //     member.setNickname(null)
+                    //         .then(() => this.logger?.debug(`Removed nickname from ${member.user.tag}`))
+                    //         .catch(err => {
+                    //             this.logger?.error('Error removing nickname from '+ member.user.tag);
+                    //             this.logger?.error(err);
+                    //         });
+                    // }
 
                     if (member.user.bot || member.roles.cache.has(role)) return;
                     member.roles.add(role).then(() => {

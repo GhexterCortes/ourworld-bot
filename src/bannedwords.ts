@@ -5,11 +5,12 @@ import stringSimilarity from 'string-similarity-js';
 import { weirdToNormalChars } from 'weird-to-normal-chars';
 import { isIgnoredChannel, RecipleClient, RecipleScript, version } from 'reciple';
 import { createConfig } from './_createConfig';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, TextChannel } from 'discord.js';
 
 export interface BannedWordsConfig {
     bannedWords: {
         word: string;
+        allowInNSFW?: boolean;
         punishment: 'kick' | 'ban' | 'mute' | '';
     }[],
     similarWordThreshold: number
@@ -37,8 +38,7 @@ export class BannedWords implements RecipleScript {
             if (isIgnoredChannel(message.channelId, this.client!.config!.ignoredChannels)) return;
 
             const words = weirdToNormalChars(message.content).toLowerCase().split(' ');
-            const explicitWords = BannedWords.checkExplicity(words, this.config.bannedWords, this.config.similarWordThreshold);
-
+            let explicitWords = BannedWords.checkExplicity(words, this.config.bannedWords, this.config.similarWordThreshold, (message.channel as TextChannel)?.nsfw);
             if (!explicitWords.words.length) return;
 
             this.logger.debug(`${message.author.username} (${message.author.id}) in ${message.channelId} said: ${message.content}`);
@@ -72,7 +72,7 @@ export class BannedWords implements RecipleScript {
         });
     }
 
-    public static checkExplicity(words: string[], explicitWords: BannedWordsConfig['bannedWords'], stringSimilarityThreshold: number = 0.6): { words: string[], punishment: string } {
+    public static checkExplicity(words: string[], explicitWords: BannedWordsConfig['bannedWords'], stringSimilarityThreshold: number = 0.6, nsfw: boolean = false): { words: string[], punishment: string } {
         let punishment: string = '';
 
         words = words.map(w => this.clean(w));
@@ -83,6 +83,7 @@ export class BannedWords implements RecipleScript {
             const match = words.includes(word.word.toLowerCase()) ||
                 words.some(w => stringSimilarity(word.word, w) >= stringSimilarityThreshold);
 
+            if (nsfw && word.allowInNSFW) return false;
             if (!match) return false;
 
             switch (word.punishment) {
