@@ -2,7 +2,7 @@ import yml from 'yaml';
 import path from 'path';
 import { InteractionCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
 import { createConfig } from './_createConfig';
-import { ColorResolvable, Interaction, MessageActionRow, MessageEmbed, MessageOptions, Modal, TextChannel, TextInputComponent } from 'discord.js';
+import { AnyChannel, ColorResolvable, Interaction, MessageActionRow, MessageEmbed, MessageOptions, Modal, TextChannel, TextInputComponent, User } from 'discord.js';
 
 export interface AnnouncerConfig {
     announcementsChannels: string[];
@@ -57,11 +57,23 @@ export class Announcer implements RecipleScript {
                     .setDescription('Add attachment to the announcement')
                     .setRequired(false)    
                 )
+                .addUserOption(user => user
+                    .setName('sendto-user')
+                    .setDescription('Send the announcement to a specific user')
+                    .setRequired(false)    
+                )
+                .addChannelOption(channel => channel
+                    .setName('sendto-channel')
+                    .setDescription('Send the announcement to a specific channel')
+                    .setRequired(false)    
+                )
                 .setExecute(async command => {
                     const interaction = command.interaction;
                     const color = interaction.options.getString('color') ?? undefined;
                     const role = interaction.options.getRole('role') ?? undefined;
                     const attachment = interaction.options.getAttachment('attachment') ?? undefined;
+                    const user = interaction.options.getUser('sendto-user') ?? undefined;
+                    const channel = interaction.options.getChannel('sendto-channel') ?? undefined;
 
                     await interaction.showModal(this.getModal());
                     const submit = await interaction.awaitModalSubmit({
@@ -75,23 +87,26 @@ export class Announcer implements RecipleScript {
                     const content = submit.fields.getTextInputValue('announcer-modal-content');
 
                     const embed = new MessageEmbed()
-                        .setAuthor({ name: `Announcement`, iconURL: client.user?.displayAvatarURL() })
+                        .setAuthor({ name: (user || channel) ? `Announcement` : interaction.guild?.name!, iconURL: client.user?.displayAvatarURL() })
                         .setDescription(content);
 
                     if (color) embed.setColor(color as ColorResolvable);
                     if (title) embed.setTitle(title);
 
                     await submit.reply({ content: 'Sending...', ephemeral: true });
-                    const sent = !!await this.sendAnnouncement({
+                    const sent = (!user && !channel) ? !!await this.sendAnnouncement({
                         content: role ? `<@&${role.id}>` : undefined,
                         embeds: [embed],
                         files: attachment ? [attachment] : undefined
-                    }, submit.guildId);
+                    }, submit.guildId) : this.sendToChannel({
+                        embeds: [embed], 
+                        files: attachment ? [attachment] : undefined
+                    }, user, channel as TextChannel);
 
                     if (sent) {
-                        submit.editReply('Announcement sent!');
+                        submit.editReply('Message sent!');
                     } else {
-                        submit.editReply('No announcement channels found!');
+                        submit.editReply('No channels found!');
                     }
                 })
         ];
@@ -104,7 +119,21 @@ export class Announcer implements RecipleScript {
 
         let sent = 0;
         for (const channel of channels) {
-            const message = await channel.send(content).catch(() => { sent--; });
+            await channel.send(content).catch(() => { sent--; });
+            sent++;
+        }
+
+        return sent;
+    }
+
+    public async sendToChannel(content: MessageOptions, user?: User, channel?: AnyChannel) {
+        let sent = 0;
+        if (user) {
+            await user.send(content).catch(() => { sent--; });
+            sent++;
+        }
+        if (channel?.type == 'GUILD_TEXT') {
+            await channel.send(content).catch(() => { sent--; });
             sent++;
         }
 
