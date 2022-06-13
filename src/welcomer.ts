@@ -1,7 +1,7 @@
 import { MessageEmbed, MessageOptions } from 'discord.js';
 import path from 'path';
 import yml from 'yaml';
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
 
 export interface GuildJoinConfig {

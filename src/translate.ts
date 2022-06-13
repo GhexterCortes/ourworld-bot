@@ -1,7 +1,7 @@
-import { Message, MessageEmbed, User } from 'discord.js';
+import { MessageEmbed, User } from 'discord.js';
 import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import translate from '@vitalets/google-translate-api';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
 export class Translator implements RecipleScript {
@@ -67,12 +67,12 @@ export class Translator implements RecipleScript {
             if (!interaction.isMessageContextMenu() || !interaction.inGuild() || interaction.commandName !== 'translate') return;
 
             const message = interaction.targetMessage;
-            if (!message.content) return interaction.reply({ embeds: [errorEmbed('No content to translate!')] }).catch(() => {});
+            if (!message.content) return interaction.reply({ embeds: [errorEmbed('No content to translate!')], ephemeral: true }).catch(() => {});
 
             await interaction.deferReply();
 
             const translated = await this.translateMessage(message.content, interaction.user).catch(() => undefined);
-            if (!translated) return interaction.reply({ embeds: [errorEmbed('Failed to translate!')] }).catch(() => {});
+            if (!translated) return interaction.reply({ embeds: [errorEmbed('Failed to translate!')], ephemeral: true }).catch(() => {});
 
             interaction.editReply(translated).catch(() => {});
         });

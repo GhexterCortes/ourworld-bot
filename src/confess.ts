@@ -5,7 +5,7 @@ import { InteractionCommandBuilder, RecipleClient, RecipleScript } from 'reciple
 import { createConfig } from './_createConfig';
 import { weirdToNormalChars } from 'weird-to-normal-chars';
 import Database, { Database as IDatabase } from 'better-sqlite3';
-import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, Modal, TextChannel, TextInputComponent } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageAttachment, MessageButton, MessageEmbed, Modal, PermissionString, TextChannel, TextInputComponent } from 'discord.js';
 import { Confession } from './confession/Confession';
 import { errorEmbed } from './_errorEmbed';
 
@@ -13,6 +13,7 @@ export interface ConfessConfig {
     confessionChannel: string;
     bannedWords: string[];
     bannedWordsSimilarityThreshold: number;
+    requiredPermsForNickname: PermissionString[];
 }
 
 export interface RawConfession {
@@ -42,7 +43,7 @@ export class Confess implements RecipleScript {
                 .setDescription('confession')
                 .addSubcommand(create => create
                     .setName('add')
-                    .setDescription('Send a confession')    
+                    .setDescription('Send a confession')
                 )
                 .addSubcommand(del => del
                     .setName('delete')
@@ -94,7 +95,9 @@ export class Confess implements RecipleScript {
             } else if (interaction.isButton() && interaction.customId == 'confess-button') {
                 this.sendModal(interaction).catch(() => undefined);
             } else if (interaction.isModalSubmit() && interaction.customId == 'confess-modal') {
-                const nickname = interaction.fields.getTextInputValue('nickname') || 'Anonymous';
+                const nickname = (interaction.memberPermissions?.has(this.config.requiredPermsForNickname)
+                    ? interaction.fields.getTextInputValue('nickname')
+                    : 'Anonymous') || 'Anonymous';
                 const content = interaction.fields.getTextInputValue('content');
                 const key = this.generateKey();
                 const date = new Date();
@@ -169,8 +172,10 @@ export class Confess implements RecipleScript {
     public async sendModal(interaction: CommandInteraction|ButtonInteraction) {
         const modal = new Modal()
             .setCustomId('confess-modal')
-            .setTitle('Confess')
-            .setComponents(
+            .setTitle('Confess');
+
+        if (interaction.memberPermissions?.has(this.config.requiredPermsForNickname)) {
+            modal.addComponents(
                 new MessageActionRow<TextInputComponent>()
                     .setComponents(
                         new TextInputComponent()
@@ -180,18 +185,22 @@ export class Confess implements RecipleScript {
                             .setRequired(false)
                             .setMaxLength(32)
                             .setStyle('SHORT')
-                    ),
-                new MessageActionRow<TextInputComponent>()
-                    .setComponents(
-                        new TextInputComponent()
-                            .setLabel('Confession')
-                            .setPlaceholder('example: I\'m pretty asf')
-                            .setCustomId('content')
-                            .setRequired(true)
-                            .setMaxLength(2024)
-                            .setStyle('PARAGRAPH')
                     )
             );
+        }
+        
+        modal.addComponents(
+            new MessageActionRow<TextInputComponent>()
+                .setComponents(
+                    new TextInputComponent()
+                        .setLabel('Confession')
+                        .setPlaceholder('example: I\'m pretty asf')
+                        .setCustomId('content')
+                        .setRequired(true)
+                        .setMaxLength(2024)
+                        .setStyle('PARAGRAPH')
+                )
+        );
 
         return interaction.showModal(modal);
     }
@@ -262,7 +271,8 @@ export class Confess implements RecipleScript {
         const defaultConfig: ConfessConfig = {
             confessionChannel: '000000000000000000',
             bannedWords: ['dick', 'tits', 'pussy', 'cock', 'whore'],
-            bannedWordsSimilarityThreshold: 0.9
+            bannedWordsSimilarityThreshold: 0.9,
+            requiredPermsForNickname: ['ADMINISTRATOR']
         };
 
         return yml.parse(createConfig(configPath, defaultConfig));

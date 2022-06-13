@@ -49,18 +49,18 @@ export class TikTokScraper implements RecipleScript {
     }
 
     public static formatNumber(num: number): string {
-        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}b`;
-        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
-        if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
         return num.toString();
     }
 
     public static formatDescription(description: string): string {
         // bold mentions
-        description = description.replace(/\B@\w+/g, '`$&`');
+        description = description.replace(/\B@\w+/g, '[`$&`](https://tiktok.com/$&)');
 
         // bold words starting with #
-        description = description.replace(/\B#\w+/g, '**$&**');
+        description = replaceAll(description.replace(/\B#\w+/g, '[**#$&**](https://tiktok.com/tag/$&)'), '\\#', '');
 
         return description;
     }

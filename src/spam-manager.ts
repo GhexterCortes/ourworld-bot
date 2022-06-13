@@ -149,7 +149,7 @@ export class SpamManager implements RecipleScript {
     }
 
     public async timeout(member: GuildMember) {
-        return !member.isCommunicationDisabled() &&  member.moderatable ? member.timeout(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
+        return !member.isCommunicationDisabled() && member.moderatable ? member.timeout(this.config.timeoutDuration, this.config.timeoutReason).catch(() => member) : member;
     }
 
     public async kick(member: GuildMember) {

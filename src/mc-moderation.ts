@@ -149,6 +149,8 @@ export class MinecraftModeration implements RecipleScript {
 
                     await interaction.deferReply();
 
+                    if (isIp && !interaction.memberPermissions?.has('ADMINISTRATOR')) return interaction.editReply({ embeds: [errorEmbed('You do not have permission to use IP related commands')] });
+
                     switch (subcommand) {
                         case 'ban':
                             let banCommand = isIp ? `ban-ip ${player}` : `ban ${player}`;
