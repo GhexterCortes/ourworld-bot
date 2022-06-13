@@ -19,7 +19,7 @@ permissions:
       - command: 'mute'
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
-        permissions: ['MANAGE_MESSAGES']
+        permissions: ['BAN_MEMBERS']
       - command: 'unban'
         permissions: ['BAN_MEMBERS']
       - command: 'addbal'
@@ -34,7 +34,7 @@ permissions:
       - command: 'mute'
         permissions: ['MANAGE_MESSAGES']
       - command: 'unmute'
-        permissions: ['MANAGE_MESSAGES']
+        permissions: ['BAN_MEMBERS']
       - command: 'unban'
         permissions: ['BAN_MEMBERS']
       - command: 'spam'
@@ -42,7 +42,9 @@ permissions:
       - command: 'send'
         permissions: ['ADMINISTRATOR']
       - command: 'server-console'
-        permissions: ['BAN_MEMBERS', 'KICK_MEMBERS', 'MANAGE_NICKNAMES']
+        permissions: ['MANAGE_MESSAGES']
+      - command: 'announce'
+        permissions: ['ADMINISTRATOR']
 
 
 ignoredChannels:
