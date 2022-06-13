@@ -60,7 +60,7 @@ export class TikTokScraper implements RecipleScript {
         description = description.replace(/\B@\w+/g, '[`$&`](https://tiktok.com/$&)');
 
         // bold words starting with #
-        description = replaceAll(description.replace(/\B#\w+/g, '[**#$&**](https://tiktok.com/tag/$&)'), '\\#', '');
+        description = description.replace(/\B#\w+/g, '`$&`');
 
         return description;
     }
