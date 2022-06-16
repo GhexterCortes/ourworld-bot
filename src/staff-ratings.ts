@@ -237,6 +237,12 @@ export class StaffRatings implements RecipleScript {
             const highestRole = staff.roles.cache.sort((a, b) => b.position - a.position).find(c => this.config.staffRoles.includes(c.id));
             const total = rating.ratings?.length ?? 0;
 
+            if (!highestRole) {
+                this.logger.error(`Failed to find highest role for staff ${staff.user.tag}`);
+                rating.delete().catch(() => {});
+                continue;
+            }
+
             description += `<@${staff.user?.id}> <@&${highestRole?.id}> \`⭐ ${rating.avarage}\` *${StaffRatings.formatNumber(total)} ${total > 1 ? 'votes' : 'vote'}*\n`;
         }
 
