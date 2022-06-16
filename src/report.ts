@@ -11,7 +11,7 @@ export interface ReportConfig {
 }
 
 export class Report implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: ReportConfig = Report.getConfig();
     public channels: TextChannel[] = [];
     

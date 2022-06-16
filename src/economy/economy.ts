@@ -26,7 +26,7 @@ export interface EconomyConfig {
 }
 
 export class Economy implements RecipleScript {
-    public versions: string[] = [version];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public logger: Logger = new Logger('Economy');
     public database: DatabaseType = new Database((() => { fs.mkdirSync(path.join(process.cwd(), 'config/economy/'), { recursive: true }); return path.join(process.cwd(), 'config/economy/database.db'); })());
     public client?: RecipleClient;

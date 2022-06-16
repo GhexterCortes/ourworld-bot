@@ -8,7 +8,7 @@ import yml from 'yaml';
 export interface AdvertiserConfig {}
 
 export class Advertiser implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: AdvertiserConfig = Advertiser.getConfig();
     public database: DatabaseType = new Database(path.join(process.cwd(), 'config/advertiser/database.db'));
     public logger!: Logger;

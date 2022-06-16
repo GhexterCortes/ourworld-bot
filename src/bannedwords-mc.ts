@@ -21,7 +21,7 @@ export interface BannedWordsMCConfig {
 }
 
 export class BannedWordsMC implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public client?: RecipleClient;
     public logger: Logger = new Logger('BannedWords-MC');
     public config = BannedWordsMC.getConfig();

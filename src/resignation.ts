@@ -3,7 +3,7 @@ import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, Recipl
 import { errorEmbed } from './_errorEmbed';
 
 export class Resignation implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public staffRoles: string[] = ['830468729493389364', '830468532861009930', '980688026000842815'];
     public staffChannel?: TextChannel;

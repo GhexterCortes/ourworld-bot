@@ -2037,10 +2037,10 @@ readable-stream@^3.0.3, readable-stream@^3.0.6, readable-stream@^3.1.1, readable
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
 
-reciple@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/reciple/-/reciple-1.3.3.tgz#3e751f5a91f11dd86d185c83ba8923749f9733bd"
-  integrity sha512-6VUie846ZvZfbVjs6jko6SsROsbw9jQLCndTtcLdgOJqHrwWnugppg7BlS6GD977boOCJpgwSir4V2xG/kNe4w==
+reciple@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/reciple/-/reciple-1.4.0.tgz#4b2666e5e1d3fb4f8a4e9b6997fe99d891489840"
+  integrity sha512-Gyn1DQ6EgYybjDr2xUhh8m7EICKn8vtSE53MZQvopYWX/se5JYrbcbtmZuQWYy3DjKU2e8L3N38bTVcwK73tHQ==
   dependencies:
     commander "^9.3.0"
     discord.js "^13.8.0"

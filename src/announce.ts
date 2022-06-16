@@ -12,7 +12,7 @@ export interface AnnouncerConfig {
 }
 
 export class Announcer implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: AnnouncerConfig = Announcer.getConfig();
     public channels: TextChannel[] = [];
     public commands: (InteractionCommandBuilder)[] = [];

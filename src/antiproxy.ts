@@ -25,7 +25,7 @@ export interface Player {
 }
 
 export class AntiProxy implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: AntiProxyConfig = AntiProxy.getConfig();
     public database: DatabaseType = new Database(path.join(process.cwd(), 'config/anti-proxy/database.db'));
     public token?: string = process.env['PROXY_TOKEN'] ?? this.config.token;

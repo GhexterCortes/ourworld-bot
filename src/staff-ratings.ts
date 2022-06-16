@@ -17,7 +17,7 @@ export interface StaffRatingsConfig {
 }
 
 export class StaffRatings implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public client!: RecipleClient;
     public logger!: Logger;
     public guild?: Guild;

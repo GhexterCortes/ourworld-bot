@@ -2,7 +2,7 @@ import { RecipleClient, RecipleScript, version } from 'reciple';
 import { Logger } from 'fallout-utility';
 
 export class FetchMembers implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public logger?: Logger;
 
     public onStart(client: RecipleClient) {

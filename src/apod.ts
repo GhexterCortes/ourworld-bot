@@ -17,7 +17,7 @@ export interface PictureOfTheDay {
 }
 
 export class Apod implements RecipleScript {
-    public versions: string | string[] = ['1.3.x'];
+    public versions: string | string[] = ['1.3.x', '1.4.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 
     public onStart() {

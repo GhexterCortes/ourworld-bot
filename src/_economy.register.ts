@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 
 export class EconomyPlugin implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public economy: Economy = require('./economy.a.main');
     public terms: string = EconomyPlugin.terms();

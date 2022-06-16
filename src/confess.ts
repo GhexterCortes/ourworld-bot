@@ -28,7 +28,7 @@ export interface RawConfession {
 }
 
 export class Confess implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: ConfessConfig = Confess.getConfig();
     public database: IDatabase = new Database(path.join(process.cwd(), 'config/confess/database.db'));
     public confessionChannel?: TextChannel;

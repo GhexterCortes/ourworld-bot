@@ -8,7 +8,7 @@ import { createConfig } from './_createConfig';
 import { Logger } from 'fallout-utility';
 
 export class ServerIP implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public servers: { ip: string; port: number; description: string; }[] = ServerIP.getConfig();
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public logger: Logger = new Logger('server-ip');

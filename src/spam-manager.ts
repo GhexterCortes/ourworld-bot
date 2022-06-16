@@ -30,7 +30,7 @@ export interface SentMessage {
 }
 
 export class SpamManager implements RecipleScript {
-    public versions: string[] = ['1.3.x'];
+    public versions: string[] = ['1.3.x', '1.4.x'];
     public config: SpamManagerConfig = SpamManager.getConfig();
     public sentMessages: SentMessage[] = [];
 
