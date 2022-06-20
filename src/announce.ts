@@ -1,8 +1,8 @@
 import yml from 'yaml';
 import path from 'path';
-import { InteractionCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
-import { AnyChannel, ColorResolvable, Interaction, MessageActionRow, MessageEmbed, MessageOptions, Modal, TextChannel, TextInputComponent, User } from 'discord.js';
+import { AnyChannel, ColorResolvable, MessageActionRow, MessageEmbed, MessageOptions, Modal, TextChannel, TextInputComponent, User } from 'discord.js';
 
 export interface AnnouncerConfig {
     announcementsChannels: string[];
