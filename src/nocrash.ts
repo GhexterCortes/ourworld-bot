@@ -16,7 +16,9 @@ export class NoCrash implements RecipleScript {
     public config: NoCrashConfig = NoCrash.getConfig();
     public logger?: Logger;
     public owner?: User;
-    public onStart() { return true; }
+    public onStart() {
+        return true;
+    }
 
     public async onLoad(client: RecipleClient) {
         this.logger = client.logger.cloneLogger();
