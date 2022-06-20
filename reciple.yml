@@ -62,8 +62,10 @@ fileLogging:
 
 client:
   repliedUser: true
-  allowedMentions: 
+  allowedMentions:
     parse: ['users', 'roles']
+  partials:
+    - 'CHANNEL'
   intents:
     - 'GUILDS'
     - 'GUILD_MEMBERS'
@@ -71,6 +73,7 @@ client:
     - 'GUILD_VOICE_STATES'
     - 'GUILD_MESSAGES'
     - 'GUILD_MESSAGE_REACTIONS'
+    - 'DIRECT_MESSAGES'
 
 messages:
   notEnoughArguments: 'Not enough arguments or invalid value given.'
