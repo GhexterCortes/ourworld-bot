@@ -100,15 +100,14 @@ export class Confess implements RecipleScript {
                     : 'Anonymous') || 'Anonymous';
                 const content = interaction.fields.getTextInputValue('content');
                 const key = this.generateKey();
-                const date = new Date();
 
                 await interaction.deferReply({ ephemeral: true }).catch(() => undefined);
 
                 const embed = new MessageEmbed()
                     .setAuthor({ name: nickname, iconURL: this.client.user?.displayAvatarURL() })
                     .setDescription(content)
-                    .setTimestamp(date)
-                    .setColor(this.client.user?.accentColor ?? 'YELLOW')
+                    .setTimestamp()
+                    .setColor('BLUE')
                     .setFooter({ text: `key: ${key}` });
 
                 if (this.checkBannedWords(content) || this.checkBannedWords(nickname)) {
@@ -116,41 +115,22 @@ export class Confess implements RecipleScript {
                     return;
                 }
                 
-                const message = await this.confessionChannel?.send({
-                    embeds: [embed],
-                    components: [
-                        new MessageActionRow<MessageButton>()
-                            .setComponents([
-                                new MessageButton()
-                                    .setLabel('Add confession')
-                                    .setCustomId('confess-button')
-                                    .setStyle('SECONDARY')
-                            ])
-                    ]
-                }).catch(() => undefined);
+                const message = await this.sendMessage(embed);
 
                 if (!message) {
                     interaction.editReply({ embeds: [errorEmbed(`Could not send confession`)] });
                     return;
                 }
 
-                this.database.prepare(`INSERT INTO confessions (
-                    user_id,
-                    message_id,
-                    channel_id,
+                this.insertConfession({
+                    user_id: interaction.user.id,
+                    message_id: message.id,
+                    channel_id: message.channel.id,
                     content,
                     nickname,
                     key,
-                    created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)`).run(
-                    interaction.user.id,
-                    message.id,
-                    message.channel.id,
-                    content,
-                    nickname,
-                    key,
-                    date.getTime()
-                );
+                    created_at: message.createdAt.getTime(),
+                });
 
                 interaction.editReply({ embeds: [errorEmbed(`Confession added`, true)] });
             }
@@ -167,6 +147,41 @@ export class Confess implements RecipleScript {
         }
 
         this.confessionChannel = channel;
+    }
+
+    public async sendMessage(embed: MessageEmbed) {
+        return this.confessionChannel?.send({
+            embeds: [embed],
+            components: [
+                new MessageActionRow<MessageButton>()
+                    .setComponents([
+                        new MessageButton()
+                            .setLabel('Add confession')
+                            .setCustomId('confess-button')
+                            .setStyle('SECONDARY')
+                    ])
+            ]
+        }).catch(() => undefined);
+    }
+
+    public insertConfession(confession: Omit<RawConfession, 'id'>) {
+        return this.database.prepare(`INSERT INTO confessions (
+            user_id,
+            message_id,
+            channel_id,
+            content,
+            nickname,
+            key,
+            created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`).run(
+            confession.user_id,
+            confession.message_id,
+            confession.channel_id,
+            confession.content,
+            confession.nickname,
+            confession.key,
+            confession.created_at
+        );
     }
 
     public async sendModal(interaction: CommandInteraction|ButtonInteraction) {
@@ -218,8 +233,14 @@ export class Confess implements RecipleScript {
         );`);
     }
 
-    public async getConfession(query: string) {
-        const confession: RawConfession = this.database.prepare(`SELECT * FROM confessions WHERE key = ? OR user_id = ? OR id = ? LIMIT 1`).get(query, query, query);
+    public async getConfession(query: string, customQuery?: boolean) {
+        const confession: RawConfession = (() => {
+            if (customQuery) {
+                return this.database.prepare(query).get();
+            } else {
+                return this.database.prepare(`SELECT * FROM confessions WHERE key = ? OR user_id = ? OR id = ? OR message_id = ? LIMIT 1`).get(query, query, query, query);;
+            }
+        })();
         if (!confession) throw new Error(`Confession with query ${query} not found!`);
 
         const confessionObject = new Confession(confession, this);
