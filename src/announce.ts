@@ -152,6 +152,8 @@ export class Announcer implements RecipleScript {
         client.logger.info(`Announcer loaded ${this.channels.length} channels`);
         
         client.on('messageCreate', async message => {
+            if (!message.inGuild()) return;
+
             const author = message.author;
             const channel = message.channel as TextChannel;
 

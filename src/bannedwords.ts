@@ -34,7 +34,7 @@ export class BannedWords implements RecipleScript {
 
     public onLoad() {
         this.client?.on('messageCreate', async message => {
-            if (message.author.bot || message.author.system) return;
+            if (message.author.bot || message.author.system || !message.inGuild()) return;
             if (isIgnoredChannel(message.channelId, this.client!.config!.ignoredChannels)) return;
 
             const words = weirdToNormalChars(message.content).toLowerCase().split(' ');

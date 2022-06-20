@@ -38,22 +38,23 @@ export class SpamManager implements RecipleScript {
 
     public onLoad(client: RecipleClient) {
         client.on('messageCreate', async message => {
-            if (client?.user && message.mentions.members?.has(client?.user.id)) await message.react(getRandomKey(['🤔', '🤨', '🧐', '👀'])).catch(() => {});
-            if (message.author.bot || message.author.system || !message.member) return;
+            if (message.author.bot || message.author.system || !message.inGuild()) return;
             if (this.config.ignoredChannels.includes(message.channelId)) return;
+
+            if (message.mentions.members?.has(client?.user!.id)) await message.react(getRandomKey(['🤔', '🤨', '🧐', '👀'])).catch(() => {});
             
             const isScamMessage = this.isDiscordScamMessage(message.content);
             const isSpam = this.isSimilarMessageSpam(message.author.id, message);
             const isServerAd = await this.isMinecraftServerAd(message.content);
 
             if (isScamMessage) {
-                await this.kick(message.member);
+                await this.kick(message.member!);
                 await message.delete().catch(() => {});
                 await message.channel.send({ embeds: [errorEmbed(`**${message.author.tag}** was kicked for possible scam message`, false, false)] }).catch(() => {});
             }
 
             if (isSpam) {
-                await this.timeout(message.member);
+                await this.timeout(message.member!);
                 await message.channel.send({ embeds: [errorEmbed(`**${message.author.tag}** You're sending similar messages too fast!`, false, false)] }).catch(() => {});
             }
             

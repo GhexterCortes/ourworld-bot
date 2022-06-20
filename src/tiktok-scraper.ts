@@ -12,7 +12,7 @@ export class TikTokScraper implements RecipleScript {
 
     public onLoad(client: RecipleClient) {
         client.on('messageCreate', async message => {
-            if (message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
+            if (!message.inGuild() || message.author.bot || message.author.system || isIgnoredChannel(message.channelId, client.config?.ignoredChannels)) return;
 
             const content = replaceAll(message.content, '\n', ' ').split(' ').filter(x => TikTokScraper.isTikTokDomain(x.trim()));
             if (!content.length) return;

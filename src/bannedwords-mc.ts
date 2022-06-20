@@ -49,7 +49,7 @@ export class BannedWordsMC implements RecipleScript {
         }
 
         this.client?.on('messageCreate', async message => {
-            if (!message.author.bot || !this.config.consoleBotIds.includes(message.author.id)) return;
+            if (!message.inGuild() || !message.author.bot || !this.config.consoleBotIds.includes(message.author.id)) return;
             if (!this.config.gameChannels.includes(message.channelId)) return;
 
             const data = this.separateUsernameChat(message.content);

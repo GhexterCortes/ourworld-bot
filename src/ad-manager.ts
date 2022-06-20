@@ -51,7 +51,7 @@ export class AdManager implements RecipleScript {
 
         this.logger.debug(`Listening for message event...`);
         this.client?.on('messageCreate', async (message) => {
-            if (!this.config.adChannels.includes(message.channel.id)) return;
+            if (!message.inGuild() || !this.config.adChannels.includes(message.channel.id)) return;
             if (!message.author.bot && !message.author.system && !message.content) return message.delete().then(() => {}).catch(() => {});
             if ((message.author.bot || message.author.system) && message.author.id != this.client?.user?.id) return message.delete().then(() => {}).catch(() => {});
             if (message.author.id == this.client?.user?.id) return;

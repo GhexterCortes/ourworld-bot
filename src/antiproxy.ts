@@ -49,7 +49,7 @@ export class AntiProxy implements RecipleScript {
     public async onLoad(client: RecipleClient) {
         client.on('messageCreate', async message => {
             if(!this.config.consoleChannelIds.includes(message.channelId) || !this.config.consoleBotIds.includes(message.author.id)) return;
-            if (message.channel.type !== 'GUILD_TEXT') return;
+            if (!message.inGuild() || message.channel.type !== 'GUILD_TEXT') return;
 
             const content = message.content;
             const players = this.parseMessage(content);
