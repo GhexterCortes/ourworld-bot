@@ -45,24 +45,6 @@ export class Translator implements RecipleScript {
                 })
         ];
 
-        client.on('messageCreate', async message => {
-            if (!message.content.toLowerCase().startsWith('owo translate') || message.author.bot || message.author.system) return;
-            
-            const content = message.content.slice('owo translate'.length).trim();
-            if (!content) {
-                message.reply({ embeds: [errorEmbed('No content to translate')] }).catch(() => {});
-                return;
-            }
-
-            const translated = await this.translateMessage(content, message.author).catch(() => {});
-            if (!translated) {
-                message.reply({ embeds: [errorEmbed('Failed to translate')] }).catch(() => {});
-                return;
-            }
-
-            message.reply(translated).catch(() => {});
-        });
-
         client.on('interactionCreate', async interaction => {
             if (!interaction.isMessageContextMenu() || !interaction.inGuild() || interaction.commandName !== 'translate') return;
 
