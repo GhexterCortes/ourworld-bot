@@ -3,7 +3,7 @@ import { PaginationButton } from '@ghextercortes/djs-pagination/dist/util/Button
 import { Queue } from 'discord-player';
 import { GuildMember, MessageButton, MessageEmbed } from 'discord.js';
 import { InteractionCommandBuilder, MessageCommandBuilder } from 'reciple';
-import { MusicPlayer } from '../../music-player';
+import { MusicPlayer } from '../../_music-player';
 import { errorEmbed } from '../../_errorEmbed';
 
 export default function (musicClient: MusicPlayer) {
