@@ -1,5 +1,6 @@
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { Logger } from 'fallout-utility';
+import { GuildMember } from 'discord.js';
 
 export class FetchMembers implements RecipleScript {
     public versions: string[] = ['1.3.x', '1.4.x'];
@@ -32,22 +33,38 @@ export class FetchMembers implements RecipleScript {
                 this.logger?.debug(`Fetched ${fetch.size} members for ${guild[1].name}.`);
             }
 
-            if (guild[1].id == '830456204735807529') {
-                let role = '977077654815662122';
-
-                guild[1].members.cache.forEach(async member => {
-                    if (member.user.bot || member.roles.cache.has(role)) return;
-                    member.roles.add(role).then(() => {
-                        this.logger?.debug('added human role to '+ member.user.tag);
-                    }).catch(err => {
-                        this.logger?.error('error adding human role to '+ member.user.tag);
-                        this.logger?.error(err);
-                    });
-                })
-            }
+            if (guild[1].id == '830456204735807529') guild[1].members.cache.forEach(async member => this.checkMember(member))
         }
 
+        client.on('guildMemberUpdate', (_oldMember, member) => {
+            this.checkMember(member);
+        });
+
         this.logger?.log('Fetched all members.');
+    }
+
+    async checkMember(member: GuildMember) {
+        if (member.user.bot) return;
+
+        let role = '977077654815662122';
+
+        if (member.nickname && !member.permissions.has('MANAGE_NICKNAMES')) {
+            member.setNickname(null, `No permission to change nickname`).then(() => {
+                this.logger?.debug(`removed nickname from ${member.user.tag}`);
+            }).catch(err => {
+                this.logger?.debug(`error removing nickname from ${member.user.tag}`);
+                this.logger?.error(err);
+            });
+        }
+
+        if (!member.roles.cache.has(role)) {
+            member.roles.add(role, `Added required member role`).then(() => {
+                this.logger?.debug(`added human role to ${member.user.tag}`);
+            }).catch(err => {
+                this.logger?.error(`error adding human role to ${member.user.tag}`);
+                this.logger?.error(err);
+            });
+        }
     }
 }
 
