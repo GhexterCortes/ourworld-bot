@@ -1,5 +1,5 @@
 import { CommandInteraction, EmbedFieldData, Message, MessageButton, MessageEmbed } from 'discord.js';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagination';
 
 export type commandUsageInfo = { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder };
@@ -108,11 +108,10 @@ export class Help implements RecipleScript {
     }
 
     public async getMessageHelp(command: Message, filter: string) {
-        const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
+        const commands = this.allCommands.filter(c => c.type === "MESSAGE_COMMAND" && (filter && c.name.includes(filter) || !filter));
         const exactCommand = this.allCommands.find(c => c.type === "MESSAGE_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
 
         if (exactCommand) return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
-
         if (!commands.length) return command.reply({ content: ' ', embeds: [new MessageEmbed().setAuthor({ name: `No commands found` }).setColor('RED')] });
         
         const pagination = this.generatePagination(commands);
@@ -120,9 +119,7 @@ export class Help implements RecipleScript {
     }
 
     public async getInteractionHelp(command: CommandInteraction, filter: string) {
-        let content = '';
-
-        const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.indexOf(filter) > -1 || !filter));
+        const commands = this.allCommands.filter(c => c.type === "INTERACTION_COMMAND" && (filter && c.name.includes(filter) || !filter));
         const exactCommand = this.allCommands.find(c => c.type === "INTERACTION_COMMAND" && c.name.toLowerCase() === filter.trim().toLowerCase());
 
         if (exactCommand) return command.reply({ content: ' ', embeds: [this.getCommandHelp(exactCommand.builder)] });
