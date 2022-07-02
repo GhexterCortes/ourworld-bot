@@ -1,4 +1,4 @@
-import { InteractionCommandBuilder, isIgnoredChannel, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, isIgnoredChannel, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { ColorResolvable, Guild, MessageActionRow, MessageButton, MessageEmbed, TextChannel, User } from 'discord.js';
 import path from 'path';
@@ -84,7 +84,7 @@ export class SnipedMessage implements SnipedMessage {
 }
 
 export class Snipe implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
     public ignoredStrings: string[] = Snipe.getIgnoredMessages();
     public client?: RecipleClient;

@@ -1,11 +1,11 @@
 import { ColorResolvable, MessageEmbed, TextChannel } from 'discord.js';
 import { replaceAll } from 'fallout-utility';
 import { escapeRegExp } from 'fallout-utility/dist/scripts/escapeRegExp';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 
 export class SendMessage implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     
     public onStart(client: RecipleClient) {

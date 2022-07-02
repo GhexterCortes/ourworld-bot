@@ -1,8 +1,8 @@
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import path from 'path';
 import yml from 'yaml';
 import { createConfig } from './_createConfig';
-import { InteractionReplyOptions, TextChannel, WebhookEditMessageOptions } from 'discord.js';
+import { TextChannel } from 'discord.js';
 import { errorEmbed } from './_errorEmbed';
 
 export interface MinecraftModerationConfig {
@@ -10,7 +10,7 @@ export interface MinecraftModerationConfig {
 }
 
 export class MinecraftModeration implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public config: MinecraftModerationConfig = MinecraftModeration.getConfig();
     public channel?: TextChannel;

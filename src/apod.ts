@@ -1,9 +1,7 @@
-import { RecipleClient, InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import dayjs from 'dayjs';
-import { isNumber } from 'fallout-utility';
 
 export interface PictureOfTheDay {
     copyright?: string;
@@ -17,7 +15,7 @@ export interface PictureOfTheDay {
 }
 
 export class Apod implements RecipleScript {
-    public versions: string | string[] = ['1.3.x', '1.4.x'];
+    public versions: string | string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 
     public onStart() {

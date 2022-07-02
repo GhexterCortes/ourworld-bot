@@ -5,7 +5,7 @@ import { ButtonType, OnDisableAction, Pagination } from '@ghextercortes/djs-pagi
 export type commandUsageInfo = { name: string; description: string; usage: string; type: string; builder: MessageCommandBuilder|InteractionCommandBuilder };
 
 export class Help implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
     public allCommands: commandUsageInfo[] = [];
 
@@ -85,7 +85,7 @@ export class Help implements RecipleScript {
     }
 
     public getCommandHelp(command: MessageCommandBuilder|InteractionCommandBuilder) {
-        const builder = (command as MessageCommandBuilder).builder === 'MESSAGE_COMMAND' ? (command as MessageCommandBuilder) : (command as InteractionCommandBuilder).toJSON();
+        const builder = command.builder === 'MESSAGE_COMMAND' ? command : command.toJSON();
 
         let optionFields: EmbedFieldData[] = [];
 
@@ -97,11 +97,14 @@ export class Help implements RecipleScript {
             });
         }
 
-        return new MessageEmbed()
+        const embed = new MessageEmbed()
             .setAuthor({ name: `${builder.name}` })
             .setDescription(`${command.description}`)
             .addFields(optionFields)
             .setColor('BLUE');
+
+        if (command.builder == 'MESSAGE_COMMAND' && command.aliases.length) embed.addField(`Aliases`, '`'+ command.aliases.join('` `') || 'None' +'`');
+        return embed;
     }
 
     public async getMessageHelp(command: Message, filter: string) {

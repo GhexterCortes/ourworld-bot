@@ -1,4 +1,4 @@
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { isNumber, Logger } from 'fallout-utility';
 import path from 'path';
 import yml from 'yaml';
@@ -15,7 +15,7 @@ export interface AdManagerConfig {
 }
 
 export class AdManager implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public client?: RecipleClient;
     public logger: Logger = new Logger('AdManager');
     public config: AdManagerConfig = AdManager.getConfig();

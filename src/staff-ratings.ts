@@ -1,4 +1,4 @@
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
 import path from 'path';
@@ -17,7 +17,7 @@ export interface StaffRatingsConfig {
 }
 
 export class StaffRatings implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public client!: RecipleClient;
     public logger!: Logger;
     public guild?: Guild;

@@ -1,4 +1,4 @@
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import path from 'path';
 import yml from 'yaml';
@@ -11,7 +11,7 @@ export interface ReportConfig {
 }
 
 export class Report implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: ReportConfig = Report.getConfig();
     public channels: TextChannel[] = [];
     

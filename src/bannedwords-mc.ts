@@ -1,7 +1,7 @@
 import { Logger, replaceAll } from 'fallout-utility';
 import yml from 'yaml';
 import path from 'path';
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
 import { TextChannel } from 'discord.js';
 import stringSimilarity from 'string-similarity-js';
@@ -21,7 +21,7 @@ export interface BannedWordsMCConfig {
 }
 
 export class BannedWordsMC implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public client?: RecipleClient;
     public logger: Logger = new Logger('BannedWords-MC');
     public config = BannedWordsMC.getConfig();

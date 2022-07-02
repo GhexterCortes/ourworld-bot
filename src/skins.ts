@@ -19,7 +19,7 @@ export interface SkinSocketConfig {
 }
 
 export class SkinSocket implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: SkinSocketConfig = SkinSocket.getConfig();
     public console?: TextChannel;
     public io!: Socket;

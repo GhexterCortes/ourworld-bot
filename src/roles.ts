@@ -1,7 +1,7 @@
 import { Logger } from 'fallout-utility';
 import yml from 'yaml';
 import path from 'path';
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
 import { ColorResolvable, Guild, Message, MessageActionRow, MessageEmbed, MessageSelectMenu, Role, TextChannel } from 'discord.js';
 import { errorEmbed } from './_errorEmbed';
@@ -28,7 +28,7 @@ export interface RolesConfig {
 }
 
 export class Roles implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public client?: RecipleClient;
     public config: RolesConfig = Roles.getConfig();
     public logger: Logger = new Logger('Roles');

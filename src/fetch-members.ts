@@ -3,7 +3,7 @@ import { Logger } from 'fallout-utility';
 import { GuildMember } from 'discord.js';
 
 export class FetchMembers implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public logger?: Logger;
 
     public onStart(client: RecipleClient) {

@@ -1,7 +1,7 @@
 import yml from 'yaml';
 import path from 'path';
 import { createConfig } from './_createConfig';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleScript } from 'reciple';
 import { InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageEditOptions, MessageEmbed, MessageOptions, ReplyMessageOptions, TextChannel, User } from 'discord.js';
 import { errorEmbed } from './_errorEmbed';
 
@@ -14,7 +14,7 @@ export interface SpamConfig {
 }
 
 export class Spam implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: SpamConfig = Spam.getConfig();
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 

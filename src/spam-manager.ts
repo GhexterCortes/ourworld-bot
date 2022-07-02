@@ -1,6 +1,6 @@
 import yml from 'yaml';
 import path from 'path';
-import { RecipleScript, RecipleClient, version } from 'reciple';
+import { RecipleScript, RecipleClient } from 'reciple';
 import { Message, GuildMember } from 'discord.js';
 import stringSmilarity from 'string-similarity-js';
 import { errorEmbed } from './_errorEmbed';
@@ -30,7 +30,7 @@ export interface SentMessage {
 }
 
 export class SpamManager implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: SpamManagerConfig = SpamManager.getConfig();
     public sentMessages: SentMessage[] = [];
 

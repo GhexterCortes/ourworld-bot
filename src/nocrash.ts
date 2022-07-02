@@ -1,4 +1,4 @@
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import { Logger } from 'fallout-utility';
 import { User, MessageEmbed } from 'discord.js';
 import path from 'path';
@@ -12,7 +12,7 @@ export interface NoCrashConfig {
 }
 
 export class NoCrash implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: NoCrashConfig = NoCrash.getConfig();
     public logger?: Logger;
     public owner?: User;

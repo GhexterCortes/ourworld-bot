@@ -14,7 +14,7 @@ export interface GuildJoinConfig {
 }
 
 export class Welcomer implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public guilds: GuildJoinConfig[] = Welcomer.getGuilds();
 
     public onStart() {

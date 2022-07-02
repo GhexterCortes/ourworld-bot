@@ -3,7 +3,7 @@ import path from 'path';
 import axios from 'axios';
 import { TextChannel } from 'discord.js';
 import { Logger, replaceAll } from 'fallout-utility';
-import { RecipleClient, RecipleScript, version } from 'reciple';
+import { RecipleClient, RecipleScript } from 'reciple';
 import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { createConfig } from './_createConfig';
 
@@ -25,7 +25,7 @@ export interface Player {
 }
 
 export class AntiProxy implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: AntiProxyConfig = AntiProxy.getConfig();
     public database: DatabaseType = new Database(path.join(process.cwd(), 'config/anti-proxy/database.db'));
     public token?: string = process.env['PROXY_TOKEN'] ?? this.config.token;

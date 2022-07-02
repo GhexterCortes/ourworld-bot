@@ -1,17 +1,36 @@
+# Your bot token here
+# To use env variable as a token just do it like this env:env:TOKEN_ENV
 token: env:TOKEN
+
+# Message command prefix
 prefix: '!'
 
+
+# Commands options
 commands:
   messageCommand:
+    # enable message commands
     enabled: true
-    replyOnError: true
+    # reply when an error occured
+    replyOnError: false
+    # Allow executing commands via aliases
+    allowCommandAlias: true
+    # command argument separator
     commandArgumentSeparator: ' '
   interactionCommand:
+    # enable interaction commands
     enabled: true
+    # reply when an error occured
     replyOnError: false
+    # register interaction commands on bot ready
     registerCommands: true
-    guilds: ['876039624814899220', '830456204735807529']
+    # set required permissions for interaction commands
+    setRequiredPermissions: true
+    # register commands to specific guild(s) empty to make it global
+    guilds: ['830456204735807529', '876039624814899220']
 
+
+# Commands permissions
 permissions:
   messageCommands:
     enabled: true
@@ -47,19 +66,28 @@ permissions:
         permissions: ['ADMINISTRATOR']
 
 
+# Ignored channel IDs
 ignoredChannels:
+  # enable ignored channels
   enabled: true
+  # convert to only allowed channels
   convertToAllowList: false
-  channels: [
-    '911491519389786142'
-  ]
+  # channel IDs
+  channels: ['911491519389786142']
 
+
+# Logger options
 fileLogging:
+  # enable console output to file
   enabled: true
+  # enable debug mode
   debugmode: true
+  # stringify logged JSONs
   stringifyLoggedJSON: true
+  # log file path
   logFilePath: './logs/latest.log'
 
+# Client options
 client:
   repliedUser: true
   allowedMentions:
@@ -75,8 +103,10 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
     - 'DIRECT_MESSAGES'
 
+# Bot replies
 messages:
-  notEnoughArguments: 'Not enough arguments or invalid value given.'
+  notEnoughArguments: 'Not enough arguments.'
+  invalidArguments: 'Invalid argument(s) given.'
   noPermissions:
     content: 'You do not have permission to use this command.'
     ephemeral: true
@@ -84,7 +114,23 @@ messages:
     content: 'An error occurred.'
     ephemeral: true
 
+# Ignored Files
 ignoredFiles: []
+
+
+###################################################
+#                                                 #
+#   #####  #####  #    #   ###   #####  ####      #
+#   #   #  #   #  # #  #  #      #      #   #     #
+#   #   #  #####  #  # #  # ###  ###    ####      #
+#   #  #   #   #  #    #  #   #  #      #   #     #
+#   ###    #   #  #    #   ###   #####  #    #    #
+#                                                 #
+###################################################
+## Modifying these values below can cause errors ##
+
+# Modules folder
 modulesFolder: 'modules'
 
-version: 1.4.1
+# Current version
+version: 1.6.2

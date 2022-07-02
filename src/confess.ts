@@ -5,7 +5,7 @@ import { InteractionCommandBuilder, RecipleClient, RecipleScript } from 'reciple
 import { createConfig } from './_createConfig';
 import { weirdToNormalChars } from 'weird-to-normal-chars';
 import Database, { Database as IDatabase } from 'better-sqlite3';
-import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageAttachment, MessageButton, MessageEmbed, Modal, PermissionString, TextChannel, TextInputComponent } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, Modal, PermissionString, TextChannel, TextInputComponent } from 'discord.js';
 import { Confession } from './confession/Confession';
 import { errorEmbed } from './_errorEmbed';
 
@@ -28,7 +28,7 @@ export interface RawConfession {
 }
 
 export class Confess implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public config: ConfessConfig = Confess.getConfig();
     public database: IDatabase = new Database(path.join(process.cwd(), 'config/confess/database.db'));
     public confessionChannel?: TextChannel;

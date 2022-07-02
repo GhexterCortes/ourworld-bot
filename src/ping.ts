@@ -1,9 +1,9 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { getRandomKey } from 'fallout-utility';
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 
 export default new (class implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder|InteractionCommandBuilder)[] = [];
 
     public onStart(client: RecipleClient) {

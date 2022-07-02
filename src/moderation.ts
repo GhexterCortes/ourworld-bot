@@ -1,9 +1,9 @@
-import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript, version } from 'reciple';
+import { InteractionCommandBuilder, MessageCommandBuilder, RecipleClient, RecipleScript } from 'reciple';
 import { errorEmbed } from './_errorEmbed';
 import ms from 'ms';
 
 export class Moderation implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public commands: (MessageCommandBuilder | InteractionCommandBuilder)[] = [];
 
     public onStart(client: RecipleClient) {

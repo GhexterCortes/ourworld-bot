@@ -3,7 +3,7 @@ import path from 'path';
 import yml from 'yaml';
 import stringSimilarity from 'string-similarity-js';
 import { weirdToNormalChars } from 'weird-to-normal-chars';
-import { isIgnoredChannel, RecipleClient, RecipleScript, version } from 'reciple';
+import { isIgnoredChannel, RecipleClient, RecipleScript } from 'reciple';
 import { createConfig } from './_createConfig';
 import { MessageEmbed, TextChannel } from 'discord.js';
 
@@ -17,7 +17,7 @@ export interface BannedWordsConfig {
 }
 
 export class BannedWords implements RecipleScript {
-    public versions: string[] = ['1.3.x', '1.4.x'];
+    public versions: string[] = ['1.6.x'];
     public client?: RecipleClient;
     public logger: Logger = new Logger('BannedWords');
     public config: BannedWordsConfig = BannedWords.getConfig();
